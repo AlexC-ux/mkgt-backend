@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/mkgtru-api/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/mkgtru-api/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/mkgtru-api",
+  "projects": {
+    "backend": {
+      "type": "application",
+      "root": "apps/backend",
+      "entryFile": "main",
+      "sourceRoot": "apps/backend/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/backend/tsconfig.app.json"
+      }
+    },
+    "mkgtru-api": {
+      "type": "application",
+      "root": "apps/mkgtru-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/mkgtru-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mkgtru-api/tsconfig.app.json"
+      }
+    }
+  }
+}
