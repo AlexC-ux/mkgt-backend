@@ -5,11 +5,32 @@ import { RequireApiKeyGuard } from './require-api-key/require-api-key.guard';
 import { ITitledDocumentInfo } from './types/ITitledDocumentInfo';
 import { territories } from './types/territories';
 
+
+/**
+ * /mkgtru-api/* requests
+ * @date 3/13/2023 - 11:05:44 PM
+ *
+ * @export
+ * @class MkgtruApiController
+ * @typedef {MkgtruApiController}
+ */
 @Controller("mkgtru-api")
 @UseInterceptors(CacheInterceptor)
+
+
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
 
+
+  
+  /**
+   * /changes
+   * @date 3/13/2023 - 11:06:10 PM
+   *
+   * @async
+   * @param {territories} territory
+   * @returns {Promise<ITitledDocumentInfo>}
+   */
   @Get("changes")
   @CacheTTL(200)
   @UseGuards(RequireApiKeyGuard)
