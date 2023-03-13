@@ -22,7 +22,7 @@ export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
 
 
-  
+
   /**
    * Path: `/mkgtru-api/changes`
    * 
@@ -40,7 +40,7 @@ export class MkgtruApiController {
     return this.mkgtruApiService.getChanges(territory);
   }
 
-  
+
   /**
    * Path: `/mkgtru-api/auditories`
    * 
@@ -55,6 +55,30 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   async getAuditories(): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getAuditories();
+  }
+
+  /**
+   * *DELETE* `/mkgtru-api/profile`
+   * 
+   * Deletes the profile of the user who sent the request
+   * @date 3/13/2023 - 11:48:18 PM
+   *
+   * @async
+   * @param {string} bearerToken
+   * @returns {*}
+   */
+  @Delete("profile")
+  @UseGuards(RequireApiKeyGuard)
+  async deleteProfile(@Headers("Authorization") bearerToken: string) {
+    const token = bearerToken.replace("Bearer ", "")
+    const prisma = new PrismaClient();
+    await prisma.users.delete({
+      where: {
+        token: token
+      }
+    })
+    prisma.$disconnect();
+    throw new HttpException("DELETED", HttpStatus.OK)
   }
 
   @Get("practicelist")
@@ -78,38 +102,16 @@ export class MkgtruApiController {
 
   @Patch("token")
   @UseGuards(RequireApiKeyGuard)
-  async revokeToken(@Headers("Authorization") bearerToken:string){
-    return this.mkgtruApiService.revokeToken(bearerToken.replace("Bearer ",""));
+  async revokeToken(@Headers("Authorization") bearerToken: string) {
+    return this.mkgtruApiService.revokeToken(bearerToken.replace("Bearer ", ""));
   }
 
   @Post("profile")
   @UseGuards(RequireApiKeyGuard)
-  async updateProfile(@Body("name") name:string, @Body("email") email:string, @Body("surname") surname?:string){
-    
+  async updateProfile(@Body("name") name: string, @Body("email") email: string, @Body("surname") surname?: string) {
+
   }
 
+
   
-  /**
-   * *DELETE* `/mkgtru-api/profile`
-   * 
-   * Deletes the profile of the user who sent the request
-   * @date 3/13/2023 - 11:48:18 PM
-   *
-   * @async
-   * @param {string} bearerToken
-   * @returns {*}
-   */
-  @Delete("profile")
-  @UseGuards(RequireApiKeyGuard)
-  async deleteProfile(@Headers("Authorization") bearerToken:string){
-    const token = bearerToken.replace("Bearer ","")
-    const prisma = new PrismaClient();
-    await prisma.users.delete({
-      where:{
-        token:token
-      }
-    })
-    prisma.$disconnect();
-    throw new HttpException("DELETED", HttpStatus.OK)
-  }
 }
