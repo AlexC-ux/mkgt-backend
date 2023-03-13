@@ -18,17 +18,15 @@ import { territories } from './types/territories';
  */
 @Controller("mkgtru-api")
 @UseInterceptors(CacheInterceptor)
-
-
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
 
 
   
   /**
-   * `/mkgtru-api/changes`
+   * Path: `/mkgtru-api/changes`
    * 
-   * ### Getting information about schedule substitutions
+   * Getting information about schedule substitutions
    * @date 3/13/2023 - 11:06:10 PM
    *
    * @async
@@ -42,6 +40,16 @@ export class MkgtruApiController {
     return this.mkgtruApiService.getChanges(territory);
   }
 
+  
+  /**
+   * Path: `/mkgtru-api/auditories`
+   * 
+   * Getting information about the distribution of audiences
+   * @date 3/13/2023 - 11:36:53 PM
+   *
+   * @async
+   * @returns {Promise<ITitledDocumentInfo>}
+   */
   @Get("auditories")
   @CacheTTL(200)
   @UseGuards(RequireApiKeyGuard)
