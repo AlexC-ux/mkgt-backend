@@ -48,7 +48,7 @@ export class MkgtruApiController {
    * @date 3/13/2023 - 11:36:53 PM
    *
    * @async
-   * @returns {Promise<ITitledDocumentInfo>}
+   * @returns {Promise<ITitledDocumentInfo>} - information about the distribution of audiences document
    */
   @Get("auditories")
   @CacheTTL(200)
