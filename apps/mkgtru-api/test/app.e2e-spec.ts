@@ -15,10 +15,9 @@ describe('MkgtruApiController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('GET /mkgtru-api/changes', () => {
     return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .get('/mkgtru-api/changes')
+      .expect(200);
   });
 });

@@ -4,7 +4,7 @@ import { MkgtruApiService } from './mkgtru-api.service';
 import { RequireApiKeyGuard } from './require-api-key/require-api-key.guard';
 import { ITitledDocumentInfo } from './types/ITitledDocumentInfo';
 import { territories } from './types/territories';
-import { ITokenResponse } from './types/tokenResponse';
+import { ITokenResponse } from './types/tokenObject';
 
 
 /**
@@ -92,23 +92,19 @@ export class MkgtruApiController {
   async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
     return this.mkgtruApiService.getTimetables(territory)
   }
-
+  
   
   /**
    * Getting server status
-   * @date 3/14/2023 - 12:20:31 AM
+   * @date 3/14/2023 - 1:04:23 AM
    *
-   * @async
-   * @param {territories} territory
-   * @returns {Promise<ITitledDocumentInfo[]>}
+   * @returns {"OK"}
    */
   @Get("status")
-  async getPing(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
-    throw new HttpException('OK', HttpStatus.OK);
+  getPing():"OK" {
+    return "OK"
   }
 
-  
-  
   /**
    * Updating a token
    * @date 3/14/2023 - 12:24:47 AM
@@ -135,15 +131,13 @@ export class MkgtruApiController {
    * @param {?string} [surname] - Second name
    * @returns {Promise<ITokenResponse>}
    */
-  @Post("Register")
+  @Post("register")
   @UseGuards(RequireApiKeyGuard)
   async updateProfile(@Body("name") name: string, @Body("email") email: string, @Body("surname") surname?: string):Promise<ITokenResponse> {
     return this.mkgtruApiService.createAccount(name,surname,email);
   }
 
   /**
-     * Path: `/mkgtru-api/auditories`
-     * 
      * Getting information about the distribution of audiences
      * @date 3/13/2023 - 11:36:53 PM
      *
