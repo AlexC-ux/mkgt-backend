@@ -14,9 +14,5 @@ describe('MkgtruApiController', () => {
     mkgtruApiController = app.get<MkgtruApiController>(MkgtruApiController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(mkgtruApiController.getTimetables()).toBe('Hello World!');
-    });
-  });
+  
 });

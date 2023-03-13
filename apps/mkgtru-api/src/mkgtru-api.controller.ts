@@ -1,4 +1,4 @@
-import { CacheInterceptor, CacheKey, CacheTTL, Controller, Get, Query, UseGuards, UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor, CacheKey, CacheTTL, Controller, Get, HttpException, HttpStatus, Query, UseGuards, UseInterceptors } from '@nestjs/common';
 import { MkgtruApiService } from './mkgtru-api.service';
 import { RequireApiKeyGuard } from './require-api-key/require-api-key.guard';
 import { ITitledDocumentInfo } from './types/ITitledDocumentInfo';
@@ -22,7 +22,7 @@ export class MkgtruApiController {
   async getAuditories(): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getAuditories();
   }
-  
+
   @Get("practicelist")
   @CacheTTL(18000)
   @UseGuards(RequireApiKeyGuard)
@@ -35,5 +35,10 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
     return this.mkgtruApiService.getTimetables(territory)
+  }
+
+  @Get("status")
+  async getPing(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
+    throw new HttpException('OK', HttpStatus.OK);
   }
 }
