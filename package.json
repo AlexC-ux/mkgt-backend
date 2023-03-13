@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/mkgtru-api/test/jest-e2e.json",
-    "documentation":"npx @compodoc/compodoc -p tsconfig.json --disableSourceCode --hideGenerator"
+    "documentation":"npx @compodoc/compodoc -p tsconfig.json --hideGenerator"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

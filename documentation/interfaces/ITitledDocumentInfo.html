@@ -54,6 +54,9 @@
         <li class="active">
             <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
         </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
 </ul>
 
 <div class="tab-content">
@@ -251,6 +254,25 @@
     </div>
 
 
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">export interface ITitledDocumentInfo {
+    &#x27;title&#x27;: string,
+    &#x27;last_modified&#x27;: {
+        &#x27;ru&#x27;: string,
+        &#x27;en-US&#x27;: string,
+        &#x27;timestamp&#x27;: number,
+        &#x27;difference&#x27;: number
+    },
+    &#x27;links&#x27;: {
+        &#x27;file&#x27;: string,
+        &#x27;views&#x27;: {
+            &#x27;google_docs&#x27;: string,
+            &#x27;local_html&#x27;: string,
+        },
+    },
+    &#x27;data_type&#x27;: string,
+}</code></pre>
+    </div>
 </div>
 
 

@@ -49,6 +49,9 @@
         <li class="active">
             <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
         </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
 </ul>
 
 <div class="tab-content">
@@ -120,6 +123,12 @@
             </tr>
 
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="6"
+                            class="link-to-prism">apps/mkgtru-api/src/require-api-key/require-api-key.guard.ts:6</a></div>
+                </td>
+            </tr>
 
 
             <tr>
@@ -169,6 +178,36 @@
         </div>
 
 
+        <div class="tab-pane fade  tab-source-code" id="c-source">
+            <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { CanActivate, ExecutionContext, Injectable } from &#x27;@nestjs/common&#x27;;
+import { Observable } from &#x27;rxjs&#x27;;
+import { PrismaClient } from &#x27;@prisma/client&#x27;;
+@Injectable()
+export class RequireApiKeyGuard implements CanActivate {
+  async canActivate(
+    context: ExecutionContext,
+  ): Promise&lt;boolean&gt; {
+    const keyName &#x3D; &quot;authorization&quot; //api key property name
+    const headers &#x3D; context.switchToHttp().getRequest().headers;
+    const authHeader:string|undefined &#x3D; headers[keyName];
+    const token &#x3D; authHeader?.replace(&quot;Bearer &quot;,&quot;&quot;);
+
+    const prisma &#x3D; new PrismaClient();
+    const user &#x3D; await prisma.users.findUnique({
+      where:{
+        token:&#x60;${token}&#x60;
+      }
+    })
+    prisma.$disconnect();
+
+    if (!!user) {
+      return true
+    }else{
+      return false
+    }
+  }
+}</code></pre>
+        </div>
 </div>
 
 

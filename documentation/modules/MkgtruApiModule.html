@@ -96,6 +96,9 @@
     <li  class="active" >
         <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
     </li>
+    <li >
+        <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+    </li>
 </ul>
 
 <div class="tab-content">
@@ -139,6 +142,22 @@
     </div>
 
 
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Module, CacheModule } from &#x27;@nestjs/common&#x27;;
+import { MkgtruApiController } from &#x27;./mkgtru-api.controller&#x27;;
+import { MkgtruApiService } from &#x27;./mkgtru-api.service&#x27;;
+import { ConfigModule } from &#x27;@nestjs/config&#x27;;
+@Module({
+  imports: [
+    ConfigModule.forRoot({ envFilePath: &quot;./apps/mkgtru-api/.env&quot; }),
+    CacheModule.register(),
+  ],
+  controllers: [MkgtruApiController],
+  providers: [MkgtruApiService],
+})
+export class MkgtruApiModule { }
+</code></pre>
+    </div>
 </div>
 
 
