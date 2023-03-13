@@ -1,4 +1,5 @@
-import { CacheInterceptor, CacheKey, CacheTTL, Controller, Get, HttpException, HttpStatus, Query, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, CacheInterceptor, CacheKey, CacheTTL, Controller, Get, HttpException, HttpStatus, Patch, Query, UseGuards, UseInterceptors, Headers, Post, Delete } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 import { MkgtruApiService } from './mkgtru-api.service';
 import { RequireApiKeyGuard } from './require-api-key/require-api-key.guard';
 import { ITitledDocumentInfo } from './types/ITitledDocumentInfo';
@@ -40,5 +41,31 @@ export class MkgtruApiController {
   @Get("status")
   async getPing(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
     throw new HttpException('OK', HttpStatus.OK);
+  }
+
+  @Patch("token")
+  @UseGuards(RequireApiKeyGuard)
+  async revokeToken(@Headers("Authorization") bearerToken:string){
+    return this.mkgtruApiService.revokeToken(bearerToken.replace("Bearer ",""));
+  }
+
+  @Post("profile")
+  @UseGuards(RequireApiKeyGuard)
+  async updateProfile(@Body("name") name:string, @Body("email") email:string, @Body("surname") surname?:string){
+    
+  }
+
+  @Delete("profile")
+  @UseGuards(RequireApiKeyGuard)
+  async deleteProfile(@Headers("Authorization") bearerToken:string){
+    const token = bearerToken.replace("Bearer ","")
+    const prisma = new PrismaClient();
+    await prisma.users.delete({
+      where:{
+        token:token
+      }
+    })
+    prisma.$disconnect();
+    throw new HttpException("DELETED", HttpStatus.OK)
   }
 }

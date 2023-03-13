@@ -4,9 +4,28 @@ import parse from 'node-html-parser';
 import { territories } from './types/territories';
 import { ITitledDocumentInfo } from './types/ITitledDocumentInfo';
 import HTMLElement from "node_modules/node-html-parser/dist/nodes/html";
+import { PrismaClient } from '@prisma/client';
+const cuid = require("cuid");
 
 @Injectable()
 export class MkgtruApiService {
+
+  async revokeToken(token: string): Promise<{ 'token': string }> {
+    const newToken = `${cuid()}70qy00011${cuid()}`;
+    const prisma = new PrismaClient();
+    await prisma.users.update({
+      where: {
+        token: token,
+      },
+      data: {
+        token: newToken
+      }
+    })
+    prisma.$disconnect();
+    return {
+      'token': newToken
+    }
+  }
 
   async getChanges(territory?: territories): Promise<ITitledDocumentInfo> {
     const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, territory === "lublino" ? "#sppb-addon-1643455125007 > div > div > a" : "#sppb-addon-1643455125006 > div > div > a");
