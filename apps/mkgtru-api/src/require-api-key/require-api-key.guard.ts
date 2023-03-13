@@ -1,16 +1,25 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
-
+import { PrismaClient } from '@prisma/client';
 @Injectable()
 export class RequireApiKeyGuard implements CanActivate {
-  canActivate(
+  async canActivate(
     context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  ): Promise<boolean> {
     const keyName = "authorization" //api key property name
     const headers = context.switchToHttp().getRequest().headers;
     const authHeader:string|undefined = headers[keyName];
     const token = authHeader?.replace("Bearer ","");
-    if (token?.length>5) {
+
+    const prisma = new PrismaClient();
+    const user = await prisma.users.findUnique({
+      where:{
+        token:`${token}`
+      }
+    })
+    prisma.$disconnect();
+
+    if (!!user) {
       return true
     }else{
       return false

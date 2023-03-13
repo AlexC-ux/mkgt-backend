@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  identifer         String           @id @unique @default(cuid())
+  role              acccess_roles    @default(user)
+  name              String
+  surname           String?
+  token             String           @unique @default(cuid())
+  registrationDate  DateTime         @default(now())
+  tgAccount         TelegramAccount? @relation(fields: [telegramAccountId], references: [id])
+  email             String           @unique
+  emailVerified     Boolean          @default(false)
+  telegramAccountId String?
+}
+
+model TelegramAccount {
+  id         String  @id @unique @default(cuid())
+  name       String
+  surname    String?
+  telegramId BigInt  @unique
+  username   String? @unique
+  Users      Users[]
+}
+
+enum acccess_roles {
+  user
+  priv1
+  priv2
+  admin
+  localhost
+}
