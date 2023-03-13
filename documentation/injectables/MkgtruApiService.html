@@ -47,9 +47,6 @@
         <li class="active">
             <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
         </li>
-        <li >
-            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
-        </li>
 </ul>
 
 <div class="tab-content">
@@ -136,12 +133,6 @@
             </tr>
 
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="35"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:35</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -175,12 +166,6 @@
             </tr>
 
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="30"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:30</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -246,12 +231,6 @@
             </tr>
 
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="54"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:54</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -285,12 +264,6 @@
             </tr>
 
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="40"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:40</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -356,12 +329,6 @@
             </tr>
 
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="13"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:13</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -412,124 +379,6 @@
     </div>
 
 
-    <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { HttpException, HttpStatus, Injectable } from &#x27;@nestjs/common&#x27;;
-import axios from &quot;axios&quot;;
-import parse from &#x27;node-html-parser&#x27;;
-import { territories } from &#x27;./types/territories&#x27;;
-import { ITitledDocumentInfo } from &#x27;./types/ITitledDocumentInfo&#x27;;
-import HTMLElement from &quot;node_modules/node-html-parser/dist/nodes/html&quot;;
-import { PrismaClient } from &#x27;@prisma/client&#x27;;
-const cuid &#x3D; require(&quot;cuid&quot;);
-
-@Injectable()
-export class MkgtruApiService {
-
-  async revokeToken(token: string): Promise&lt;{ &#x27;token&#x27;: string }&gt; {
-    const newToken &#x3D; &#x60;${cuid()}70qy00011${cuid()}&#x60;;
-    const prisma &#x3D; new PrismaClient();
-    await prisma.users.update({
-      where: {
-        token: token,
-      },
-      data: {
-        token: newToken
-      }
-    })
-    prisma.$disconnect();
-    return {
-      &#x27;token&#x27;: newToken
-    }
-  }
-
-  async getChanges(territory?: territories): Promise&lt;ITitledDocumentInfo&gt; {
-    const linkElement &#x3D; await getElementsFromPage(&#x60;https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah&#x60;, territory &#x3D;&#x3D;&#x3D; &quot;lublino&quot; ? &quot;#sppb-addon-1643455125007 &gt; div &gt; div &gt; a&quot; : &quot;#sppb-addon-1643455125006 &gt; div &gt; div &gt; a&quot;);
-    return await getTitledFileInfoByATag(linkElement[0])
-  }
-
-  async getAuditories(): Promise&lt;ITitledDocumentInfo&gt; {
-    const linkElement &#x3D; await getElementsFromPage(&#x60;https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah&#x60;, &quot;#sppb-addon-1643621942381 &gt; div &gt; div &gt; a&quot;);
-    return await getTitledFileInfoByATag(linkElement[0])
-  }
-
-  async getTimetables(territory?: territories): Promise&lt;ITitledDocumentInfo[]&gt; {
-    const linkElements &#x3D; await getElementsFromPage(&#x60;https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah&#x60;, territory &#x3D;&#x3D;&#x3D; &quot;lublino&quot; ? &quot;#sppb-addon-1632589047343 &gt; div &gt; div &gt; p &gt; a&quot; : &quot;#sppb-addon-1632589047342 &gt; div &gt; div &gt; a&quot;);
-    const files &#x3D; [];
-    for (const index in linkElements) {
-      if (Object.prototype.hasOwnProperty.call(linkElements, index)) {
-        const element &#x3D; linkElements[index];
-        files.push(await getTitledFileInfoByATag(element))
-      }
-    }
-    return files
-  }
-
-
-
-  async getPracticeList(): Promise&lt;ITitledDocumentInfo[]&gt; {
-    const linkElements &#x3D; await getElementsFromPage(&#x60;https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah&#x60;, &quot;#sppb-addon-1646804333482 &gt; div &gt; div &gt; p &gt; a&quot;);
-    const files &#x3D; [];
-    for (const index in linkElements) {
-      if (Object.prototype.hasOwnProperty.call(linkElements, index)) {
-        const element &#x3D; linkElements[index];
-        files.push(await getTitledFileInfoByATag(element))
-      }
-    }
-    return files
-  }
-}
-
-
-async function getElementsFromPage(uri: string, selector: string): Promise&lt;HTMLElement[]&gt; {
-  const pageResponse &#x3D; await axios.get(uri);
-  if (pageResponse.status !&#x3D; 200) {
-    throw new HttpException(&#x27;INTERNAL_SERVER_ERROR&#x27;, HttpStatus.INTERNAL_SERVER_ERROR);
-  } else {
-    const root &#x3D; parse(pageResponse.data);
-
-    const linkElements &#x3D; root.querySelectorAll(selector);
-
-    if (!!linkElements &amp;&amp; linkElements.length &gt; 0) {
-      return linkElements;
-    } else {
-      throw new HttpException(&#x27;INTERNAL_SERVER_ERROR&#x27;, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-}
-
-async function getTitledFileInfoByATag(node: HTMLElement): Promise&lt;ITitledDocumentInfo&gt; {
-  const linkToFile &#x3D; node.getAttribute(&quot;href&quot;)
-  const documentResponse &#x3D; await axios.get(&#x60;http://${process.env.SITE_DOMAIN}${linkToFile}&#x60;);
-  if (documentResponse.status !&#x3D; 200 || !linkToFile) {
-    throw new HttpException(&#x27;INTERNAL_SERVER_ERROR&#x27;, HttpStatus.INTERNAL_SERVER_ERROR);
-  } else {
-    const dataType: string &#x3D; documentResponse.headers[&#x27;content-type&#x27;];
-    const lastModifiedDate &#x3D; new Date(documentResponse.headers[&#x27;last-modified&#x27;]);
-
-    const htmlViewCode &#x3D; &#x60;&lt;html&gt;&lt;body&gt;&lt;embed src&#x3D;&#x27;https://${process.env.SITE_DOMAIN}${linkToFile}&#x27; style&#x3D;&#x27;width:98vw; height:98vh;&#x27;/&gt;&lt;/body&gt;&lt;/html&gt;&#x60;;
-    const htmlViewBase64 &#x3D; Buffer.from(htmlViewCode).toString(&#x27;base64&#x27;);
-    return (
-      {
-        &#x27;title&#x27;: node.innerText,
-        &#x27;last_modified&#x27;: {
-          &#x27;ru&#x27;: lastModifiedDate.toLocaleString(&#x27;ru&#x27;),
-          &#x27;en-US&#x27;: lastModifiedDate.toLocaleString(&#x27;en-US&#x27;),
-          &#x27;timestamp&#x27;: lastModifiedDate.getTime(),
-          &#x27;difference&#x27;: Date.now() - lastModifiedDate.getTime()
-        },
-        &#x27;links&#x27;: {
-          &#x27;file&#x27;: &#x60;https://${process.env.SITE_DOMAIN}${linkToFile}&#x60;,
-          &#x27;views&#x27;: {
-            &#x27;google_docs&#x27;: &#x60;https://docs.google.com/gview?url&#x3D;https://${process.env.SITE_DOMAIN}${linkToFile}&#x60;,
-            &#x27;local_html&#x27;: &#x60;data:text/html;base64,${htmlViewBase64}&#x60;,
-          },
-        },
-        &#x27;data_type&#x27;: dataType,
-      }
-    )
-  }
-}</code></pre>
-    </div>
 
 </div>
 

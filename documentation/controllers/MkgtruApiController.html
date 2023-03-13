@@ -44,9 +44,6 @@
         <li class="active">
             <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
         </li>
-        <li >
-            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
-        </li>
 </ul>
 
 <div class="tab-content">
@@ -159,12 +156,6 @@
                 </td>
             </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="60"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.controller.ts:60</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -237,12 +228,6 @@
                 </td>
             </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="23"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.controller.ts:23</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -283,12 +268,6 @@
                 </td>
             </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="16"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.controller.ts:16</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -361,12 +340,6 @@
                 </td>
             </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="42"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.controller.ts:42</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -439,12 +412,6 @@
                 </td>
             </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="30"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.controller.ts:30</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -485,12 +452,6 @@
                 </td>
             </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="37"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.controller.ts:37</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -563,12 +524,6 @@
                 </td>
             </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="48"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.controller.ts:48</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -641,12 +596,6 @@
                 </td>
             </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="54"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.controller.ts:54</a></div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -719,80 +668,6 @@
 </section>    </div>
 
 
-    <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Body, CacheInterceptor, CacheKey, CacheTTL, Controller, Get, HttpException, HttpStatus, Patch, Query, UseGuards, UseInterceptors, Headers, Post, Delete } from &#x27;@nestjs/common&#x27;;
-import { PrismaClient } from &#x27;@prisma/client&#x27;;
-import { MkgtruApiService } from &#x27;./mkgtru-api.service&#x27;;
-import { RequireApiKeyGuard } from &#x27;./require-api-key/require-api-key.guard&#x27;;
-import { ITitledDocumentInfo } from &#x27;./types/ITitledDocumentInfo&#x27;;
-import { territories } from &#x27;./types/territories&#x27;;
-
-@Controller(&quot;mkgtru-api&quot;)
-@UseInterceptors(CacheInterceptor)
-export class MkgtruApiController {
-  constructor(private readonly mkgtruApiService: MkgtruApiService) { }
-
-  @Get(&quot;changes&quot;)
-  @CacheTTL(200)
-  @UseGuards(RequireApiKeyGuard)
-  async getChanges(@Query(&quot;territory&quot;) territory: territories): Promise&lt;ITitledDocumentInfo&gt; {
-    return this.mkgtruApiService.getChanges(territory);
-  }
-
-  @Get(&quot;auditories&quot;)
-  @CacheTTL(200)
-  @UseGuards(RequireApiKeyGuard)
-  async getAuditories(): Promise&lt;ITitledDocumentInfo&gt; {
-    return this.mkgtruApiService.getAuditories();
-  }
-
-  @Get(&quot;practicelist&quot;)
-  @CacheTTL(18000)
-  @UseGuards(RequireApiKeyGuard)
-  async getPracticeList(): Promise&lt;ITitledDocumentInfo[]&gt; {
-    return this.mkgtruApiService.getPracticeList();
-  }
-
-  @Get(&quot;timetables&quot;)
-  @CacheTTL(18000)
-  @UseGuards(RequireApiKeyGuard)
-  async getTimetables(@Query(&quot;territory&quot;) territory: territories): Promise&lt;ITitledDocumentInfo[]&gt; {
-    return this.mkgtruApiService.getTimetables(territory)
-  }
-
-  @Get(&quot;status&quot;)
-  async getPing(@Query(&quot;territory&quot;) territory: territories): Promise&lt;ITitledDocumentInfo[]&gt; {
-    throw new HttpException(&#x27;OK&#x27;, HttpStatus.OK);
-  }
-
-  @Patch(&quot;token&quot;)
-  @UseGuards(RequireApiKeyGuard)
-  async revokeToken(@Headers(&quot;Authorization&quot;) bearerToken:string){
-    return this.mkgtruApiService.revokeToken(bearerToken.replace(&quot;Bearer &quot;,&quot;&quot;));
-  }
-
-  @Post(&quot;profile&quot;)
-  @UseGuards(RequireApiKeyGuard)
-  async updateProfile(@Body(&quot;name&quot;) name:string, @Body(&quot;email&quot;) email:string, @Body(&quot;surname&quot;) surname?:string){
-    
-  }
-
-  @Delete(&quot;profile&quot;)
-  @UseGuards(RequireApiKeyGuard)
-  async deleteProfile(@Headers(&quot;Authorization&quot;) bearerToken:string){
-    const token &#x3D; bearerToken.replace(&quot;Bearer &quot;,&quot;&quot;)
-    const prisma &#x3D; new PrismaClient();
-    await prisma.users.delete({
-      where:{
-        token:token
-      }
-    })
-    prisma.$disconnect();
-    throw new HttpException(&quot;DELETED&quot;, HttpStatus.OK)
-  }
-}
-</code></pre>
-    </div>
 </div>
 
 
