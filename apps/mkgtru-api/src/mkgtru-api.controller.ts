@@ -7,7 +7,7 @@ import { territories } from './types/territories';
 
 
 /**
- * # /mkgtru-api/* requests
+ * # `/mkgtru-api/*` requests
  * 
  * # **Getting information from the college website**
  * @date 3/13/2023 - 11:05:44 PM
