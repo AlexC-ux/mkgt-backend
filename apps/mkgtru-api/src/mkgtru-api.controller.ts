@@ -58,9 +58,9 @@ export class MkgtruApiController {
   }
 
   /**
-   * *DELETE* `/mkgtru-api/profile`
+   * ### **DELETE** `/mkgtru-api/profile`
    * 
-   * Deletes the profile of the user who sent the request
+   * ### Deletes the profile of the user who sent the request
    * @date 3/13/2023 - 11:48:18 PM
    *
    * @async
