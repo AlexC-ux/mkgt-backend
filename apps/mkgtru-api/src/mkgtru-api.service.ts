@@ -5,12 +5,30 @@ import { territories } from './types/territories';
 import { ITitledDocumentInfo } from './types/ITitledDocumentInfo';
 import HTMLElement from "node_modules/node-html-parser/dist/nodes/html";
 import { PrismaClient } from '@prisma/client';
+import { ITokenResponse } from './types/tokenResponse';
 const cuid = require("cuid");
 
 @Injectable()
 export class MkgtruApiService {
 
-  async revokeToken(token: string): Promise<{ 'token': string }> {
+  async createAccount(name:string, surname:string, email:string):Promise<ITokenResponse>{
+    const token = cuid();
+
+    const prisma = new PrismaClient();
+    await prisma.users.create({
+      data:{
+        name,
+        surname,
+        email,
+        token:token
+      }
+    });
+    prisma.$disconnect();
+
+    return {token}
+  }
+
+  async revokeToken(token: string): Promise<ITokenResponse> {
     const newToken = `${cuid()}70qy00011${cuid()}`;
     const prisma = new PrismaClient();
     await prisma.users.update({
