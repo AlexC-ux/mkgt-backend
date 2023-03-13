@@ -10,15 +10,6 @@
   "monorepo": true,
   "root": "apps/mkgtru-api",
   "projects": {
-    "backend": {
-      "type": "application",
-      "root": "apps/backend",
-      "entryFile": "main",
-      "sourceRoot": "apps/backend/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/backend/tsconfig.app.json"
-      }
-    },
     "mkgtru-api": {
       "type": "application",
       "root": "apps/mkgtru-api",
