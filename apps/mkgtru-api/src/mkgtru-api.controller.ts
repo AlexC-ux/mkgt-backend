@@ -7,9 +7,9 @@ import { territories } from './types/territories';
 
 
 /**
- * #/mkgtru-api/* requests
+ * # /mkgtru-api/* requests
  * 
- * ##Getting information from the college website
+ * ## Getting information from the college website
  * @date 3/13/2023 - 11:05:44 PM
  *
  * @export
@@ -26,9 +26,9 @@ export class MkgtruApiController {
 
   
   /**
-   * /changes
+   * `/mkgtru-api/changes`
    * 
-   * Getting information about schedule substitutions
+   * ### Getting information about schedule substitutions
    * @date 3/13/2023 - 11:06:10 PM
    *
    * @async
