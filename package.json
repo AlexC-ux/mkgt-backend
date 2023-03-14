@@ -35,7 +35,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "telegraf": "^4.12.2",
-    "timers-promises": "^1.0.1",
+    "timers": "^0.1.1",
     "webpack": "^5.76.1"
   },
   "devDependencies": {

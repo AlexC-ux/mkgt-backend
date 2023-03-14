@@ -1,7 +1,7 @@
 import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
 import { MkgtOfficialBotService } from './mkgt-official-bot.service';
 
-@Controller()
+@Controller("/blyat-ya-tak-ustal-napishi-mne-v-tg-alexc_ux")
 export class MkgtOfficialBotController {
   constructor(private readonly mkgtOfficialBotService: MkgtOfficialBotService) { }
 
