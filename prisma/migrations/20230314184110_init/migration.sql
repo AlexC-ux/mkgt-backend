@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "acccess_roles" AS ENUM ('user', 'priv1', 'priv2', 'admin', 'localhost');
 
+-- CreateEnum
+CREATE TYPE "territories" AS ENUM ('kuchin', 'lublino');
+
 -- CreateTable
 CREATE TABLE "Users" (
     "identifer" TEXT NOT NULL,
@@ -9,8 +12,9 @@ CREATE TABLE "Users" (
     "surname" TEXT,
     "token" TEXT NOT NULL,
     "registrationDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "email" TEXT NOT NULL,
+    "email" TEXT,
     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+    "territory" "territories" NOT NULL DEFAULT 'kuchin',
     "telegramAccountId" TEXT,
 
     CONSTRAINT "Users_pkey" PRIMARY KEY ("identifer")
@@ -34,9 +38,6 @@ CREATE UNIQUE INDEX "Users_identifer_key" ON "Users"("identifer");
 CREATE UNIQUE INDEX "Users_token_key" ON "Users"("token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
-
--- CreateIndex
 CREATE UNIQUE INDEX "TelegramAccount_id_key" ON "TelegramAccount"("id");
 
 -- CreateIndex
@@ -46,4 +47,4 @@ CREATE UNIQUE INDEX "TelegramAccount_telegramId_key" ON "TelegramAccount"("teleg
 CREATE UNIQUE INDEX "TelegramAccount_username_key" ON "TelegramAccount"("username");
 
 -- AddForeignKey
-ALTER TABLE "Users" ADD CONSTRAINT "Users_telegramAccountId_fkey" FOREIGN KEY ("telegramAccountId") REFERENCES "TelegramAccount"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Users" ADD CONSTRAINT "Users_telegramAccountId_fkey" FOREIGN KEY ("telegramAccountId") REFERENCES "TelegramAccount"("id") ON DELETE CASCADE ON UPDATE CASCADE;

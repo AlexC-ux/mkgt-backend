@@ -18,7 +18,7 @@ model Users {
   token             String           @unique @default(cuid())
   registrationDate  DateTime         @default(now())
   tgAccount         TelegramAccount? @relation(fields: [telegramAccountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  email             String?          @unique
+  email             String?
   emailVerified     Boolean          @default(false)
   territory         territories      @default(kuchin)
   telegramAccountId String?
