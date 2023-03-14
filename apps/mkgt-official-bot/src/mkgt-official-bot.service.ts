@@ -229,7 +229,7 @@ export class MkgtOfficialBotService {
     const url = `${process.env.MKGT_API_PATH}${path}?territory=${!!territory ? territory : "lublino"}`;
     console.log({ 'req_to_api': url })
     try {
-      return (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` } })).data;
+      return (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout:30000 })).data;
     } catch (error) {
       return null;
     }
