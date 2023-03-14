@@ -5,7 +5,7 @@ import { Telegraf as TelegramBot } from "telegraf";
 import { ITitledDocumentInfo } from 'apps/mkgtru-api/src/types/ITitledDocumentInfo';
 import { PrismaClient } from '@prisma/client';
 import { territories } from 'apps/mkgtru-api/src/types/territories';
-import { setInterval } from 'timers';
+import { setInterval, setTimeout } from 'timers';
 interface IBotCommand { 'command': string, 'description': string };
 
 const commands: IBotCommand[] = [
@@ -31,7 +31,9 @@ const info = {
 export class MkgtOfficialBotService {
 
   constructor(){
-    this.startBot();
+    setTimeout(()=>{
+      this.startBot();
+    }, 10000)
   }
 
   private bot = new TelegramBot(process.env.BOT_TOKEN);
