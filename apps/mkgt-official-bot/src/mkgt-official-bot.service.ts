@@ -212,6 +212,12 @@ export class MkgtOfficialBotService {
       }
     })
 
+    if (!MkgtOfficialBotService.info.started) {
+      this.bot.launch();
+      MkgtOfficialBotService.info.started = true;
+    }
+
+
     return "started"
   }
 
