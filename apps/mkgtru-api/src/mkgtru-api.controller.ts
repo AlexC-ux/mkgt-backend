@@ -61,7 +61,6 @@ export class MkgtruApiController {
     prisma.$disconnect();
     throw new HttpException("DELETED", HttpStatus.OK)
   }
-
   
   /**
    * Getting an array of practice schedule document descriptions

@@ -17,9 +17,10 @@ model Users {
   surname           String?
   token             String           @unique @default(cuid())
   registrationDate  DateTime         @default(now())
-  tgAccount         TelegramAccount? @relation(fields: [telegramAccountId], references: [id])
-  email             String           @unique
+  tgAccount         TelegramAccount? @relation(fields: [telegramAccountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  email             String?          @unique
   emailVerified     Boolean          @default(false)
+  territory         territories      @default(kuchin)
   telegramAccountId String?
 }
 
@@ -38,4 +39,9 @@ enum acccess_roles {
   priv2
   admin
   localhost
+}
+
+enum territories {
+  kuchin
+  lublino
 }
