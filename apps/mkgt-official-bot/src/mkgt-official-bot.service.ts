@@ -68,7 +68,7 @@ export class MkgtOfficialBotService {
         }
 
       }
-      context.sendMessage(`${sender.first_name}, добро пожаловать!${_ROW_BREAK}Если Вы с люблино, то воспользуйтесь командой /profile`)
+      context.sendMessage(`${sender.first_name}, добро пожаловать!${_LINE_BREAK}Если Вы с люблино, то воспользуйтесь командой /profile${_ROW_BREAK}/changes - просмотр замен${_LINE_BREAK}/practice - расписания практики${_ROW_BREAK}Остальные команды можно посмотреть, если ввести в строку сообщения символ косой черты: /`)
 
     })
 
