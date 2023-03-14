@@ -5,9 +5,8 @@ import { MkgtOfficialBotService } from './mkgt-official-bot.service';
 export class MkgtOfficialBotController {
   constructor(private readonly mkgtOfficialBotService: MkgtOfficialBotService) { }
 
-  @Get()
+  @Get("/status")
   getBotDialog(@Res() res) {
-    this.mkgtOfficialBotService.startBot();
     res.status(HttpStatus.OK).send("Bot service started");
   }
 
