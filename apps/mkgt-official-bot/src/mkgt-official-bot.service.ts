@@ -19,7 +19,7 @@ const commands: IBotCommand[] = [
 const _LINE_BREAK: string = "\n";
 const _ROW_BREAK: string = "\n\n";
 
-const _CHECK_CHANGES_INTERVAL = 2*60*60*1000;
+const _CHECK_CHANGES_INTERVAL = 2 * 60 * 60 * 1000;
 
 const prisma = new PrismaClient();
 
@@ -30,10 +30,8 @@ const info = {
 @Injectable()
 export class MkgtOfficialBotService {
 
-  constructor(){
-    setTimeout(()=>{
-      this.startBot();
-    }, 10000)
+  constructor() {
+    this.startBot();
   }
 
   private bot = new TelegramBot(process.env.BOT_TOKEN);
@@ -234,7 +232,7 @@ export class MkgtOfficialBotService {
 
   async getAPIResponse(path: "/changes" | "/status" | "/practicelist", territory?: territories): Promise<any> {
     const url = `${process.env.MKGT_API_PATH}${path}?territory=${!!territory ? territory : "lublino"}`;
-    console.log({'req_to_api':url})
+    console.log({ 'req_to_api': url })
     try {
       return (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` } })).data;
     } catch (error) {
@@ -278,7 +276,7 @@ export class MkgtOfficialBotService {
       })
 
     }
-    else{
+    else {
       console.log("changes not updated")
     }
   }
