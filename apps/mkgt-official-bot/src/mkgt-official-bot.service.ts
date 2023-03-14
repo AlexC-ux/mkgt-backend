@@ -23,15 +23,16 @@ const _CHECK_CHANGES_INTERVAL = 2 * 60 * 60 * 1000;
 
 const prisma = new PrismaClient();
 
-const info = {
-  started: false
-}
 
 @Injectable()
 export class MkgtOfficialBotService {
 
+  static info = {
+    started: false
+  }
+
   constructor() {
-    if (!info.started) {
+    if (!MkgtOfficialBotService.info.started) {
       this.startBot();
     }
   }
@@ -216,14 +217,6 @@ export class MkgtOfficialBotService {
         } catch (error) { }
       }
     })
-
-    if (!info.started) {
-      info.started = true
-      this.bot.launch();
-      setInterval(() => { this.checkUpdateChanges("kuchin") }, _CHECK_CHANGES_INTERVAL)
-      setInterval(() => { this.checkUpdateChanges("lublino") }, _CHECK_CHANGES_INTERVAL)
-      console.log("BOT_STARTED")
-    }
 
     return "started"
   }
