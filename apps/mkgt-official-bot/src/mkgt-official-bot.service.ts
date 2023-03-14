@@ -31,12 +31,6 @@ export class MkgtOfficialBotService {
     started: false
   }
 
-  constructor() {
-    if (!MkgtOfficialBotService.info.started) {
-      this.startBot();
-    }
-  }
-
   private bot = new TelegramBot(process.env.BOT_TOKEN);
 
   async startBot() {
