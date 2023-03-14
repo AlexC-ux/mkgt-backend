@@ -31,7 +31,9 @@ const info = {
 export class MkgtOfficialBotService {
 
   constructor() {
-    this.startBot();
+    if (!info.started) {
+      this.startBot();
+    }
   }
 
   private bot = new TelegramBot(process.env.BOT_TOKEN);
