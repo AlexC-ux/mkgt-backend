@@ -4,8 +4,10 @@ import { MkgtOfficialBotService } from './mkgt-official-bot.service';
 @Controller()
 export class MkgtOfficialBotController {
   constructor(private readonly mkgtOfficialBotService: MkgtOfficialBotService) {
-    this.mkgtOfficialBotService.startBot();
-    console.log("BOT_STARTED")
+    if (!MkgtOfficialBotService.info.started) {
+      this.mkgtOfficialBotService.startBot();
+      console.log("BOT_STARTED")
+    }
   }
 
   @Get("/status")
