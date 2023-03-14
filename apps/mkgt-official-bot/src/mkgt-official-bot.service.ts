@@ -5,8 +5,9 @@ import { Telegraf as TelegramBot } from "telegraf";
 import { ITitledDocumentInfo } from 'apps/mkgtru-api/src/types/ITitledDocumentInfo';
 import { PrismaClient } from '@prisma/client';
 import { territories } from 'apps/mkgtru-api/src/types/territories';
-import { setInterval, setTimeout } from 'timers';
 interface IBotCommand { 'command': string, 'description': string };
+const schedule = require('node-schedule');
+
 
 const commands: IBotCommand[] = [
   { 'command': "start", "description": "запуск бота" },
@@ -229,7 +230,7 @@ export class MkgtOfficialBotService {
     const url = `${process.env.MKGT_API_PATH}${path}?territory=${!!territory ? territory : "lublino"}`;
     console.log({ 'req_to_api': url })
     try {
-      return (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout:30000 })).data;
+      return (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout: 30000 })).data;
     } catch (error) {
       return null;
     }
@@ -249,31 +250,41 @@ export class MkgtOfficialBotService {
     return user;
   }
 
-  async checkUpdateChanges(territory: territories) {
-    const changesDocInfo: ITitledDocumentInfo = await this.getAPIResponse("/changes", territory);
-    if (changesDocInfo.last_modified.difference <= _CHECK_CHANGES_INTERVAL) {
-      const users = await prisma.users.findMany({
-        include: {
-          tgAccount: true,
-        },
-        where: {
-          territory: territory
-        }
-      })
 
-      users.forEach(user => {
-        const tgUserId = user.tgAccount.id;
 
-        try {
-          this.bot.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`)
-        } catch (error) { }
+  changesChecker = schedule.scheduleJob("* 1 * * *", function () {
+    checkUpdateChanges("kuchin");
+    checkUpdateChanges("lublino");
 
-      })
 
+    async function checkUpdateChanges(territory: territories) {
+      const changesDocInfo: ITitledDocumentInfo = await this.getAPIResponse("/changes", territory);
+      if (changesDocInfo.last_modified.difference <= _CHECK_CHANGES_INTERVAL) {
+        const users = await prisma.users.findMany({
+          include: {
+            tgAccount: true,
+          },
+          where: {
+            territory: territory
+          }
+        })
+
+        users.forEach(user => {
+          const tgUserId = user.tgAccount.id;
+
+          try {
+            this.bot.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`)
+          } catch (error) { }
+
+        })
+
+      }
+      else {
+        console.log("changes not updated")
+      }
     }
-    else {
-      console.log("changes not updated")
-    }
-  }
+  });
+
+
 }
 
