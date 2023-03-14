@@ -12,7 +12,7 @@ const commands: IBotCommand[] = [
   { 'command': "start", "description": "запуск бота" },
   { 'command': "changes", "description": "получение информации о заменах" },
   { 'command': "status", "description": "получение состояния сервера" },
-  { 'command': "practice", "description": "получение состояния сервера" },
+  { 'command': "practice", "description": "получение расписаний практики" },
   { 'command': "profile", "description": "настройка профиля" },
 ];
 
@@ -58,7 +58,7 @@ export class MkgtOfficialBotService {
             data: {
               name: sender.first_name,
               surname: `${sender.last_name}`,
-              email: "none",
+              email: null,
               telegramAccountId: tg.id
             }
           });
