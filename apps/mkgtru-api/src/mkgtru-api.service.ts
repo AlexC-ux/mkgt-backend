@@ -193,7 +193,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
         'links': {
           'file': `https://${process.env.SITE_DOMAIN}${linkToFile}`,
           'views': {
-            'google_docs': `https://docs.google.com/gview?url=https://${process.env.SITE_DOMAIN}${linkToFile}`,
+            'google_docs': `https://docs.google.com/gview?url=https://${process.env.SITE_DOMAIN}${linkToFile}&embed=true`,
             'local_html': `data:text/html;base64,${htmlViewBase64}`,
           },
         },
