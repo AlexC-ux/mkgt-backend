@@ -4,7 +4,7 @@
   "description": "Path: https://mkgtru-api.onrender.com",
   "author": "https://github.com/AlexC-ux",
   "private": true,
-  "license": "",
+  "license": "PRIVATE",
   "scripts": {
     "build": "npx nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
