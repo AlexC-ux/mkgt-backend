@@ -10,7 +10,6 @@
   "monorepo": true,
   "root": "apps/mkgtru-api",
   "projects": {
-    
     "mkgtru-api": {
       "type": "application",
       "root": "apps/mkgtru-api",
@@ -18,6 +17,15 @@
       "sourceRoot": "apps/mkgtru-api/src",
       "compilerOptions": {
         "tsConfigPath": "apps/mkgtru-api/tsconfig.app.json"
+      }
+    },
+    "mkgt-official-bot": {
+      "type": "application",
+      "root": "apps/mkgt-official-bot",
+      "entryFile": "main",
+      "sourceRoot": "apps/mkgt-official-bot/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mkgt-official-bot/tsconfig.app.json"
       }
     }
   }

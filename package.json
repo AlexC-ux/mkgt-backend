@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/mkgtru-api/test/jest-e2e.json",
-    "documentation":"npx @compodoc/compodoc -p tsconfig.json --hideGenerator"
+    "documentation": "npx @compodoc/compodoc -p tsconfig.json --hideGenerator"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -34,6 +34,7 @@
     "prisma": "^4.11.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
+    "telegraf": "^4.12.2",
     "webpack": "^5.76.1"
   },
   "devDependencies": {
