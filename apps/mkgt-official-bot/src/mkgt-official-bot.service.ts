@@ -5,7 +5,7 @@ import { Telegraf as TelegramBot } from "telegraf";
 import { ITitledDocumentInfo } from 'apps/mkgtru-api/src/types/ITitledDocumentInfo';
 import { PrismaClient } from '@prisma/client';
 import { territories } from 'apps/mkgtru-api/src/types/territories';
-import { setInterval } from 'timers/promises';
+const timers = require('timers-promises')
 interface IBotCommand { 'command': string, 'description': string };
 
 const commands: IBotCommand[] = [
@@ -216,8 +216,8 @@ export class MkgtOfficialBotService {
     if (!info.started) {
       info.started = true
       this.bot.launch();
-      setInterval(_CHECK_CHANGES_INTERVAL, () => { this.checkUpdateChanges("kuchin") })
-      setInterval(_CHECK_CHANGES_INTERVAL, () => { this.checkUpdateChanges("lublino") })
+      timers.setInterval(_CHECK_CHANGES_INTERVAL, () => { this.checkUpdateChanges("kuchin") })
+      timers.setInterval(_CHECK_CHANGES_INTERVAL, () => { this.checkUpdateChanges("lublino") })
       console.log("BOT_STARTED")
     } else {
       this.bot.stop();
