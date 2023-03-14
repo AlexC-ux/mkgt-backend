@@ -7,7 +7,7 @@ export class MkgtOfficialBotController {
 
   @Get()
   getBotDialog(@Res() res) {
-    this.mkgtOfficialBotService.botMessage();
+    this.mkgtOfficialBotService.startBot();
     res.status(HttpStatus.OK).send("Bot service started");
   }
 

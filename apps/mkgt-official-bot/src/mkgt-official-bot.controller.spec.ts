@@ -13,10 +13,4 @@ describe('MkgtOfficialBotController', () => {
 
     mkgtOfficialBotController = app.get<MkgtOfficialBotController>(MkgtOfficialBotController);
   });
-
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(mkgtOfficialBotController.getHello()).toBe('Hello World!');
-    });
-  });
 });
