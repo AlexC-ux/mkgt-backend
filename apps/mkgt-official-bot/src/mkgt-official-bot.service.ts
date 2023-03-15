@@ -50,7 +50,7 @@ export class MkgtOfficialBotService {
         try {
           const tg = await prisma.telegramAccount.create({
             data: {
-              name: sender.first_name,
+              name: `${sender.first_name}`,
               surname: `${sender.last_name}`,
               telegramId: sender.id,
               username: `${sender.username}`
