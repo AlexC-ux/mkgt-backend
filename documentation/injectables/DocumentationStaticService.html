@@ -28,7 +28,7 @@
                    <compodoc-menu mode="normal"></compodoc-menu>
                </div>
                <!-- START CONTENT -->
-               <div class="content guard">
+               <div class="content injectable">
                    <div class="content-data">
 
 
@@ -38,11 +38,9 @@
 
 
 
-
-
 <ol class="breadcrumb">
-    <li>Guards</li>
-    <li >RequireApiKeyGuard</li>
+  <li>Injectables</li>
+  <li >DocumentationStaticService</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -55,20 +53,19 @@
 </ul>
 
 <div class="tab-content">
-        <div class="tab-pane fade active in" id="c-info">
-            <p class="comment">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
             <h3>File</h3>
-            </p>
-            <p class="comment">
-                <code>apps/mkgtru-api/src/require-api-key/require-api-key.guard.ts</code>
-            </p>
+        </p>
+        <p class="comment">
+            <code>apps/documentation-static/src/documentation-static.service.ts</code>
+        </p>
 
 
 
 
 
-
-                <section>
+            <section>
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
@@ -82,8 +79,7 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
-                                    <span class="modifier">Async</span>
-                                <a href="#canActivate" >canActivate</a>
+                                <a href="#getHello" >getHello</a>
                             </li>
                         </ul>
                     </td>
@@ -98,7 +94,7 @@
 </section>
 
 
-                <section>
+            <section>
     
     <h3 id="methods">
         Methods
@@ -107,26 +103,24 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="canActivate"></a>
+                    <a name="getHello"></a>
                     <span class="name">
-                        <span class="modifier">Async</span>
-                        <span ><b>canActivate</b></span>
-                        <a href="#canActivate"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>getHello</b></span>
+                        <a href="#getHello"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
-                    <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>canActivate(context: ExecutionContext)</code>
+<code>getHello()</code>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="9"
-                            class="link-to-prism">apps/mkgtru-api/src/require-api-key/require-api-key.guard.ts:9</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="5"
+                            class="link-to-prism">apps/documentation-static/src/documentation-static.service.ts:5</a></div>
                 </td>
             </tr>
 
@@ -135,82 +129,33 @@
                 <td class="col-md-4">
 
                     <div class="io-description">
-                        <b>Parameters :</b>
-                        
-                        <table class="params">
-                            <thead>
-                                <tr>
-                                    <td>Name</td>
-                                    <td>Type</td>
-                                    <td>Optional</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>context</td>
-                                    <td>
-                                            <code>ExecutionContext</code>
-                                    </td>
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
 
-                                    <td>
-                                        No
-                                    </td>
-
-
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div>
-                    </div>
-                    <div class="io-description">
-                        <b>Returns : </b>    <code>Promise&lt;boolean&gt;</code>
-
-                    </div>
-                    <div class="io-description">
-                        
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
 </section>
-        </div>
+
+    </div>
 
 
-        <div class="tab-pane fade  tab-source-code" id="c-source">
-            <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { CanActivate, ExecutionContext, Injectable } from &#x27;@nestjs/common&#x27;;
-import { Observable } from &#x27;rxjs&#x27;;
-import { PrismaClient } from &#x27;@prisma/client&#x27;;
-const prisma &#x3D; new PrismaClient();
-
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@nestjs/common&#x27;;
 
 @Injectable()
-export class RequireApiKeyGuard implements CanActivate {
-  async canActivate(
-    context: ExecutionContext,
-  ): Promise&lt;boolean&gt; {
-    const keyName &#x3D; &quot;authorization&quot; //api key property name
-    const headers &#x3D; context.switchToHttp().getRequest().headers;
-    const authHeader: string | undefined &#x3D; headers[keyName];
-    const token &#x3D; authHeader?.replace(&quot;Bearer &quot;, &quot;&quot;);
-
-
-    const user &#x3D; await prisma.users.findUnique({
-      where: {
-        token: &#x60;${token}&#x60;
-      }
-    })
-
-    if (!!user) {
-      return true
-    } else {
-      return false
-    }
+export class DocumentationStaticService {
+  getHello(): string {
+    return &#x27;&lt;h4&gt;GO TO &lt;a href&#x3D;&quot;/index.html&quot;&gt;/index.html&lt;/a&gt;&lt;/h4&gt;&#x27;;
   }
-}</code></pre>
-        </div>
+}
+</code></pre>
+    </div>
+
 </div>
+
+
 
 
 
@@ -247,8 +192,8 @@ export class RequireApiKeyGuard implements CanActivate {
 
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'guard';
-            var COMPODOC_CURRENT_PAGE_URL = 'RequireApiKeyGuard.html';
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'DocumentationStaticService.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

@@ -80,6 +80,10 @@
                         <ul class="index-list">
                             <li>
                                     <span class="modifier">Async</span>
+                                <a href="#createAccount" >createAccount</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#getAuditories" >getAuditories</a>
                             </li>
                             <li>
@@ -120,6 +124,103 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
+                    <a name="createAccount"></a>
+                    <span class="name">
+                        <span class="modifier">Async</span>
+                        <span ><b>createAccount</b></span>
+                        <a href="#createAccount"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createAccount(name: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, surname: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, email: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="25"
+                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:25</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Creating new account in database</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>name</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>surname</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>email</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../interfaces/ITokenResponse.html" target="_self" >Promise&lt;ITokenResponse&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
                     <a name="getAuditories"></a>
                     <span class="name">
                         <span class="modifier">Async</span>
@@ -138,18 +239,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="35"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:35</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="90"
+                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:90</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Getting information about auditories</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="../interfaces/ITitledDocumentInfo.html" target="_self" >Promise&lt;ITitledDocumentInfo&gt;</a></code>
 
+                    </div>
+                    <div class="io-description">
+                        
                     </div>
                 </td>
             </tr>
@@ -177,14 +285,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="30"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:30</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="77"
+                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:77</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Getting changes info</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -248,18 +358,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="54"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:54</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="124"
+                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:124</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Getting array of available practice timetables</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="../interfaces/ITitledDocumentInfo.html" target="_self" >Promise&lt;ITitledDocumentInfo[]&gt;</a></code>
 
+                    </div>
+                    <div class="io-description">
+                        
                     </div>
                 </td>
             </tr>
@@ -287,14 +404,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="40"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:40</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="104"
+                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:104</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Getting timetables array</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -358,14 +477,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="13"
-                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:13</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="51"
+                            class="link-to-prism">apps/mkgtru-api/src/mkgtru-api.service.ts:51</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Updates token in db</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -397,7 +518,7 @@
                     <div>
                     </div>
                     <div class="io-description">
-                        <b>Returns : </b>    <code>Promise&lt;literal type&gt;</code>
+                        <b>Returns : </b>        <code><a href="../interfaces/ITokenResponse.html" target="_self" >Promise&lt;ITokenResponse&gt;</a></code>
 
                     </div>
                     <div class="io-description">
@@ -420,12 +541,50 @@ import { territories } from &#x27;./types/territories&#x27;;
 import { ITitledDocumentInfo } from &#x27;./types/ITitledDocumentInfo&#x27;;
 import HTMLElement from &quot;node_modules/node-html-parser/dist/nodes/html&quot;;
 import { PrismaClient } from &#x27;@prisma/client&#x27;;
+import { ITokenResponse } from &#x27;./types/tokenObject&#x27;;
 const cuid &#x3D; require(&quot;cuid&quot;);
 
 @Injectable()
 export class MkgtruApiService {
 
-  async revokeToken(token: string): Promise&lt;{ &#x27;token&#x27;: string }&gt; {
+  
+  /**
+   * Creating new account in database
+   * @date 3/14/2023 - 1:22:12 AM
+   *
+   * @async
+   * @param {string} name
+   * @param {string} surname
+   * @param {string} email
+   * @returns {Promise&lt;ITokenResponse&gt;}
+   */
+  async createAccount(name:string, surname:string, email:string):Promise&lt;ITokenResponse&gt;{
+    const token &#x3D; cuid();
+
+    const prisma &#x3D; new PrismaClient();
+    await prisma.users.create({
+      data:{
+        name,
+        surname,
+        email,
+        token:token
+      }
+    });
+    prisma.$disconnect();
+
+    return {token}
+  }
+
+  
+  /**
+   * Updates token in db
+   * @date 3/14/2023 - 1:22:34 AM
+   *
+   * @async
+   * @param {string} token
+   * @returns {Promise&lt;ITokenResponse&gt;}
+   */
+  async revokeToken(token: string): Promise&lt;ITokenResponse&gt; {
     const newToken &#x3D; &#x60;${cuid()}70qy00011${cuid()}&#x60;;
     const prisma &#x3D; new PrismaClient();
     await prisma.users.update({
@@ -442,16 +601,42 @@ export class MkgtruApiService {
     }
   }
 
+  
+  /**
+   * Getting changes info
+   * @date 3/14/2023 - 1:22:52 AM
+   *
+   * @async
+   * @param {?territories} [territory]
+   * @returns {Promise&lt;ITitledDocumentInfo&gt;}
+   */
   async getChanges(territory?: territories): Promise&lt;ITitledDocumentInfo&gt; {
     const linkElement &#x3D; await getElementsFromPage(&#x60;https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah&#x60;, territory &#x3D;&#x3D;&#x3D; &quot;lublino&quot; ? &quot;#sppb-addon-1643455125007 &gt; div &gt; div &gt; a&quot; : &quot;#sppb-addon-1643455125006 &gt; div &gt; div &gt; a&quot;);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
+  
+  /**
+   * Getting information about auditories
+   * @date 3/14/2023 - 1:23:02 AM
+   *
+   * @async
+   * @returns {Promise&lt;ITitledDocumentInfo&gt;}
+   */
   async getAuditories(): Promise&lt;ITitledDocumentInfo&gt; {
     const linkElement &#x3D; await getElementsFromPage(&#x60;https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah&#x60;, &quot;#sppb-addon-1643621942381 &gt; div &gt; div &gt; a&quot;);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
+  
+  /**
+   * Getting timetables array
+   * @date 3/14/2023 - 1:24:07 AM
+   *
+   * @async
+   * @param {?territories} [territory]
+   * @returns {Promise&lt;ITitledDocumentInfo[]&gt;}
+   */
   async getTimetables(territory?: territories): Promise&lt;ITitledDocumentInfo[]&gt; {
     const linkElements &#x3D; await getElementsFromPage(&#x60;https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah&#x60;, territory &#x3D;&#x3D;&#x3D; &quot;lublino&quot; ? &quot;#sppb-addon-1632589047343 &gt; div &gt; div &gt; p &gt; a&quot; : &quot;#sppb-addon-1632589047342 &gt; div &gt; div &gt; a&quot;);
     const files &#x3D; [];
@@ -464,8 +649,14 @@ export class MkgtruApiService {
     return files
   }
 
-
-
+  
+  /**
+   * Getting array of available practice timetables
+   * @date 3/14/2023 - 1:24:51 AM
+   *
+   * @async
+   * @returns {Promise&lt;ITitledDocumentInfo[]&gt;}
+   */
   async getPracticeList(): Promise&lt;ITitledDocumentInfo[]&gt; {
     const linkElements &#x3D; await getElementsFromPage(&#x60;https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah&#x60;, &quot;#sppb-addon-1646804333482 &gt; div &gt; div &gt; p &gt; a&quot;);
     const files &#x3D; [];
@@ -480,6 +671,15 @@ export class MkgtruApiService {
 }
 
 
+/**
+ * Getting single element from page
+ * @date 3/14/2023 - 1:25:10 AM
+ *
+ * @async
+ * @param {string} uri
+ * @param {string} selector
+ * @returns {Promise&lt;HTMLElement[]&gt;}
+ */
 async function getElementsFromPage(uri: string, selector: string): Promise&lt;HTMLElement[]&gt; {
   const pageResponse &#x3D; await axios.get(uri);
   if (pageResponse.status !&#x3D; 200) {
@@ -497,6 +697,15 @@ async function getElementsFromPage(uri: string, selector: string): Promise&lt;HT
   }
 }
 
+
+/**
+ * Getting info about document by &lt;a&gt; tag element
+ * @date 3/14/2023 - 1:25:23 AM
+ *
+ * @async
+ * @param {HTMLElement} node
+ * @returns {Promise&lt;ITitledDocumentInfo&gt;}
+ */
 async function getTitledFileInfoByATag(node: HTMLElement): Promise&lt;ITitledDocumentInfo&gt; {
   const linkToFile &#x3D; node.getAttribute(&quot;href&quot;)
   const documentResponse &#x3D; await axios.get(&#x60;http://${process.env.SITE_DOMAIN}${linkToFile}&#x60;);
@@ -514,13 +723,12 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise&lt;ITitledDoc
         &#x27;last_modified&#x27;: {
           &#x27;ru&#x27;: lastModifiedDate.toLocaleString(&#x27;ru&#x27;),
           &#x27;en-US&#x27;: lastModifiedDate.toLocaleString(&#x27;en-US&#x27;),
-          &#x27;timestamp&#x27;: lastModifiedDate.getTime(),
-          &#x27;difference&#x27;: Date.now() - lastModifiedDate.getTime()
+          &#x27;timestamp&#x27;: lastModifiedDate.getTime()
         },
         &#x27;links&#x27;: {
           &#x27;file&#x27;: &#x60;https://${process.env.SITE_DOMAIN}${linkToFile}&#x60;,
           &#x27;views&#x27;: {
-            &#x27;google_docs&#x27;: &#x60;https://docs.google.com/gview?url&#x3D;https://${process.env.SITE_DOMAIN}${linkToFile}&#x60;,
+            &#x27;google_docs&#x27;: &#x60;https://docs.google.com/gview?url&#x3D;https://${process.env.SITE_DOMAIN}${linkToFile}&amp;embed&#x3D;true&#x60;,
             &#x27;local_html&#x27;: &#x60;data:text/html;base64,${htmlViewBase64}&#x60;,
           },
         },
