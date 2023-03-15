@@ -4,7 +4,6 @@ export interface ITitledDocumentInfo {
         'ru': string,
         'en-US': string,
         'timestamp': number,
-        'difference': number
     },
     'links': {
         'file': string,

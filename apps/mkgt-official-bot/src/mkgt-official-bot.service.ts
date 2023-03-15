@@ -29,7 +29,11 @@ const prisma = new PrismaClient();
 export class MkgtOfficialBotService {
 
   static info = {
-    started: false
+    started: false,
+    changesTimestamp: {
+      "kuchin": 0,
+      "lublino": 0
+    },
   }
 
   private bot = new TelegramBot(process.env.BOT_TOKEN);
@@ -122,14 +126,10 @@ export class MkgtOfficialBotService {
       if (!!user) {
         const doc: ITitledDocumentInfo | null = await this.getAPIResponse("/changes", user.territory);
         console.log({ doc })
-        const min = Math.floor(doc?.last_modified.difference / 1000 / 60);
         context.sendMessage(`Документ обновлён: ${doc?.last_modified.ru}`,
           {
             reply_markup: {
               inline_keyboard: [
-                [
-                  { text: `Обновлено ${min} минут назад`, callback_data: "null" }
-                ],
                 [
                   { text: "Скачать", url: doc?.links.file },
                   { text: "Просмотреть", url: doc?.links.views.google_docs },
@@ -169,11 +169,6 @@ export class MkgtOfficialBotService {
     this.bot.command("status", async context => {
       const resp: "OK" | string | null = await this.getAPIResponse("/status")
       context.sendMessage(resp || "MKGTRU-API IS BROKEN")
-    })
-
-    //null cb query
-    this.bot.action("null", (context) => {
-      context.answerCbQuery("")
     })
 
     //set lublino callback
@@ -262,7 +257,11 @@ export class MkgtOfficialBotService {
 
     async function checkUpdateChanges(territory: territories) {
       const changesDocInfo: ITitledDocumentInfo = await this.getAPIResponse("/changes", territory);
-      if (changesDocInfo.last_modified.difference <= _CHECK_CHANGES_INTERVAL) {
+
+      //определение необходимости рассылки
+      if (changesDocInfo.last_modified.timestamp != MkgtOfficialBotService.info.changesTimestamp[territory]) {
+        MkgtOfficialBotService.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp;
+
         const users = await prisma.users.findMany({
           include: {
             tgAccount: true,

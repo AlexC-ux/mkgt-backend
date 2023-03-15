@@ -187,8 +187,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
         'last_modified': {
           'ru': lastModifiedDate.toLocaleString('ru'),
           'en-US': lastModifiedDate.toLocaleString('en-US'),
-          'timestamp': lastModifiedDate.getTime(),
-          'difference': Date.now() - lastModifiedDate.getTime()
+          'timestamp': lastModifiedDate.getTime()
         },
         'links': {
           'file': `https://${process.env.SITE_DOMAIN}${linkToFile}`,
