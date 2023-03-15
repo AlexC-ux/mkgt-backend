@@ -165,8 +165,8 @@ export class MkgtOfficialBotService {
 
     //checking status
     this.bot.command("status", async context => {
-      const resp: "OK" | string = await this.getAPIResponse("/status")
-      context.sendMessage(resp)
+      const resp: "OK" | string | null = await this.getAPIResponse("/status")
+      context.sendMessage(resp || "MKGTRU-API IS BROKEN")
     })
 
     //null cb query
@@ -228,9 +228,10 @@ export class MkgtOfficialBotService {
 
   async getAPIResponse(path: "/changes" | "/status" | "/practicelist", territory?: territories): Promise<any> {
     const url = `${process.env.MKGT_API_PATH}${path}?territory=${!!territory ? territory : "lublino"}`;
-    console.log({ 'req_to_api': url })
     try {
-      return (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout: 30000 })).data;
+      const response = (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout: 80000 }));
+      console.log({ 'req_to_api': url, status: response.statusText })
+      return response.data;
     } catch (error) {
       return null;
     }
