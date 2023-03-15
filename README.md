@@ -13,6 +13,6 @@
 
 ## LINKS
 
-### [Documentation](https://mkgt-backend-docs.onrender.com/index.html)
-[SERVER API documentation](https://mkgt-backend-docs.onrender.com/controllers/MkgtruApiController.html)
+### [Documentation](/index.html)
+[SERVER API documentation](/controllers/MkgtruApiController.html)
 ### [Bot example link](https://t.me/mkgt_official_bot)
