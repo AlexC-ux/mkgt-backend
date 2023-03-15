@@ -27,6 +27,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/mkgt-official-bot/tsconfig.app.json"
       }
+    },
+    "documentation-static": {
+      "type": "application",
+      "root": "apps/documentation-static",
+      "entryFile": "main",
+      "sourceRoot": "apps/documentation-static/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/documentation-static/tsconfig.app.json"
+      }
     }
   }
 }
