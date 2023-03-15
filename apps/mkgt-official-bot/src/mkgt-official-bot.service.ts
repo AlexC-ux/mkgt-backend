@@ -131,8 +131,8 @@ export class MkgtOfficialBotService {
                   { text: `Обновлено ${min} минут назад`, callback_data: "null" }
                 ],
                 [
-                  { text: "Скачать", url: doc.links.file },
-                  { text: "Просмотреть", url: doc.links.views.google_docs },
+                  { text: "Скачать", url: doc?.links.file },
+                  { text: "Просмотреть", url: doc?.links.views.google_docs },
                 ]
               ]
             }
@@ -147,19 +147,21 @@ export class MkgtOfficialBotService {
       if (!!user) {
         const doc: ITitledDocumentInfo[] = await this.getAPIResponse("/practicelist", user.territory)
         const buttons = [[]];
-        doc.map((document, index) => {
+        doc?.map((document, index) => {
           if (!buttons[index]) {
             buttons[index] = [];
           }
           buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
         })
 
-        context.sendMessage(`Расписания практики`,
-          {
-            reply_markup: {
-              inline_keyboard: buttons
-            }
-          })
+        try {
+          context.sendMessage(`Расписания практики`,
+            {
+              reply_markup: {
+                inline_keyboard: buttons
+              }
+            })
+        } catch (error) { }
       }
     })
 
