@@ -126,7 +126,7 @@ export class MkgtOfficialBotService {
       const user = await this.getUser(context.from.id);
 
       if (!!user) {
-        const doc: ITitledDocumentInfo | null = await this.getAPIResponse("/changes", user.territory);
+        const doc: ITitledDocumentInfo | null = await MkgtOfficialBotService.getAPIResponse("/changes", user.territory);
         console.log({ doc })
         if (!!doc) {
           context.sendMessage(`Документ обновлён: ${doc?.last_modified.ru}`,
@@ -151,7 +151,7 @@ export class MkgtOfficialBotService {
       const user = await this.getUser(context.from.id);
 
       if (!!user) {
-        const doc: ITitledDocumentInfo[] = await this.getAPIResponse("/practicelist", user.territory)
+        const doc: ITitledDocumentInfo[] = await MkgtOfficialBotService.getAPIResponse("/practicelist", user.territory)
         const buttons = [[]];
 
         if (!!doc) {
@@ -177,7 +177,7 @@ export class MkgtOfficialBotService {
 
     //checking status
     this.bot.command("status", async context => {
-      const resp: "OK" | string | null = await this.getAPIResponse("/status")
+      const resp: "OK" | string | null = await MkgtOfficialBotService.getAPIResponse("/status")
       context.sendMessage(resp || "MKGTRU-API IS BROKEN")
     })
 
@@ -233,7 +233,7 @@ export class MkgtOfficialBotService {
     this.bot.stop();
   }
 
-  async getAPIResponse(path: "/changes" | "/status" | "/practicelist", territory?: territories): Promise<any> {
+  static async getAPIResponse(path: "/changes" | "/status" | "/practicelist", territory?: territories): Promise<any> {
     const url = `${process.env.MKGT_API_PATH}${path}?territory=${!!territory ? territory : "lublino"}`;
     try {
       const response = (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout: 80000 }));
@@ -266,7 +266,7 @@ export class MkgtOfficialBotService {
 
 
     async function checkUpdateChanges(territory: territories) {
-      const changesDocInfo: ITitledDocumentInfo = await this.getAPIResponse("/changes", territory);
+      const changesDocInfo: ITitledDocumentInfo = await MkgtOfficialBotService.getAPIResponse("/changes", territory);
 
       //определение необходимости рассылки
       if (!!changesDocInfo && changesDocInfo.last_modified.timestamp != MkgtOfficialBotService.info.changesTimestamp[territory]) {
