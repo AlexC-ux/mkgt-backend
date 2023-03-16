@@ -48,7 +48,7 @@ export class MkgtOfficialBotService {
     //start message - registration
     this.bot.start(async (context) => {
       const sender = context.from;
-      const user = await this.getUser(sender.id);
+      const user = await this.checkUser(sender.id);
       console.log({ user });
       if (user == null) {
         try {
@@ -80,7 +80,7 @@ export class MkgtOfficialBotService {
 
     //настройка профиля
     this.bot.command("profile", async context => {
-      const user = await this.getUser(context.from.id);
+      const user = await this.checkUser(context.from.id);
 
       if (!!user) {
 
@@ -107,7 +107,7 @@ export class MkgtOfficialBotService {
 
     //set lublino mode
     this.bot.command("ifromlublino", async context => {
-      const user = await this.getUser(context.from.id);
+      const user = await this.checkUser(context.from.id);
 
       if (!!user) {
         await prisma.users.update({
@@ -125,7 +125,7 @@ export class MkgtOfficialBotService {
 
     //Обработка команды замены
     this.bot.command("changes", async context => {
-      const user = await this.getUser(context.from.id);
+      const user = await this.checkUser(context.from.id);
 
       if (!!user) {
         const doc: ITitledDocumentInfo | null = await MkgtOfficialBotService.getAPIResponse("/changes", user.territory);
@@ -150,7 +150,7 @@ export class MkgtOfficialBotService {
 
     //Получение практики
     this.bot.command("practice", async context => {
-      const user = await this.getUser(context.from.id);
+      const user = await this.checkUser(context.from.id);
 
       if (!!user) {
         const doc: ITitledDocumentInfo[] = await MkgtOfficialBotService.getAPIResponse("/practicelist", user.territory)
@@ -185,7 +185,7 @@ export class MkgtOfficialBotService {
 
     //set lublino callback
     this.bot.action("ifromlublino", async (context) => {
-      const user = await this.getUser(context?.from.id);
+      const user = await this.checkUser(context?.from.id);
 
       if (!!user) {
         await prisma.users.update({
@@ -205,7 +205,7 @@ export class MkgtOfficialBotService {
 
     //set kuchin callback
     this.bot.action("ifromkuchin", async (context) => {
-      const user = await this.getUser(context?.from.id);
+      const user = await this.checkUser(context?.from.id);
 
       if (!!user) {
         await prisma.users.update({
@@ -246,7 +246,7 @@ export class MkgtOfficialBotService {
     }
   }
 
-  async getUser(tgId: number) {
+  async checkUser(tgId: number) {
     const user = await prisma.users.findFirst({
       include: {
         tgAccount: true
@@ -257,6 +257,9 @@ export class MkgtOfficialBotService {
         }
       }
     })
+    if (user==null) {
+      this.bot.telegram.sendMessage(tgId,"Вы не авторизованы! Для начала введите /start")
+    }
     return user;
   }
 
