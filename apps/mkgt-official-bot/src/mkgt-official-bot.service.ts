@@ -272,20 +272,26 @@ export class MkgtOfficialBotService {
       if (!!changesDocInfo && changesDocInfo.last_modified.timestamp != MkgtOfficialBotService.info.changesTimestamp[territory]) {
         MkgtOfficialBotService.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp;
 
-        const users = await prisma.users.findMany({
-          include: {
-            tgAccount: true,
+        const users = await prisma.telegramAccount.findMany({
+          select: {
+            telegramId: true,
+            Users: {
+              select: {
+                territory: true
+              }
+            }
           },
           where: {
-            territory: territory,
-            telegramAccountId: {
-              not: null
+            Users: {
+              some: {
+                territory: territory
+              }
             }
           }
         })
 
         users.forEach(user => {
-          const tgUserId = user.tgAccount.id;
+          const tgUserId = user.telegramId;
 
           try {
             this.bot.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`)
