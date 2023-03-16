@@ -201,6 +201,8 @@ const _ROW_BREAK: string &#x3D; &quot;\n\n&quot;;
 
 const _CHECK_CHANGES_INTERVAL &#x3D; 2 * 60 * 60 * 1000;
 
+const _DOCUMENT_ERROR &#x3D; &quot;Не удалось получить документ с сервера&quot;;
+
 const prisma &#x3D; new PrismaClient();
 
 
@@ -229,7 +231,7 @@ export class MkgtOfficialBotService {
         try {
           const tg &#x3D; await prisma.telegramAccount.create({
             data: {
-              name: sender.first_name,
+              name: &#x60;${sender.first_name}&#x60;,
               surname: &#x60;${sender.last_name}&#x60;,
               telegramId: sender.id,
               username: &#x60;${sender.username}&#x60;
@@ -305,17 +307,21 @@ export class MkgtOfficialBotService {
       if (!!user) {
         const doc: ITitledDocumentInfo | null &#x3D; await this.getAPIResponse(&quot;/changes&quot;, user.territory);
         console.log({ doc })
-        context.sendMessage(&#x60;Документ обновлён: ${doc?.last_modified.ru}&#x60;,
-          {
-            reply_markup: {
-              inline_keyboard: [
-                [
-                  { text: &quot;Скачать&quot;, url: doc?.links.file },
-                  { text: &quot;Просмотреть&quot;, url: doc?.links.views.google_docs },
+        if (!!doc) {
+          context.sendMessage(&#x60;Документ обновлён: ${doc?.last_modified.ru}&#x60;,
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: &quot;Скачать&quot;, url: doc?.links.file },
+                    { text: &quot;Просмотреть&quot;, url: doc?.links.views.google_docs },
+                  ]
                 ]
-              ]
-            }
-          })
+              }
+            })
+        } else {
+          context.sendMessage(_DOCUMENT_ERROR)
+        }
       }
     })
 
@@ -326,21 +332,27 @@ export class MkgtOfficialBotService {
       if (!!user) {
         const doc: ITitledDocumentInfo[] &#x3D; await this.getAPIResponse(&quot;/practicelist&quot;, user.territory)
         const buttons &#x3D; [[]];
-        doc?.map((document, index) &#x3D;&gt; {
-          if (!buttons[index]) {
-            buttons[index] &#x3D; [];
-          }
-          buttons[index] &#x3D; [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
-        })
 
-        try {
-          context.sendMessage(&#x60;Расписания практики&#x60;,
+        if (!!doc) {
+          doc?.map((document, index) &#x3D;&gt; {
+            if (!buttons[index]) {
+              buttons[index] &#x3D; [];
+            }
+            buttons[index] &#x3D; [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
+          })
+
+          context.sendMessage(&#x60;Расписания практики:&#x60;,
             {
               reply_markup: {
                 inline_keyboard: buttons
               }
             })
-        } catch (error) { }
+        }
+        else {
+          context.sendMessage(_DOCUMENT_ERROR)
+        }
+
+
       }
     })
 

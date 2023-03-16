@@ -155,8 +155,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="226"
-                            class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:226</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="238"
+                            class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:238</a></div>
                 </td>
             </tr>
 
@@ -238,8 +238,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="237"
-                            class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:237</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="249"
+                            class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:249</a></div>
                 </td>
             </tr>
 
@@ -309,8 +309,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="41"
-                            class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:41</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="43"
+                            class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:43</a></div>
                 </td>
             </tr>
 
@@ -346,8 +346,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="222"
-                            class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:222</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="234"
+                            class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:234</a></div>
                 </td>
             </tr>
 
@@ -388,7 +388,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:39</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:41</a></div>
                         </td>
                     </tr>
 
@@ -448,7 +448,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="253" class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:253</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="265" class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:265</a></div>
                         </td>
                     </tr>
 
@@ -486,7 +486,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="31" class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:31</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="33" class="link-to-prism">apps/mkgt-official-bot/src/mkgt-official-bot.service.ts:33</a></div>
                         </td>
                     </tr>
 
@@ -523,6 +523,8 @@ const _ROW_BREAK: string &#x3D; &quot;\n\n&quot;;
 
 const _CHECK_CHANGES_INTERVAL &#x3D; 2 * 60 * 60 * 1000;
 
+const _DOCUMENT_ERROR &#x3D; &quot;Не удалось получить документ с сервера&quot;;
+
 const prisma &#x3D; new PrismaClient();
 
 
@@ -551,7 +553,7 @@ export class MkgtOfficialBotService {
         try {
           const tg &#x3D; await prisma.telegramAccount.create({
             data: {
-              name: sender.first_name,
+              name: &#x60;${sender.first_name}&#x60;,
               surname: &#x60;${sender.last_name}&#x60;,
               telegramId: sender.id,
               username: &#x60;${sender.username}&#x60;
@@ -627,17 +629,21 @@ export class MkgtOfficialBotService {
       if (!!user) {
         const doc: ITitledDocumentInfo | null &#x3D; await this.getAPIResponse(&quot;/changes&quot;, user.territory);
         console.log({ doc })
-        context.sendMessage(&#x60;Документ обновлён: ${doc?.last_modified.ru}&#x60;,
-          {
-            reply_markup: {
-              inline_keyboard: [
-                [
-                  { text: &quot;Скачать&quot;, url: doc?.links.file },
-                  { text: &quot;Просмотреть&quot;, url: doc?.links.views.google_docs },
+        if (!!doc) {
+          context.sendMessage(&#x60;Документ обновлён: ${doc?.last_modified.ru}&#x60;,
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: &quot;Скачать&quot;, url: doc?.links.file },
+                    { text: &quot;Просмотреть&quot;, url: doc?.links.views.google_docs },
+                  ]
                 ]
-              ]
-            }
-          })
+              }
+            })
+        } else {
+          context.sendMessage(_DOCUMENT_ERROR)
+        }
       }
     })
 
@@ -648,21 +654,27 @@ export class MkgtOfficialBotService {
       if (!!user) {
         const doc: ITitledDocumentInfo[] &#x3D; await this.getAPIResponse(&quot;/practicelist&quot;, user.territory)
         const buttons &#x3D; [[]];
-        doc?.map((document, index) &#x3D;&gt; {
-          if (!buttons[index]) {
-            buttons[index] &#x3D; [];
-          }
-          buttons[index] &#x3D; [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
-        })
 
-        try {
-          context.sendMessage(&#x60;Расписания практики&#x60;,
+        if (!!doc) {
+          doc?.map((document, index) &#x3D;&gt; {
+            if (!buttons[index]) {
+              buttons[index] &#x3D; [];
+            }
+            buttons[index] &#x3D; [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
+          })
+
+          context.sendMessage(&#x60;Расписания практики:&#x60;,
             {
               reply_markup: {
                 inline_keyboard: buttons
               }
             })
-        } catch (error) { }
+        }
+        else {
+          context.sendMessage(_DOCUMENT_ERROR)
+        }
+
+
       }
     })
 
