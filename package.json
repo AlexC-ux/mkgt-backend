@@ -13,7 +13,6 @@
     "start:dev": "npx nest start --watch",
     "start:debug": "npx nest start --debug --watch",
     "start:prod": "node dist/apps/mkgtru-api/main",
-    "start:doc": "npm run build:doc && npm run start:dev documentation",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
