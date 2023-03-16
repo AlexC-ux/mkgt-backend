@@ -172,8 +172,6 @@ export class MkgtOfficialBotService {
         else {
           context.sendMessage(_DOCUMENT_ERROR)
         }
-
-
       }
     })
 
@@ -262,7 +260,7 @@ export class MkgtOfficialBotService {
 
 
 
-  changesChecker = schedule.scheduleJob("* 1 * * *", function () {
+  changesChecker = schedule.scheduleJob("*/30 * * * *", function () {
     checkUpdateChanges("kuchin");
     checkUpdateChanges("lublino");
 
