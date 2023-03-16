@@ -26,6 +26,7 @@ const _DOCUMENT_ERROR = "Не удалось получить документ �
 
 const prisma = new PrismaClient();
 
+let botObj: TelegramBot | null = null;
 
 @Injectable()
 export class MkgtOfficialBotService {
@@ -41,6 +42,7 @@ export class MkgtOfficialBotService {
   private bot = new TelegramBot(process.env.BOT_TOKEN);
 
   async startBot() {
+    botObj = this.bot
     await this.bot.telegram.setMyCommands(commands);
 
     //start message - registration
@@ -260,9 +262,11 @@ export class MkgtOfficialBotService {
 
 
 
-  changesChecker = schedule.scheduleJob("*/30 * * * *", function () {
+  changesChecker = schedule.scheduleJob("*/25 * * * *", function () {
+
     checkUpdateChanges("kuchin");
     checkUpdateChanges("lublino");
+
 
 
     async function checkUpdateChanges(territory: territories) {
@@ -289,13 +293,13 @@ export class MkgtOfficialBotService {
             }
           }
         })
-
+        console.log({ users_to_notif: users?.length, terr: territory })
         users.forEach(user => {
-          const tgUserId = user.telegramId;
+          const tgUserId = user.telegramId.toString();
 
           try {
-            this.bot.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`)
-          } catch (error) { }
+            botObj.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`)
+          } catch (error) { console.log(error) }
 
         })
 
