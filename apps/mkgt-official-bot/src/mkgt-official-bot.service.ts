@@ -277,7 +277,10 @@ export class MkgtOfficialBotService {
             tgAccount: true,
           },
           where: {
-            territory: territory
+            territory: territory,
+            telegramAccountId: {
+              not: null
+            }
           }
         })
 
