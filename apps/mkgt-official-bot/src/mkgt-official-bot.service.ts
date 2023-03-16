@@ -22,6 +22,8 @@ const _ROW_BREAK: string = "\n\n";
 
 const _CHECK_CHANGES_INTERVAL = 2 * 60 * 60 * 1000;
 
+const _DOCUMENT_ERROR = "Не удалось получить документ с сервера";
+
 const prisma = new PrismaClient();
 
 
@@ -126,17 +128,21 @@ export class MkgtOfficialBotService {
       if (!!user) {
         const doc: ITitledDocumentInfo | null = await this.getAPIResponse("/changes", user.territory);
         console.log({ doc })
-        context.sendMessage(`Документ обновлён: ${doc?.last_modified.ru}`,
-          {
-            reply_markup: {
-              inline_keyboard: [
-                [
-                  { text: "Скачать", url: doc?.links.file },
-                  { text: "Просмотреть", url: doc?.links.views.google_docs },
+        if (!!doc) {
+          context.sendMessage(`Документ обновлён: ${doc?.last_modified.ru}`,
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: "Скачать", url: doc?.links.file },
+                    { text: "Просмотреть", url: doc?.links.views.google_docs },
+                  ]
                 ]
-              ]
-            }
-          })
+              }
+            })
+        } else {
+          context.sendMessage(_DOCUMENT_ERROR)
+        }
       }
     })
 
@@ -147,21 +153,27 @@ export class MkgtOfficialBotService {
       if (!!user) {
         const doc: ITitledDocumentInfo[] = await this.getAPIResponse("/practicelist", user.territory)
         const buttons = [[]];
-        doc?.map((document, index) => {
-          if (!buttons[index]) {
-            buttons[index] = [];
-          }
-          buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
-        })
 
-        try {
-          context.sendMessage(`Расписания практики`,
+        if (!!doc) {
+          doc?.map((document, index) => {
+            if (!buttons[index]) {
+              buttons[index] = [];
+            }
+            buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
+          })
+
+          context.sendMessage(`Расписания практики:`,
             {
               reply_markup: {
                 inline_keyboard: buttons
               }
             })
-        } catch (error) { }
+        }
+        else {
+          context.sendMessage(_DOCUMENT_ERROR)
+        }
+
+
       }
     })
 
