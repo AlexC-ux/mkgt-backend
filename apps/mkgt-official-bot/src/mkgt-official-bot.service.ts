@@ -257,8 +257,10 @@ export class MkgtOfficialBotService {
         }
       }
     })
-    if (user==null) {
-      this.bot.telegram.sendMessage(tgId,"Вы не авторизованы! Для начала введите /start")
+    if (user == null) {
+      try {
+        this.bot.telegram.sendMessage(tgId, "Вы не авторизованы! Для начала введите /start")
+      } catch (error) { }
     }
     return user;
   }
