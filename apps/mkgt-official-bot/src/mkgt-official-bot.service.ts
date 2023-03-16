@@ -269,7 +269,7 @@ export class MkgtOfficialBotService {
       const changesDocInfo: ITitledDocumentInfo = await this.getAPIResponse("/changes", territory);
 
       //определение необходимости рассылки
-      if (changesDocInfo.last_modified.timestamp != MkgtOfficialBotService.info.changesTimestamp[territory]) {
+      if (!!changesDocInfo && changesDocInfo.last_modified.timestamp != MkgtOfficialBotService.info.changesTimestamp[territory]) {
         MkgtOfficialBotService.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp;
 
         const users = await prisma.users.findMany({
