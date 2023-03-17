@@ -34,9 +34,10 @@ export class MkgtOfficialBotService {
 
     const changesChecker = schedule.scheduleJob("*/25 * * * *", checkChangesCronJob);
 
+
     async function checkChangesCronJob() {
-      this.checkChanges("lublino");
-      this.checkChanges("kuchin");
+      checkChanges("lublino");
+      checkChanges("kuchin");
     }
 
     async function checkChanges(territory: territories) {

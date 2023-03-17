@@ -1,6 +1,6 @@
 import { Context, Telegraf } from "telegraf";
 import { ITitledDocumentInfo } from 'apps/mkgtru-api/src/types/ITitledDocumentInfo';
-import { PrismaClient, Users } from '@prisma/client';
+import { acccess_roles, PrismaClient, Users } from '@prisma/client';
 import { territories } from 'apps/mkgtru-api/src/types/territories';
 import axios from "axios";
 const schedule = require('node-schedule');
@@ -69,6 +69,8 @@ export class TgBot {
         //checking status
         this.botObject.command("status", this.checkStatus)
 
+        this.botObject.command("users", this.getUsersCount)
+
         //CALLBACKS
 
         //set lublino callback
@@ -81,9 +83,56 @@ export class TgBot {
         this.botObject.action("practice", this.onPractice);
         this.botObject.action("changes", this.onChanges);
         this.botObject.action("status", this.checkStatus);
-
     }
 
+    private async getUsersCount(context: Context) {
+
+        const user = await TgBot.checkUser(context.callbackQuery?.from?.id || context.from.id)
+
+        if (!!user) {
+            if (user.role == acccess_roles.admin || user.role == acccess_roles.localhost) {
+                //кол-во на кучине
+                const countKuchin = (await prisma.users.aggregate({
+                    where: {
+                        territory: "kuchin"
+                    },
+                    _count: {
+                        telegramAccountId: true
+                    }
+                }))._count.telegramAccountId
+
+                //кол-во на люблино
+                const countLublino = (await prisma.users.aggregate({
+                    where: {
+                        territory: "lublino"
+                    },
+                    _count: {
+                        telegramAccountId: true
+                    }
+                }))._count.telegramAccountId
+
+                //кол-во в бд
+                const countSummary = (await prisma.users.aggregate({
+                    _count: {
+                        name: true
+                    }
+                }))._count.name
+
+                //кол-во без тг
+                const countNoTg = (await prisma.users.aggregate({
+                    where: {
+                        telegramAccountId: null
+                    },
+                    _count: {
+                        name: true
+                    }
+                }))._count.name
+
+                context.sendMessage(`Кучин: ${countKuchin}${_ROW_BREAK}Люблино: ${countLublino}${_ROW_BREAK}Без ТГ: ${countNoTg}${_ROW_BREAK}Всего: ${countSummary}`);
+            }
+        }
+
+    }
 
     public async onStart(context: Context) {
         const sender = context.from;
