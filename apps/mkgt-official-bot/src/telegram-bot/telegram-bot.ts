@@ -308,7 +308,7 @@ export class TgBot {
     }
 
     static async checkUser(tgId: number): Promise<Users> {
-        const user = await prisma.users.findFirstOrThrow({
+        const user = await prisma.users.findFirst({
             include: {
                 tgAccount: true
             },
