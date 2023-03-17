@@ -68,7 +68,13 @@ export class MkgtOfficialBotService {
           const tgUserId = user.telegramId.toString();
 
           try {
-            bot.botObject.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`)
+            bot.botObject.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`, {
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "Показать замены", callback_data: "changes" }]
+                ]
+              }
+            })
           } catch (error) { console.log(error) }
 
         })
