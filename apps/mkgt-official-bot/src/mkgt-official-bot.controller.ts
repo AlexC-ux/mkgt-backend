@@ -1,10 +1,11 @@
 import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
 import { MkgtOfficialBotService } from './mkgt-official-bot.service';
+import { TgBot } from './telegram-bot/telegram-bot';
 
 @Controller()
 export class MkgtOfficialBotController {
   constructor(private readonly mkgtOfficialBotService: MkgtOfficialBotService) {
-    if (!MkgtOfficialBotService.info.started) {
+    if (!TgBot.info.started) {
       this.mkgtOfficialBotService.startBot();
       console.log("BOT_STARTED")
     }
