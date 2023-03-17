@@ -29,7 +29,7 @@ export class TgBot {
     constructor(botToken: string) {
         try {
             this.botObject = new Telegraf(botToken);
-            this.setCommands;
+            this.setCommands();
         } catch (error) {
             console.error(error)
         }
