@@ -188,28 +188,31 @@ export class TgBot {
 
     async onProfile(context: Context) {
         const user = await TgBot.checkUser(context.from.id);
-        const messageText = "Ваш ранг: " + user.role
-            + _ROW_BREAK +
-            "Ваше имя: " + user.name
-            + _ROW_BREAK +
-            "Ваша территория: " + user.territory
 
-        context.reply(messageText,
-            {
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            { text: `Я с Кучина`, callback_data: "ifromkuchin" },
-                            { text: `Я с Люблино`, callback_data: "ifromlublino" },
-                        ],
-                        [
-                            { text: "Скрыть сообщение", callback_data: "deleteOnClick" }
+        if (!!user) {
+            const messageText = "Ваш ранг: " + user.role
+                + _ROW_BREAK +
+                "Ваше имя: " + user.name
+                + _ROW_BREAK +
+                "Ваша территория: " + user.territory
+
+            context.reply(messageText,
+                {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                { text: `Я с Кучина`, callback_data: "ifromkuchin" },
+                                { text: `Я с Люблино`, callback_data: "ifromlublino" },
+                            ],
+                            [
+                                { text: "Скрыть сообщение", callback_data: "deleteOnClick" }
+                            ]
                         ]
-                    ]
+                    }
                 }
-            }
-        )
-        try { context.answerCbQuery() } catch (e) { }
+            )
+            try { context.answerCbQuery() } catch (e) { }
+        }
     }
 
 
