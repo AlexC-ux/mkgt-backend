@@ -113,7 +113,26 @@ export class TgBot {
             }
 
         }
-        context.sendMessage(`${sender.first_name}, добро пожаловать!${_LINE_BREAK}Если Вы с люблино, то воспользуйтесь командой /profile${_ROW_BREAK}/changes - просмотр замен${_LINE_BREAK}/practice - расписания практики${_ROW_BREAK}Остальные команды можно посмотреть, если ввести в строку сообщения символ косой черты: /`)
+        context.sendMessage(`${sender.first_name}, добро пожаловать!` +
+            _ROW_BREAK +
+            `Если Вы с Люблино, то воспользуйтесь командой /profile или кнопкой 'Настройки профиля' ниже` +
+            _ROW_BREAK +
+            `Остальные команды можно посмотреть, если ввести в строку сообщения символ косой черты: /`, {
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        { text: `Показать замены`, callback_data: "changes" },
+                        { text: `Расписание практики`, callback_data: "practice" }
+                    ],
+                    [
+                        { text: `Настройки профиля`, callback_data: "profile" }
+                    ],
+                    [
+                        { text: `Карта прохода к колледжу`, url: "https://yandex.ru/maps/213/moscow/?ll=37.643452%2C55.804215&mode=usermaps&source=constructorLink&um=constructor%3A761f4b5f3ab5e1ef399f9b57ab726d2834ed7dcaca7ef86b4eecefb68759b381&z=16" }
+                    ],
+                ]
+            }
+        })
     }
 
 
@@ -137,6 +156,7 @@ export class TgBot {
                 }
             }
         )
+        try { context.answerCbQuery() } catch (e) { }
     }
 
 
@@ -158,6 +178,7 @@ export class TgBot {
                             ]
                         }
                     })
+                try { context.answerCbQuery() } catch (e) { }
             } else {
                 context.sendMessage(_DOCUMENT_ERROR)
             }
@@ -179,13 +200,13 @@ export class TgBot {
                         }
                         buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
                     })
-
                     context.sendMessage(`Расписания практики:`,
                         {
                             reply_markup: {
                                 inline_keyboard: buttons
                             }
                         })
+                    try { context.answerCbQuery() } catch (e) { }
                 }
                 else {
                     context.sendMessage(_DOCUMENT_ERROR)
@@ -209,6 +230,7 @@ export class TgBot {
 
             try {
                 context.answerCbQuery(`Вам установлен режим для территории ${terr}`, { show_alert: true });
+                context.deleteMessage(context.callbackQuery.message.message_id || context.message.message_id)
             } catch (error) { }
         }
     }
@@ -241,53 +263,6 @@ export class TgBot {
             }
         })
         return user;
-    }
-
-    private changesChecker = schedule.scheduleJob("*/25 * * * *", this.checkChangesCronJob);
-
-    async checkChangesCronJob() {
-        this.checkChanges("lublino");
-        this.checkChanges("kuchin");
-    }
-
-    private async checkChanges(territory: territories) {
-        const changesDocInfo: ITitledDocumentInfo = await TgBot.getAPIResponse("/changes", territory);
-
-        //определение необходимости рассылки
-        if (!!changesDocInfo && changesDocInfo.last_modified.timestamp != TgBot.info.changesTimestamp[territory]) {
-            TgBot.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp;
-
-            const users = await prisma.telegramAccount.findMany({
-                select: {
-                    telegramId: true,
-                    Users: {
-                        select: {
-                            territory: true
-                        }
-                    }
-                },
-                where: {
-                    Users: {
-                        some: {
-                            territory: territory
-                        }
-                    }
-                }
-            })
-            console.log({ users_to_notif: users?.length, terr: territory })
-            users.forEach(user => {
-                const tgUserId = user.telegramId.toString();
-
-                try {
-                    this.botObject.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`)
-                } catch (error) { console.log(error) }
-
-            })
-
-        }
-        else {
-            console.log("changes not updated")
-        }
     }
 
     launchBot() {
