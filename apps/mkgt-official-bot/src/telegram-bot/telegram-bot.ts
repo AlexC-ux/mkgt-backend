@@ -83,6 +83,7 @@ export class TgBot {
         this.botObject.action("practice", this.onPractice);
         this.botObject.action("changes", this.onChanges);
         this.botObject.action("status", this.checkStatus);
+        this.botObject.action("deleteOnClick", this.deleteMessage);
     }
 
     private async getUsersCount(context: Context) {
@@ -200,6 +201,9 @@ export class TgBot {
                         [
                             { text: `Я с Кучина`, callback_data: "ifromkuchin" },
                             { text: `Я с Люблино`, callback_data: "ifromlublino" },
+                        ],
+                        [
+                            { text: "Скрыть сообщение", callback_data: "deleteOnClick" }
                         ]
                     ]
                 }
@@ -223,6 +227,9 @@ export class TgBot {
                                 [
                                     { text: "Скачать", url: doc?.links.file },
                                     { text: "Просмотреть", url: doc?.links.views.google_docs },
+                                ],
+                                [
+                                    { text: "Скрыть сообщение", callback_data: "deleteOnClick" }
                                 ]
                             ]
                         }
@@ -252,7 +259,7 @@ export class TgBot {
                     context.sendMessage(`Расписания практики:`,
                         {
                             reply_markup: {
-                                inline_keyboard: buttons
+                                inline_keyboard: [[{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }], ...buttons]
                             }
                         })
                     try { context.answerCbQuery() } catch (e) { }
@@ -312,6 +319,10 @@ export class TgBot {
             }
         })
         return user;
+    }
+
+    private deleteMessage(context: Context) {
+        context.deleteMessage(context.message?.message_id || context.callbackQuery?.message?.message_id)
     }
 
     launchBot() {
