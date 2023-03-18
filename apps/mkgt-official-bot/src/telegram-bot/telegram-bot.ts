@@ -63,7 +63,7 @@ export class TgBot {
         TgBot.botObject.start(this.onStart)
 
         //set /help answer
-        TgBot.botObject.help(this.buildHelpMessage)
+        TgBot.botObject.help(this.getHelpMessage)
 
         //настройка профиля
         TgBot.botObject.command("profile", this.onProfile)
@@ -113,7 +113,7 @@ export class TgBot {
         TgBot.botObject.action("cabinets", this.getCabinets);
     }
 
-    async buildHelpMessage(context: Context) {
+    async getHelpMessage(context: Context) {
         let result = "Команды бота:";
         TgBot.commands.map((commandElement, index) => {
             result += `${_LINE_BREAK}*${index+1}\\.* \`/${commandElement.command}\` \\- _${commandElement.description}_`
@@ -293,11 +293,12 @@ export class TgBot {
             }
 
         }
+        context.sendMessage("🦉").catch(TgBot.catchPollingError)
         context.sendMessage(`${sender.first_name}, добро пожаловать!` +
             _ROW_BREAK +
-            `Если Вы с Люблино, то воспользуйтесь командой /profile или кнопкой 'Настройки профиля' ниже` +
+            `Если Вы учитесь в Люблино, то воспользуйтесь командой кнопкой 'Настройки профиля' ниже` +
             _ROW_BREAK +
-            `Остальные команды можно посмотреть, если ввести в строку сообщения символ косой черты: /`, {
+            `/help покажет список доступных команд`, {
             reply_markup: {
                 inline_keyboard: [
                     [
