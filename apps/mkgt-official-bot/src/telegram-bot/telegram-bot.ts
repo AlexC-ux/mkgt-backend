@@ -100,6 +100,7 @@ export class TgBot {
                         ]
                     }
                 })
+                try { context.answerCbQuery() } catch (e) { }
             } catch (e) { }
         }
     }
