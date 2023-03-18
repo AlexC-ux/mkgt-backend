@@ -263,7 +263,7 @@ export class TgBot {
                             { text: `Расписание практики`, callback_data: "practice" }
                         ],
                         [
-                            { text: `Распределение аудиторий`, callback_data: "cabinets" },
+                            { text: `Аудитории`, callback_data: "cabinets" },
                             { text: `Расписания`, callback_data: "timetables" },
                         ],
                         [
