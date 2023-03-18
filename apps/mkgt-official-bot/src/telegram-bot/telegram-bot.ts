@@ -116,7 +116,7 @@ export class TgBot {
     async getHelpMessage(context: Context) {
         let result = "Команды бота:";
         TgBot.commands.map((commandElement, index) => {
-            result += `${_LINE_BREAK}*${index+1}\\.* \`/${commandElement.command}\` \\- _${commandElement.description}_`
+            result += `${_LINE_BREAK}*${index + 1}\\.* \`/${commandElement.command}\` \\- _${commandElement.description}_`
         })
         context.sendMessage(result, { parse_mode: "MarkdownV2" })
     }
@@ -291,8 +291,8 @@ export class TgBot {
                 console.log(typeof error)
                 console.log({ error })
             }
-
         }
+
         await context.sendMessage("🦉").catch(TgBot.catchPollingError)
         context.sendMessage(`${sender.first_name}, добро пожаловать!` +
             _ROW_BREAK +
