@@ -237,7 +237,8 @@ export class TgBot {
                         [{ text: "Получить ключ доступа", callback_data: 'getApiKey' }]
                     ]
                 }
-            })
+            });
+try { context.answerCbQuery() } catch (e) { }
     }
 
     async onChanges(context: Context) {
