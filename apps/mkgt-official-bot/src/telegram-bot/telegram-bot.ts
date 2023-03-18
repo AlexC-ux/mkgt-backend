@@ -95,7 +95,7 @@ export class TgBot {
                 parse_mode: "MarkdownV2", reply_markup:
                 {
                     inline_keyboard: [
-                        [{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }]
+                        [{ text: "Скрыть токен", callback_data: "deleteOnClick" }]
                     ]
                 }
             })
@@ -246,7 +246,7 @@ export class TgBot {
                     ]
                 }
             });
-try { context.answerCbQuery() } catch (e) { }
+        try { context.answerCbQuery() } catch (e) { }
     }
 
     async onChanges(context: Context) {
