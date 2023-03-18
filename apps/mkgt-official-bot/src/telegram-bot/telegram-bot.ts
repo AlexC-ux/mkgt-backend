@@ -79,11 +79,20 @@ export class TgBot {
         //set kuchin callback
         this.botObject.action("ifromkuchin", (context) => { this.changeProfileTerrritory(context, "kuchin") })
 
+        this.botObject.action("getApiKey", this.getApiKey);
+        this.botObject.action("developerinfo", this.getDevInfo);
         this.botObject.action("profile", this.onProfile);
         this.botObject.action("practice", this.onPractice);
         this.botObject.action("changes", this.onChanges);
         this.botObject.action("status", this.checkStatus);
         this.botObject.action("deleteOnClick", this.deleteMessage);
+    }
+
+    async getApiKey(context: Context) {
+        const user = await TgBot.checkUser(context.callbackQuery.from.id || context.from.id)
+        if (!!user) {
+            context.answerCbQuery("Ваш токен:" + _ROW_BREAK + user.token, { show_alert: true })
+        }
     }
 
     private async getUsersCount(context: Context) {
@@ -180,6 +189,9 @@ export class TgBot {
                     [
                         { text: `Карта прохода к колледжу`, url: "https://yandex.ru/maps/213/moscow/?ll=37.643452%2C55.804215&mode=usermaps&source=constructorLink&um=constructor%3A761f4b5f3ab5e1ef399f9b57ab726d2834ed7dcaca7ef86b4eecefb68759b381&z=16" }
                     ],
+                    [
+                        { text: `Информация разработчикам`, callback_data: "developerinfo" }
+                    ],
                 ]
             }
         })
@@ -215,6 +227,20 @@ export class TgBot {
         }
     }
 
+    async getDevInfo(context: Context) {
+        context.sendMessage("Информация разработчикам." +
+            _ROW_BREAK +
+            "Документация к API: http://45.87.247.20:8080/api-doc" +
+            _LINE_BREAK +
+            "Получение токена: /key",
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: "Получить ключ доступа", callback_data: 'getApiKey' }]
+                    ]
+                }
+            })
+    }
 
     async onChanges(context: Context) {
         const user = await TgBot.checkUser(context.from.id);
