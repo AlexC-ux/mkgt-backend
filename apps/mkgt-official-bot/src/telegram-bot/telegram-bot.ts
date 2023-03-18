@@ -293,7 +293,7 @@ export class TgBot {
             }
 
         }
-        context.sendMessage("🦉").catch(TgBot.catchPollingError)
+        await context.sendMessage("🦉").catch(TgBot.catchPollingError)
         context.sendMessage(`${sender.first_name}, добро пожаловать!` +
             _ROW_BREAK +
             `Если Вы учитесь в Люблино, то воспользуйтесь кнопкой 'Настройки профиля' ниже` +
