@@ -3,7 +3,6 @@ import { ITitledDocumentInfo } from 'apps/mkgtru-api/src/types/ITitledDocumentIn
 import { acccess_roles, PrismaClient, Users } from '@prisma/client';
 import { territories } from 'apps/mkgtru-api/src/types/territories';
 import axios from "axios";
-const schedule = require('node-schedule');
 
 export interface IBotCommand { 'command': string, 'description': string };
 
@@ -16,7 +15,7 @@ const _DOCUMENT_ERROR = "Не удалось получить документ �
 
 export class TgBot {
 
-    public botObject: Telegraf;
+    public static botObject: Telegraf;
 
     static info = {
         started: false,
@@ -28,15 +27,16 @@ export class TgBot {
 
     constructor(botToken: string) {
         try {
-            this.botObject = new Telegraf(botToken);
-            this.setCommands();
+            TgBot.botObject = new Telegraf(botToken);
+            this.setupCommands();
         } catch (error) {
             console.error(error)
         }
     }
 
-    private commands: IBotCommand[] = [
-        { 'command': "start", "description": "Показать главное меню" },
+    static commands: IBotCommand[] = [
+        { 'command': "start", "description": "показать главное меню" },
+        { 'command': "help", "description": "показать команды" },
         { 'command': "changes", "description": "получение информации о заменах" },
         { 'command': "status", "description": "получение состояния сервера" },
         { 'command': "practice", "description": "получение расписаний практики" },
@@ -52,89 +52,136 @@ export class TgBot {
      * @async
      * @returns {*}
      */
-    public async setCommands() {
-        await this.botObject.telegram.setMyCommands(this.commands);
+    public async setupCommands() {
+
+        //setting commands list
+        await TgBot.botObject.telegram.setMyCommands(TgBot.commands);
+
+        TgBot.botObject.use(this.botMiddleware)
+
         //start message - registration
-        this.botObject.start(this.onStart)
+        TgBot.botObject.start(this.onStart)
+
+        //set /help answer
+        TgBot.botObject.help(this.buildHelpMessage)
 
         //настройка профиля
-        this.botObject.command("profile", this.onProfile)
+        TgBot.botObject.command("profile", this.onProfile)
 
         //Обработка команды замены
-        this.botObject.command("changes", this.onChanges)
+        TgBot.botObject.command("changes", this.onChanges)
 
         //Получение практики
-        this.botObject.command("practice", this.onPractice)
+        TgBot.botObject.command("practice", this.onPractice)
 
         //checking status
-        this.botObject.command("status", this.checkStatus)
+        TgBot.botObject.command("status", this.checkStatus)
 
-        this.botObject.command("users", this.getUsersCount)
-
-        //CALLBACKS
+        TgBot.botObject.command("users", this.getUsersCount)
 
         //set lublino callback
-        this.botObject.action("ifromlublino", (context) => { this.changeProfileTerrritory(context, "lublino") })
+        TgBot.botObject.action("ifromlublino", (context) => { this.changeProfileTerrritory(context, "lublino") })
 
         //set kuchin callback
-        this.botObject.action("ifromkuchin", (context) => { this.changeProfileTerrritory(context, "kuchin") })
+        TgBot.botObject.action("ifromkuchin", (context) => { this.changeProfileTerrritory(context, "kuchin") })
 
         //getting api key
-        this.botObject.action("getApiKey", this.getApiKey);
+        TgBot.botObject.action("getApiKey", this.getApiKey);
 
         //getting info for devs
-        this.botObject.action("developerinfo", this.getDevInfo);
+        TgBot.botObject.action("developerinfo", this.getDevInfo);
 
         //getting profile info
-        this.botObject.action("profile", this.onProfile);
+        TgBot.botObject.action("profile", this.onProfile);
 
         //getting practise list
-        this.botObject.action("practice", this.onPractice);
+        TgBot.botObject.action("practice", this.onPractice);
 
         //getting changes
-        this.botObject.action("changes", this.onChanges);
+        TgBot.botObject.action("changes", this.onChanges);
 
         //getting server status
-        this.botObject.action("status", this.checkStatus);
+        TgBot.botObject.action("status", this.checkStatus);
 
         //cb for hide msg
-        this.botObject.action("deleteOnClick", this.deleteMessage);
+        TgBot.botObject.action("deleteOnClick", this.deleteMessage);
 
         //getting timetables
-        this.botObject.action("timetables", this.getTimetables);
+        TgBot.botObject.action("timetables", this.getTimetables);
 
         //getting cabinets updates
-        this.botObject.action("cabinets", this.getCabinets);
+        TgBot.botObject.action("cabinets", this.getCabinets);
     }
 
+    async buildHelpMessage(context: Context) {
+        let result = "Команды бота:";
+        TgBot.commands.map((commandElement, index) => {
+            result += `${_LINE_BREAK}*${index+1}\\.* \`/${commandElement.command}\` \\- _${commandElement.description}_`
+        })
+        context.sendMessage(result, { parse_mode: "MarkdownV2" })
+    }
+
+    async botMiddleware(context: Context, next: () => Promise<any>,) {
+        const sended: any = context.update;
+        const incomingMessage = sended?.message?.text || sended?.callback_query?.data
+        console.log(`Collected message ${incomingMessage}`)
+        await next();
+    }
+
+    //error handler
+    static async catchPollingError(error: any, context?: Context) {
+        if (
+            //skip chacks
+            error?.response?.error_code != 403 //if user not found
+            &&
+            !error?.toString().includes(`"answerCbQuery" isn't available for "message"`) //if answer callback on message
+        ) {
+            console.log("ЧТО-ТО НАЕБНУЛОСЬ!")
+            console.log(error)
+            await prisma.users.findMany({
+                select: {
+                    tgAccount: {
+                        select: {
+                            telegramId: true,
+                        }
+                    }
+                },
+                where: {
+                    role: {
+                        in: ["admin"]
+                    }
+                }
+            }).then(admins => {
+                admins.forEach(admin => {
+                    TgBot.botObject.telegram.sendMessage(admin.tgAccount.telegramId.toString(), `*ERROR LOG* \`\`\`${_LINE_BREAK}${error?.toString() || JSON.stringify(error)}${_LINE_BREAK}\`\`\``, { parse_mode: "MarkdownV2" }).catch(TgBot.catchPollingError);
+                });
+            })
+        }
+    };
 
     async getCabinets(context: Context) {
         const user = await TgBot.checkUser(context.callbackQuery.from.id || context.message.from.id)
 
         if (!!user) {
-            const doc = await TgBot.getAPIResponse("/auditories", user.territory)
+            const doc: ITitledDocumentInfo | null = await TgBot.getAPIResponse("/auditories", user.territory)
 
             if (!!doc) {
-                try {
-                    context.sendMessage(`Аудитории:`,
-                        {
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [
-                                        { text: "Скачать", url: doc?.links.file },
-                                        { text: "Просмотреть", url: doc?.links.views.google_docs },
-                                    ],
-                                    [{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }]
-                                ]
-                            }
-                        })
-                    try { context.answerCbQuery() } catch (e) { }
-                } catch (e) { }
+                context.sendMessage(`Распределение аудиторий от ${doc.last_modified.ru}`,
+                    {
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    { text: "Скачать", url: doc?.links.file },
+                                    { text: "Просмотреть", url: doc?.links.views.google_docs },
+                                ],
+                                [{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }]
+                            ]
+                        }
+                    }).catch(TgBot.catchPollingError);
+                context.answerCbQuery().catch(TgBot.catchPollingError);
             }
             else {
-                try {
-                    context.sendMessage(_DOCUMENT_ERROR)
-                } catch (e) { }
+                context.sendMessage(_DOCUMENT_ERROR).catch(TgBot.catchPollingError);
             }
         }
     }
@@ -153,20 +200,16 @@ export class TgBot {
                     }
                     buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
                 })
-                try {
-                    context.sendMessage(`Расписания занятий:`,
-                        {
-                            reply_markup: {
-                                inline_keyboard: [[{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }], ...buttons]
-                            }
-                        })
-                    try { context.answerCbQuery() } catch (e) { }
-                } catch (e) { }
+                context.sendMessage(`Расписания занятий:`,
+                    {
+                        reply_markup: {
+                            inline_keyboard: [[{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }], ...buttons]
+                        }
+                    }).catch(TgBot.catchPollingError);
+                context.answerCbQuery().catch(TgBot.catchPollingError);
             }
             else {
-                try {
-                    context.sendMessage(_DOCUMENT_ERROR)
-                } catch (e) { }
+                context.sendMessage(_DOCUMENT_ERROR).catch(TgBot.catchPollingError);
             }
         }
     }
@@ -214,9 +257,9 @@ export class TgBot {
                     }
                 }))._count.name
 
-                try {
-                    context.sendMessage(`Кучин: ${countKuchin}${_ROW_BREAK}Люблино: ${countLublino}${_ROW_BREAK}Без ТГ: ${countNoTg}${_ROW_BREAK}Всего: ${countSummary}`);
-                } catch (e) { }
+                context.sendMessage(`Кучин: ${countKuchin}${_ROW_BREAK}Люблино: ${countLublino}${_ROW_BREAK}Без ТГ: ${countNoTg}${_ROW_BREAK}Всего: ${countSummary}`)
+                    .catch(TgBot.catchPollingError);
+
             }
         }
 
@@ -250,37 +293,34 @@ export class TgBot {
             }
 
         }
-        try {
-            context.sendMessage(`${sender.first_name}, добро пожаловать!` +
-                _ROW_BREAK +
-                `Если Вы с Люблино, то воспользуйтесь командой /profile или кнопкой 'Настройки профиля' ниже` +
-                _ROW_BREAK +
-                `Остальные команды можно посмотреть, если ввести в строку сообщения символ косой черты: /`, {
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            { text: `Показать замены`, callback_data: "changes" },
-                            { text: `Расписание практики`, callback_data: "practice" }
-                        ],
-                        [
-                            { text: `Аудитории`, callback_data: "cabinets" },
-                            { text: `Расписания`, callback_data: "timetables" },
-                        ],
-                        [
-                            { text: `Настройки профиля`, callback_data: "profile" }
-                        ],
-                        [
-                            { text: `Карта прохода к колледжу`, url: "https://yandex.ru/maps/213/moscow/?ll=37.643452%2C55.804215&mode=usermaps&source=constructorLink&um=constructor%3A761f4b5f3ab5e1ef399f9b57ab726d2834ed7dcaca7ef86b4eecefb68759b381&z=16" }
-                        ],
-                        [
-                            { text: `Информация разработчикам`, callback_data: "developerinfo" }
-                        ],
-                    ]
-                }
-            })
-        } catch (e) { }
+        context.sendMessage(`${sender.first_name}, добро пожаловать!` +
+            _ROW_BREAK +
+            `Если Вы с Люблино, то воспользуйтесь командой /profile или кнопкой 'Настройки профиля' ниже` +
+            _ROW_BREAK +
+            `Остальные команды можно посмотреть, если ввести в строку сообщения символ косой черты: /`, {
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        { text: `Показать замены`, callback_data: "changes" },
+                        { text: `Расписание практики`, callback_data: "practice" }
+                    ],
+                    [
+                        { text: `Аудитории`, callback_data: "cabinets" },
+                        { text: `Расписания`, callback_data: "timetables" },
+                    ],
+                    [
+                        { text: `Настройки профиля`, callback_data: "profile" }
+                    ],
+                    [
+                        { text: `Карта прохода к колледжу`, url: "https://yandex.ru/maps/213/moscow/?ll=37.643452%2C55.804215&mode=usermaps&source=constructorLink&um=constructor%3A761f4b5f3ab5e1ef399f9b57ab726d2834ed7dcaca7ef86b4eecefb68759b381&z=16" }
+                    ],
+                    [
+                        { text: `Информация разработчикам`, callback_data: "developerinfo" }
+                    ],
+                ]
+            }
+        }).catch(TgBot.catchPollingError);
     }
-
 
     async onProfile(context: Context) {
         const user = await TgBot.checkUser(context.from.id);
@@ -292,58 +332,53 @@ export class TgBot {
                 + _ROW_BREAK +
                 "Ваша территория: " + user.territory
 
-            try {
-                context.sendMessage(messageText,
-                    {
-                        reply_markup: {
-                            inline_keyboard: [
-                                [
-                                    { text: `Я с Кучина`, callback_data: "ifromkuchin" },
-                                    { text: `Я с Люблино`, callback_data: "ifromlublino" },
-                                ],
-                                [
-                                    { text: "Скрыть сообщение", callback_data: "deleteOnClick" }
-                                ]
+            context.sendMessage(messageText,
+                {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                { text: `Я с Кучина`, callback_data: "ifromkuchin" },
+                                { text: `Я с Люблино`, callback_data: "ifromlublino" },
+                            ],
+                            [
+                                { text: "Скрыть сообщение", callback_data: "deleteOnClick" }
                             ]
-                        }
+                        ]
                     }
-                )
-            } catch (e) { }
-            try { context.answerCbQuery() } catch (e) { }
+                }
+            ).catch(TgBot.catchPollingError);
+
+            context.answerCbQuery().catch(TgBot.catchPollingError);
         }
     }
 
     async getDevInfo(context: Context) {
-        try {
-            context.sendMessage("Информация разработчикам." +
-                _ROW_BREAK +
-                "Документация к API: http://45.87.247.20:8080/api-doc",
-                {
-                    reply_markup: {
-                        inline_keyboard: [
-                            [{ text: "Получить ключ доступа", callback_data: 'getApiKey' }],
-                            [{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }]
-                        ]
-                    }
-                });
-            try { context.answerCbQuery() } catch (e) { }
-        } catch (e) { }
+        context.sendMessage("Информация разработчикам." +
+            _ROW_BREAK +
+            "Документация к API: http://45.87.247.20:8080/api-doc",
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: "Получить ключ доступа", callback_data: 'getApiKey' }],
+                        [{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }]
+                    ]
+                }
+            }).catch(TgBot.catchPollingError);
+        context.answerCbQuery().catch(TgBot.catchPollingError);
     }
 
     async getApiKey(context: Context) {
         const user = await TgBot.checkUser(context.callbackQuery.from.id || context.from.id)
         if (!!user) {
-            try {
-                context.sendMessage("Ваш токен:" + _LINE_BREAK + `||${user.token}||`, {
-                    parse_mode: "MarkdownV2", reply_markup:
-                    {
-                        inline_keyboard: [
-                            [{ text: "Скрыть токен", callback_data: "deleteOnClick" }]
-                        ]
-                    }
-                })
-                try { context.answerCbQuery() } catch (e) { }
-            } catch (e) { }
+            context.sendMessage("Ваш токен:" + _LINE_BREAK + `||${user.token}||`, {
+                parse_mode: "MarkdownV2", reply_markup:
+                {
+                    inline_keyboard: [
+                        [{ text: "Скрыть токен", callback_data: "deleteOnClick" }]
+                    ]
+                }
+            })
+            context.answerCbQuery().catch(TgBot.catchPollingError);
         }
     }
 
@@ -354,84 +389,76 @@ export class TgBot {
             const doc: ITitledDocumentInfo | null = await TgBot.getAPIResponse("/changes", user.territory);
             console.log({ doc })
             if (!!doc) {
-                try {
-                    context.sendMessage(`Документ обновлён: ${doc?.last_modified.ru}`,
-                        {
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [
-                                        { text: "Скачать", url: doc?.links.file },
-                                        { text: "Просмотреть", url: doc?.links.views.google_docs },
-                                    ],
-                                    [
-                                        { text: "Скрыть сообщение", callback_data: "deleteOnClick" }
-                                    ]
+                context.sendMessage(`Документ обновлён: ${doc?.last_modified.ru}`,
+                    {
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    { text: "Скачать", url: doc?.links.file },
+                                    { text: "Просмотреть", url: doc?.links.views.google_docs },
+                                ],
+                                [
+                                    { text: "Скрыть сообщение", callback_data: "deleteOnClick" }
                                 ]
-                            }
-                        })
-                } catch (e) { }
-                try { context.answerCbQuery() } catch (e) { }
+                            ]
+                        }
+                    }).catch(TgBot.catchPollingError);
+                context.answerCbQuery().catch(TgBot.catchPollingError);
             } else {
-                try {
-                    context.sendMessage(_DOCUMENT_ERROR)
-                } catch (e) { }
+                context.sendMessage(_DOCUMENT_ERROR).catch(TgBot.catchPollingError);
             }
         }
     }
 
     async onPractice(context: Context) {
-        {
-            const user = await TgBot.checkUser(context.from.id);
+        const user = await TgBot.checkUser(context.from.id);
 
-            if (!!user) {
-                const doc: ITitledDocumentInfo[] = await TgBot.getAPIResponse("/practicelist", user.territory)
-                const buttons = [[]];
+        if (!!user) {
+            const doc: ITitledDocumentInfo[] = await TgBot.getAPIResponse("/practicelist", user.territory)
+            const buttons = [[]];
 
-                if (!!doc) {
-                    doc?.map((document, index) => {
-                        if (!buttons[index]) {
-                            buttons[index] = [];
+            if (!!doc) {
+                doc?.map((document, index) => {
+                    if (!buttons[index]) {
+                        buttons[index] = [];
+                    }
+                    buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
+                })
+                context.sendMessage(`Расписания практики:`,
+                    {
+                        reply_markup: {
+                            inline_keyboard: [[{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }], ...buttons]
                         }
-                        buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
-                    })
-                    try {
-                        context.sendMessage(`Расписания практики:`,
-                            {
-                                reply_markup: {
-                                    inline_keyboard: [[{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }], ...buttons]
-                                }
-                            })
-                        try { context.answerCbQuery() } catch (e) { }
-                    } catch (e) { }
-                }
-                else {
-                    try {
-                        context.sendMessage(_DOCUMENT_ERROR)
-                    } catch (e) { }
-                }
-
+                    }).catch(TgBot.catchPollingError);
+                context.answerCbQuery().catch(TgBot.catchPollingError);
             }
+            else {
+                context.sendMessage(_DOCUMENT_ERROR).catch(TgBot.catchPollingError);
+            }
+
         }
     }
 
     async changeProfileTerrritory(context: Context, terr: territories) {
-        const user = await TgBot.checkUser(context?.from.id);
+        try {
+            const user = await TgBot.checkUser(context?.from.id);
 
-        if (!!user) {
-            await prisma.users.update({
-                where: {
-                    identifer: user.identifer
-                },
-                data: {
-                    territory: terr
-                }
-            })
+            if (!!user) {
+                await prisma.users.update({
+                    where: {
+                        identifer: user.identifer
+                    },
+                    data: {
+                        territory: terr
+                    }
+                })
 
-            try {
-                context.answerCbQuery(`Вам установлен режим для территории ${terr}`, { show_alert: true });
-                context.deleteMessage(context.callbackQuery.message.message_id || context.message.message_id)
-            } catch (error) { }
-        }
+                try {
+                    context.answerCbQuery(`Вам установлен режим для территории ${terr}`, { show_alert: true });
+                    context.deleteMessage(context.callbackQuery.message.message_id || context.message.message_id)
+                } catch (error) { }
+            }
+        } catch (error) { }
     }
 
     async checkStatus(context: Context) {
@@ -468,17 +495,12 @@ export class TgBot {
 
     private deleteMessage(context: Context) {
         context.deleteMessage(context.message?.message_id || context.callbackQuery?.message?.message_id)
+            .catch(TgBot.catchPollingError);
     }
 
     launchBot() {
         TgBot.info.started = true;
-        this.botObject.launch();
-    }
-
-    checkContext(context: Context) {
-        console.log(context)
-        return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-            console.log({ target, propertyKey, descriptor });
-        };
+        TgBot.botObject.catch(TgBot.catchPollingError);
+        TgBot.botObject.launch();
     }
 }

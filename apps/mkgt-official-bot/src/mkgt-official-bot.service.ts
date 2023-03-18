@@ -32,7 +32,7 @@ export class MkgtOfficialBotService {
     }
 
 
-    const changesChecker = schedule.scheduleJob("*/25 * * * *", checkChangesCronJob);
+    const changesChecker = schedule.scheduleJob("*/3 * * * *", checkChangesCronJob);
 
 
     async function checkChangesCronJob() {
@@ -43,6 +43,9 @@ export class MkgtOfficialBotService {
     async function checkChanges(territory: territories) {
       const changesDocInfo: ITitledDocumentInfo = await TgBot.getAPIResponse("/changes", territory);
 
+      if (TgBot.info.changesTimestamp[territory] == 0) {
+        TgBot.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp
+      }
       //определение необходимости рассылки
       if (!!changesDocInfo && changesDocInfo.last_modified.timestamp != TgBot.info.changesTimestamp[territory]) {
         TgBot.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp;
@@ -64,19 +67,18 @@ export class MkgtOfficialBotService {
             }
           }
         })
+
         console.log({ users_to_notif: users?.length, terr: territory })
         users.forEach(user => {
           const tgUserId = user.telegramId.toString();
 
-          try {
-            bot.botObject.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`, {
-              reply_markup: {
-                inline_keyboard: [
-                  [{ text: "Показать замены", callback_data: "changes" }]
-                ]
-              }
-            })
-          } catch (error) { console.log(error) }
+          TgBot.botObject.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`, {
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: "Показать замены", callback_data: "changes" }]
+              ]
+            }
+          }).catch(TgBot.catchPollingError);
 
         })
 
