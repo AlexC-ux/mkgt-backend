@@ -1,11 +1,29 @@
 import { Body, CacheInterceptor, CacheKey, CacheTTL, Controller, Get, HttpException, HttpStatus, Patch, Query, UseGuards, UseInterceptors, Headers, Post, Delete } from '@nestjs/common';
-import { ApiBearerAuth, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { PrismaClient } from '@prisma/client';
+import { type } from 'os';
 import { MkgtruApiService } from './mkgtru-api.service';
 import { RequireApiKeyGuard } from './require-api-key/require-api-key.guard';
 import { ITitledDocumentInfo } from './types/ITitledDocumentInfo';
 import { territories } from './types/territories';
 import { ITokenResponse } from './types/tokenObject';
+
+
+
+const tokenSchema = {
+  type: "object",
+  properties: {
+    token: { title: "token", type: "string", example: "cmkeghnzf0130q0vd3roeali8" }
+  }
+}
+
+const ItitledDocSchema = {
+
+}
+
+
+
+
 
 
 /**
@@ -81,7 +99,13 @@ export class MkgtruApiController {
 
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Updating token" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Success", })
+  @ApiParam({
+    name: 'Authorization',
+    required: false,
+    description:
+      '(Leave empty. Use lock icon on the top-right to authorize)',
+  })
+  @ApiResponse({ status: HttpStatus.OK, description: "Success", schema: tokenSchema })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Patch("token")
   @UseGuards(RequireApiKeyGuard)
@@ -90,15 +114,28 @@ export class MkgtruApiController {
   }
 
   @ApiOperation({ summary: "Creating new account" })
-  @ApiParam({ name: "email", required: true, description: "Last name", type: String })
-  @ApiParam({ name: "surname", required: false, description: "First name", type: String })
-  @ApiParam({ name: "email", required: true, description: "email", type: String })
-  @ApiResponse({ status: HttpStatus.OK, description: "Success", })
-  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
+  @ApiBody({
+    schema: {
+      type: "object",
+      required: ["name", "email"],
+      properties: {
+        name: { title: "name", type: "string", example: "Иван" },
+        email: { title: "email", type: "string", example: "mail@mail.ru", uniqueItems: true },
+        surname: { title: "surname", type: "string", example: "Попов" }
+      }
+    }
+  })
+
+  /*
+  @ApiResponse({
+    status: HttpStatus.OK, description: "Success",
+    schema: tokenSchema
+  })
   @Post("register")
   async updateProfile(@Body("name") name: string, @Body("email") email: string, @Body("surname") surname?: string): Promise<ITokenResponse> {
     return this.mkgtruApiService.createAccount(name, surname, email);
   }
+  */
 
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Deleting profiles" })
