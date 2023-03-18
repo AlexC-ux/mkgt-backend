@@ -89,9 +89,6 @@ export class MkgtruApiController {
     return this.mkgtruApiService.revokeToken(bearerToken.replace("Bearer ", ""));
   }
 
-
-
-  @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Creating new account" })
   @ApiParam({ name: "email", required: true, description: "Last name", type: String })
   @ApiParam({ name: "surname", required: false, description: "First name", type: String })
@@ -99,7 +96,6 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success", })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Post("register")
-  @UseGuards(RequireApiKeyGuard)
   async updateProfile(@Body("name") name: string, @Body("email") email: string, @Body("surname") surname?: string): Promise<ITokenResponse> {
     return this.mkgtruApiService.createAccount(name, surname, email);
   }
