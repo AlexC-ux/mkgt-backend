@@ -113,6 +113,7 @@ export class MkgtruApiController {
     return this.mkgtruApiService.revokeToken(bearerToken.replace("Bearer ", ""));
   }
 
+  /*
   @ApiOperation({ summary: "Creating new account" })
   @ApiBody({
     schema: {
@@ -125,8 +126,6 @@ export class MkgtruApiController {
       }
     }
   })
-
-  /*
   @ApiResponse({
     status: HttpStatus.OK, description: "Success",
     schema: tokenSchema
@@ -137,6 +136,7 @@ export class MkgtruApiController {
   }
   */
 
+  /*
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Deleting profiles" })
   @ApiResponse({ status: HttpStatus.OK, description: "Profile deleted", })
@@ -154,4 +154,5 @@ export class MkgtruApiController {
     prisma.$disconnect();
     throw new HttpException("DELETED", HttpStatus.OK)
   }
+  */
 }
