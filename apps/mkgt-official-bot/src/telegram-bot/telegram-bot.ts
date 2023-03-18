@@ -292,21 +292,23 @@ export class TgBot {
                 + _ROW_BREAK +
                 "Ваша территория: " + user.territory
 
-            context.reply(messageText,
-                {
-                    reply_markup: {
-                        inline_keyboard: [
-                            [
-                                { text: `Я с Кучина`, callback_data: "ifromkuchin" },
-                                { text: `Я с Люблино`, callback_data: "ifromlublino" },
-                            ],
-                            [
-                                { text: "Скрыть сообщение", callback_data: "deleteOnClick" }
+            try {
+                context.sendMessage(messageText,
+                    {
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    { text: `Я с Кучина`, callback_data: "ifromkuchin" },
+                                    { text: `Я с Люблино`, callback_data: "ifromlublino" },
+                                ],
+                                [
+                                    { text: "Скрыть сообщение", callback_data: "deleteOnClick" }
+                                ]
                             ]
-                        ]
+                        }
                     }
-                }
-            )
+                )
+            } catch (e) { }
             try { context.answerCbQuery() } catch (e) { }
         }
     }
