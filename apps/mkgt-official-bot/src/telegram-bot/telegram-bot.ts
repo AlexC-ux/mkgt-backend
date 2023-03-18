@@ -79,29 +79,95 @@ export class TgBot {
         //set kuchin callback
         this.botObject.action("ifromkuchin", (context) => { this.changeProfileTerrritory(context, "kuchin") })
 
+        //getting api key
         this.botObject.action("getApiKey", this.getApiKey);
+
+        //getting info for devs
         this.botObject.action("developerinfo", this.getDevInfo);
+
+        //getting profile info
         this.botObject.action("profile", this.onProfile);
+
+        //getting practise list
         this.botObject.action("practice", this.onPractice);
+
+        //getting changes
         this.botObject.action("changes", this.onChanges);
+
+        //getting server status
         this.botObject.action("status", this.checkStatus);
+
+        //cb for hide msg
         this.botObject.action("deleteOnClick", this.deleteMessage);
+
+        //getting timetables
+        this.botObject.action("timetables", this.getTimetables);
+
+        //getting cabinets updates
+        this.botObject.action("cabinets", this.getCabinets);
     }
 
-    async getApiKey(context: Context) {
-        const user = await TgBot.checkUser(context.callbackQuery.from.id || context.from.id)
+
+    async getCabinets(context: Context) {
+        const user = await TgBot.checkUser(context.callbackQuery.from.id || context.message.from.id)
+
         if (!!user) {
-            try {
-                context.sendMessage("Ваш токен:" + _LINE_BREAK + `||${user.token}||`, {
-                    parse_mode: "MarkdownV2", reply_markup:
-                    {
-                        inline_keyboard: [
-                            [{ text: "Скрыть токен", callback_data: "deleteOnClick" }]
-                        ]
+            const doc = await TgBot.getAPIResponse("/auditories", user.territory)
+
+            if (!!doc) {
+                try {
+                    context.sendMessage(`Аудитории:`,
+                        {
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [
+                                        { text: "Скачать", url: doc?.links.file },
+                                        { text: "Просмотреть", url: doc?.links.views.google_docs },
+                                    ],
+                                    [{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }]
+                                ]
+                            }
+                        })
+                    try { context.answerCbQuery() } catch (e) { }
+                } catch (e) { }
+            }
+            else {
+                try {
+                    context.sendMessage(_DOCUMENT_ERROR)
+                } catch (e) { }
+            }
+        }
+    }
+
+    async getTimetables(context: Context) {
+        const user = await TgBot.checkUser(context.callbackQuery.from.id || context.message.from.id)
+
+        if (!!user) {
+            const doc: ITitledDocumentInfo[] = await TgBot.getAPIResponse("/timetables", user.territory)
+            const buttons = [[]];
+
+            if (!!doc) {
+                doc?.map((document, index) => {
+                    if (!buttons[index]) {
+                        buttons[index] = [];
                     }
+                    buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
                 })
-                try { context.answerCbQuery() } catch (e) { }
-            } catch (e) { }
+                try {
+                    context.sendMessage(`Расписания занятий:`,
+                        {
+                            reply_markup: {
+                                inline_keyboard: [[{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }], ...buttons]
+                            }
+                        })
+                    try { context.answerCbQuery() } catch (e) { }
+                } catch (e) { }
+            }
+            else {
+                try {
+                    context.sendMessage(_DOCUMENT_ERROR)
+                } catch (e) { }
+            }
         }
     }
 
@@ -197,6 +263,10 @@ export class TgBot {
                             { text: `Расписание практики`, callback_data: "practice" }
                         ],
                         [
+                            { text: `Распределение аудиторий`, callback_data: "cabinets" },
+                            { text: `Расписания`, callback_data: "timetables" },
+                        ],
+                        [
                             { text: `Настройки профиля`, callback_data: "profile" }
                         ],
                         [
@@ -256,6 +326,23 @@ export class TgBot {
                 });
             try { context.answerCbQuery() } catch (e) { }
         } catch (e) { }
+    }
+
+    async getApiKey(context: Context) {
+        const user = await TgBot.checkUser(context.callbackQuery.from.id || context.from.id)
+        if (!!user) {
+            try {
+                context.sendMessage("Ваш токен:" + _LINE_BREAK + `||${user.token}||`, {
+                    parse_mode: "MarkdownV2", reply_markup:
+                    {
+                        inline_keyboard: [
+                            [{ text: "Скрыть токен", callback_data: "deleteOnClick" }]
+                        ]
+                    }
+                })
+                try { context.answerCbQuery() } catch (e) { }
+            } catch (e) { }
+        }
     }
 
     async onChanges(context: Context) {
@@ -352,7 +439,7 @@ export class TgBot {
         } catch (e) { }
     }
 
-    static async getAPIResponse(path: "/changes" | "/status" | "/practicelist", territory?: territories): Promise<any> {
+    static async getAPIResponse(path: "/changes" | "/status" | "/practicelist" | "/auditories" | "/timetables", territory?: territories): Promise<any> {
         const url = `${process.env.MKGT_API_PATH}${path}?territory=${!!territory ? territory : "lublino"}`;
         try {
             const response = (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout: 80000 }));
