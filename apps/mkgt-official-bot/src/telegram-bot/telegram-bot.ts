@@ -91,7 +91,14 @@ export class TgBot {
     async getApiKey(context: Context) {
         const user = await TgBot.checkUser(context.callbackQuery.from.id || context.from.id)
         if (!!user) {
-            context.answerCbQuery("Ваш токен:" + _ROW_BREAK + user.token, { show_alert: true })
+            context.sendMessage("Ваш токен:" + _LINE_BREAK + `||${user.token}||`, {
+                parse_mode: "MarkdownV2", reply_markup:
+                {
+                    inline_keyboard: [
+                        [{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }]
+                    ]
+                }
+            })
         }
     }
 
@@ -236,7 +243,8 @@ export class TgBot {
             {
                 reply_markup: {
                     inline_keyboard: [
-                        [{ text: "Получить ключ доступа", callback_data: 'getApiKey' }]
+                        [{ text: "Получить ключ доступа", callback_data: 'getApiKey' }],
+                        [{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }]
                     ]
                 }
             })
