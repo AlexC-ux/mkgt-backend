@@ -36,7 +36,7 @@ export class TgBot {
     }
 
     private commands: IBotCommand[] = [
-        { 'command': "start", "description": "запуск бота" },
+        { 'command': "start", "description": "Показать главное меню" },
         { 'command': "changes", "description": "получение информации о заменах" },
         { 'command': "status", "description": "получение состояния сервера" },
         { 'command': "practice", "description": "получение расписаний практики" },
