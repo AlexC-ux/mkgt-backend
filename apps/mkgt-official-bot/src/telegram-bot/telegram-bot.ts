@@ -131,7 +131,7 @@ export class TgBot {
     //error handler
     static async catchPollingError(error: any, context?: Context) {
         if (
-            //skip chacks
+            //skip errrors
             error?.response?.error_code != 403 //if user not found
             &&
             !error?.toString().includes(`"answerCbQuery" isn't available for "message"`) //if answer callback on message
