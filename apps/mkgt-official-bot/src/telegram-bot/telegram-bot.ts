@@ -230,9 +230,7 @@ export class TgBot {
     async getDevInfo(context: Context) {
         context.sendMessage("Информация разработчикам." +
             _ROW_BREAK +
-            "Документация к API: http://45.87.247.20:8080/api-doc" +
-            _LINE_BREAK +
-            "Получение токена: /key",
+            "Документация к API: http://45.87.247.20:8080/api-doc",
             {
                 reply_markup: {
                     inline_keyboard: [
