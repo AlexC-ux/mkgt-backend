@@ -1,4 +1,5 @@
 import { Body, CacheInterceptor, CacheKey, CacheTTL, Controller, Get, HttpException, HttpStatus, Patch, Query, UseGuards, UseInterceptors, Headers, Post, Delete } from '@nestjs/common';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { PrismaClient } from '@prisma/client';
 import { MkgtruApiService } from './mkgtru-api.service';
 import { RequireApiKeyGuard } from './require-api-key/require-api-key.guard';
@@ -18,21 +19,24 @@ import { ITokenResponse } from './types/tokenObject';
  * @typedef {MkgtruApiController}
  */
 @Controller("mkgtru-api")
+@ApiTags('mkgtru-api')
 @UseInterceptors(CacheInterceptor)
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
 
 
+  @ApiOperation({ summary: "Getting server status" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Server is available", })
+  @Get("status")
+  getPing(): "OK" {
+    return "OK"
+  }
 
-
-  /**
-   * Getting information about schedule substitutions
-   * @date 3/14/2023 - 12:16:08 AM
-   *
-   * @async
-   * @param {territories} territory
-   * @returns {Promise<ITitledDocumentInfo>}
-   */
+  @ApiSecurity("ApiKeyAuth")
+  @ApiOperation({ summary: "Getting information about timetable updates" })
+  @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
+  @ApiResponse({ status: HttpStatus.OK, description: "Success" })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("changes")
   @CacheTTL(200)
   @UseGuards(RequireApiKeyGuard)
@@ -40,14 +44,70 @@ export class MkgtruApiController {
     return this.mkgtruApiService.getChanges(territory);
   }
 
-  /**
-   * Deletes the profile of the user who sent the request
-   * @date 3/13/2023 - 11:48:18 PM
-   *
-   * @async
-   * @param {string} bearerToken
-   * @returns {*}
-   */
+  @ApiSecurity("ApiKeyAuth")
+  @ApiOperation({ summary: "Getting array of prictice timetables" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Success", })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
+  @Get("practicelist")
+  @CacheTTL(18000)
+  @UseGuards(RequireApiKeyGuard)
+  async getPracticeList(): Promise<ITitledDocumentInfo[]> {
+    return this.mkgtruApiService.getPracticeList();
+  }
+
+  @ApiSecurity("ApiKeyAuth")
+  @ApiOperation({ summary: "Getting array of timetables" })
+  @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
+  @ApiResponse({ status: HttpStatus.OK, description: "Success", })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
+  @Get("timetables")
+  @CacheTTL(18000)
+  @UseGuards(RequireApiKeyGuard)
+  async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
+    return this.mkgtruApiService.getTimetables(territory)
+  }
+
+  @ApiSecurity("ApiKeyAuth")
+  @ApiOperation({ summary: "Getting information about cabinets table document" })
+  @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
+  @ApiResponse({ status: HttpStatus.OK, description: "Success", })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
+  @Get("auditories")
+  @CacheTTL(200)
+  @UseGuards(RequireApiKeyGuard)
+  async getAuditories(): Promise<ITitledDocumentInfo> {
+    return this.mkgtruApiService.getAuditories();
+  }
+
+  @ApiSecurity("ApiKeyAuth")
+  @ApiOperation({ summary: "Updating token" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Success", })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
+  @Patch("token")
+  @UseGuards(RequireApiKeyGuard)
+  async revokeToken(@Headers("Authorization") bearerToken: string): Promise<ITokenResponse> {
+    return this.mkgtruApiService.revokeToken(bearerToken.replace("Bearer ", ""));
+  }
+
+
+
+  @ApiSecurity("ApiKeyAuth")
+  @ApiOperation({ summary: "Creating new account" })
+  @ApiParam({ name: "email", required: true, description: "Last name", type: String })
+  @ApiParam({ name: "surname", required: false, description: "First name", type: String })
+  @ApiParam({ name: "email", required: true, description: "email", type: String })
+  @ApiResponse({ status: HttpStatus.OK, description: "Success", })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
+  @Post("register")
+  @UseGuards(RequireApiKeyGuard)
+  async updateProfile(@Body("name") name: string, @Body("email") email: string, @Body("surname") surname?: string): Promise<ITokenResponse> {
+    return this.mkgtruApiService.createAccount(name, surname, email);
+  }
+
+  @ApiSecurity("ApiKeyAuth")
+  @ApiOperation({ summary: "Deleting profiles" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Profile deleted", })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Delete("profile")
   @UseGuards(RequireApiKeyGuard)
   async deleteProfile(@Headers("Authorization") bearerToken: string) {
@@ -61,93 +121,4 @@ export class MkgtruApiController {
     prisma.$disconnect();
     throw new HttpException("DELETED", HttpStatus.OK)
   }
-  
-  /**
-   * Getting an array of practice schedule document descriptions
-   * @date 3/14/2023 - 12:17:24 AM
-   *
-   * @async
-   * @returns {Promise<ITitledDocumentInfo[]>}
-   */
-  @Get("practicelist")
-  @CacheTTL(18000)
-  @UseGuards(RequireApiKeyGuard)
-  async getPracticeList(): Promise<ITitledDocumentInfo[]> {
-    return this.mkgtruApiService.getPracticeList();
-  }
-
-  
-  /**
-   * Getting a class schedule
-   * @date 3/14/2023 - 12:20:04 AM
-   *
-   * @async
-   * @param {territories} territory
-   * @returns {Promise<ITitledDocumentInfo[]>}
-   */
-  @Get("timetables")
-  @CacheTTL(18000)
-  @UseGuards(RequireApiKeyGuard)
-  async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
-    return this.mkgtruApiService.getTimetables(territory)
-  }
-  
-  
-  /**
-   * Getting server status
-   * @date 3/14/2023 - 1:04:23 AM
-   *
-   * @returns {"OK"}
-   */
-  @Get("status")
-  getPing():"OK" {
-    return "OK"
-  }
-
-  /**
-   * Updating a token
-   * @date 3/14/2023 - 12:24:47 AM
-   *
-   * @async
-   * @param {string} bearerToken
-   * @returns {Promise<ITokenResponse>}
-   */
-  @Patch("token")
-  @UseGuards(RequireApiKeyGuard)
-  async revokeToken(@Headers("Authorization") bearerToken: string):Promise<ITokenResponse> {
-    return this.mkgtruApiService.revokeToken(bearerToken.replace("Bearer ", ""));
-  }
-
-  
-  
-  /**
-   * Account registration
-   * @date 3/14/2023 - 12:25:00 AM
-   *
-   * @async
-   * @param {string} name - First name
-   * @param {string} email - email
-   * @param {?string} [surname] - Second name
-   * @returns {Promise<ITokenResponse>}
-   */
-  @Post("register")
-  @UseGuards(RequireApiKeyGuard)
-  async updateProfile(@Body("name") name: string, @Body("email") email: string, @Body("surname") surname?: string):Promise<ITokenResponse> {
-    return this.mkgtruApiService.createAccount(name,surname,email);
-  }
-
-  /**
-     * Getting information about the distribution of audiences
-     * @date 3/13/2023 - 11:36:53 PM
-     *
-     * @async
-     * @returns {Promise<ITitledDocumentInfo>} information about the distribution of audiences document
-     */
-  @Get("auditories")
-  @CacheTTL(200)
-  @UseGuards(RequireApiKeyGuard)
-  async getAuditories(): Promise<ITitledDocumentInfo> {
-    return this.mkgtruApiService.getAuditories();
-  }
-
 }

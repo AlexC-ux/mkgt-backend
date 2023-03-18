@@ -1,3 +1,5 @@
+import { ApiProperty } from "@nestjs/swagger";
+
 export interface ITitledDocumentInfo {
     'title': string,
     'last_modified': {
