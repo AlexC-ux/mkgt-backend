@@ -531,7 +531,10 @@ export class TgBot {
         if (!!user && user?.role == "admin") {
             const command: string = (<any>context.update).message.text;
 
-            const text = /\/send[aA]ll (.*)/gm.exec(command)[1];
+            console.log(context.update)
+
+            const text = /\/send[aA]ll((.*\n*)*)/gm.exec(command)[1];
+
 
             const users = await prisma.telegramAccount.findMany();
             users.forEach(async (user, index) => {
