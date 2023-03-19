@@ -43,6 +43,11 @@ export class TgBot {
         { 'command': "profile", "description": "настройка профиля" },
     ];
 
+    static adminCommands: IBotCommand[] = [
+        { 'command': "users", "description": "статистика по пользователям" },
+        { 'command': "sendAll", "description": "Отправка всем текстового сообщения" },
+    ];
+
 
     /**
      * Setting commands
@@ -77,8 +82,6 @@ export class TgBot {
         //checking status
         TgBot.botObject.command("status", this.checkStatus)
 
-        TgBot.botObject.command("users", this.getUsersCount)
-
         //set lublino callback
         TgBot.botObject.action("ifromlublino", (context) => { this.changeProfileTerrritory(context, "lublino") })
 
@@ -111,6 +114,15 @@ export class TgBot {
 
         //getting cabinets updates
         TgBot.botObject.action("cabinets", this.getCabinets);
+
+        //getting admin commands
+        TgBot.botObject.command("admin", this.getHelpAdminMessage);
+
+        //getting users stistic
+        TgBot.botObject.command("users", this.getUsersCount);
+
+        //sending message to all
+        TgBot.botObject.command("sendAll", this.sendTextToAll)
     }
 
     async getHelpMessage(context: Context) {
@@ -118,7 +130,7 @@ export class TgBot {
         TgBot.commands.map((commandElement, index) => {
             result += `${_LINE_BREAK}*${index + 1}\\.* \`/${commandElement.command}\` \\- _${commandElement.description}_`
         })
-        context.sendMessage(result, { parse_mode: "MarkdownV2" })
+        context.sendMessage(result, { parse_mode: "MarkdownV2" }).catch(TgBot.catchPollingError)
     }
 
     async botMiddleware(context: Context, next: () => Promise<any>,) {
@@ -214,57 +226,6 @@ export class TgBot {
         }
     }
 
-    private async getUsersCount(context: Context) {
-
-        const user = await TgBot.checkUser(context.callbackQuery?.from?.id || context.from.id)
-
-        if (!!user) {
-            if (user.role == acccess_roles.admin || user.role == acccess_roles.localhost) {
-                //кол-во на кучине
-                const countKuchin = (await prisma.users.aggregate({
-                    where: {
-                        territory: "kuchin"
-                    },
-                    _count: {
-                        telegramAccountId: true
-                    }
-                }))._count.telegramAccountId
-
-                //кол-во на люблино
-                const countLublino = (await prisma.users.aggregate({
-                    where: {
-                        territory: "lublino"
-                    },
-                    _count: {
-                        telegramAccountId: true
-                    }
-                }))._count.telegramAccountId
-
-                //кол-во в бд
-                const countSummary = (await prisma.users.aggregate({
-                    _count: {
-                        name: true
-                    }
-                }))._count.name
-
-                //кол-во без тг
-                const countNoTg = (await prisma.users.aggregate({
-                    where: {
-                        telegramAccountId: null
-                    },
-                    _count: {
-                        name: true
-                    }
-                }))._count.name
-
-                context.sendMessage(`Кучин: ${countKuchin}${_ROW_BREAK}Люблино: ${countLublino}${_ROW_BREAK}Без ТГ: ${countNoTg}${_ROW_BREAK}Всего: ${countSummary}`)
-                    .catch(TgBot.catchPollingError);
-
-            }
-        }
-
-    }
-
     public async onStart(context: Context) {
         const sender = context.from;
         const user = await TgBot.checkUser(sender.id);
@@ -288,8 +249,7 @@ export class TgBot {
                     }
                 });
             } catch (error) {
-                console.log(typeof error)
-                console.log({ error })
+                console.log({ error, context })
             }
         }
 
@@ -483,7 +443,7 @@ export class TgBot {
     static async checkUser(tgId: number): Promise<Users> {
         const user = await prisma.users.findFirst({
             include: {
-                tgAccount: true
+                tgAccount: true,
             },
             where: {
                 tgAccount: {
@@ -503,5 +463,83 @@ export class TgBot {
         TgBot.info.started = true;
         TgBot.botObject.catch(TgBot.catchPollingError);
         TgBot.botObject.launch();
+    }
+
+
+
+    private async getUsersCount(context: Context) {
+
+        const user = await TgBot.checkUser(context.callbackQuery?.from?.id || context.from.id)
+
+        if (!!user && user.role == "admin") {
+            //кол-во на кучине
+            const countKuchin = (await prisma.users.aggregate({
+                where: {
+                    territory: "kuchin"
+                },
+                _count: {
+                    telegramAccountId: true
+                }
+            }))._count.telegramAccountId
+
+            //кол-во на люблино
+            const countLublino = (await prisma.users.aggregate({
+                where: {
+                    territory: "lublino"
+                },
+                _count: {
+                    telegramAccountId: true
+                }
+            }))._count.telegramAccountId
+
+            //кол-во в бд
+            const countSummary = (await prisma.users.aggregate({
+                _count: {
+                    name: true
+                }
+            }))._count.name
+
+            //кол-во без тг
+            const countNoTg = (await prisma.users.aggregate({
+                where: {
+                    telegramAccountId: null
+                },
+                _count: {
+                    name: true
+                }
+            }))._count.name
+
+            context.sendMessage(`Кучин: ${countKuchin}${_ROW_BREAK}Люблино: ${countLublino}${_ROW_BREAK}Без ТГ: ${countNoTg}${_ROW_BREAK}Всего: ${countSummary}`)
+                .catch(TgBot.catchPollingError);
+        }
+
+    }
+
+    async getHelpAdminMessage(context: Context) {
+        const user = await TgBot.checkUser(context.from.id)
+        if (!!user && user.role == "admin") {
+            let result = "Команды для администраторов:";
+            TgBot.adminCommands.map((commandElement, index) => {
+                result += `${_LINE_BREAK}*${index + 1}\\.* \`/${commandElement.command}\` \\- _${commandElement.description}_`
+            })
+            context.sendMessage(result, { parse_mode: "MarkdownV2" }).catch(TgBot.catchPollingError)
+        }
+    }
+
+    async sendTextToAll(context: Context, e) {
+        const user = await TgBot.checkUser(context.from.id)
+        if (!!user && user?.role == "admin") {
+            const command: string = (<any>context.update).message.text;
+
+            const text = /\/send[aA]ll (.*)/gm.exec(command)[1];
+
+            const users = await prisma.telegramAccount.findMany();
+            users.forEach(async (user, index) => {
+                setTimeout(() => {
+                    TgBot.botObject.telegram.sendMessage(user.telegramId.toString(), text).catch(TgBot.catchPollingError);
+                }, 2000 * index)
+            })
+            console.log({ text })
+        }
     }
 }

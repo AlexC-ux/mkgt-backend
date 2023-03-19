@@ -69,16 +69,20 @@ export class MkgtOfficialBotService {
         })
 
         console.log({ users_to_notif: users?.length, terr: territory })
-        users.forEach(user => {
+        users.forEach((user, index) => {
           const tgUserId = user.telegramId.toString();
 
-          TgBot.botObject.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`, {
-            reply_markup: {
-              inline_keyboard: [
-                [{ text: "Показать замены", callback_data: "changes" }]
-              ]
-            }
-          }).catch(TgBot.catchPollingError);
+          setTimeout(() => {
+            TgBot.botObject.telegram.sendMessage(tgUserId, `Замены обновлены для территории: ${territory}`, {
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "Показать замены", callback_data: "changes" }]
+                ]
+              }
+            }).catch(TgBot.catchPollingError);
+            console.log(`sending to ${user.telegramId}`)
+          }, 2000 * index)
+          
 
         })
 
