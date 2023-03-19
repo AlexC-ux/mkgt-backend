@@ -536,13 +536,23 @@ export class TgBot {
             const text = /\/send[aA]ll((.*\n*)*)/gm.exec(command)[1];
 
 
+
             const users = await prisma.telegramAccount.findMany();
             users.forEach(async (user, index) => {
                 setTimeout(() => {
-                    TgBot.botObject.telegram.sendMessage(user.telegramId.toString(), text).catch(TgBot.catchPollingError);
+                    TgBot.botObject.telegram.sendMessage(user.telegramId.toString(), replace(text)).catch(TgBot.catchPollingError);
                 }, 2000 * index)
             })
             console.log({ text })
+        }
+
+
+        function replace(text:string):string{
+            let newText = text;
+
+            newText = newText.replace(/\{username\}/gm,user.name)
+
+            return newText;
         }
     }
 }
