@@ -526,7 +526,7 @@ export class TgBot {
         }
     }
 
-    async sendTextToAll(context: Context, e) {
+    async sendTextToAll(context: Context) {
         const user = await TgBot.checkUser(context.from.id)
         if (!!user && user?.role == "admin") {
             const command: string = (<any>context.update).message.text;
