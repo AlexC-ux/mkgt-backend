@@ -97,6 +97,9 @@ export class TgBot {
         //getting profile info
         TgBot.botObject.action("profile", this.onProfile);
 
+        //getting calls table
+        TgBot.botObject.action("callstable", this.getCallsTable)
+
         //getting practise list
         TgBot.botObject.action("practice", this.onPractice);
 
@@ -123,6 +126,73 @@ export class TgBot {
 
         //sending message to all
         TgBot.botObject.command("sendAll", this.sendTextToAll)
+    }
+
+    public async onStart(context: Context) {
+        const sender = context.from;
+        const user = await TgBot.checkUser(sender.id);
+        console.log({ user });
+        if (user == null) {
+            try {
+                const tg = await prisma.telegramAccount.create({
+                    data: {
+                        name: `${sender.first_name}`,
+                        surname: `${sender.last_name}`,
+                        telegramId: sender.id,
+                        username: `${sender.username}`
+                    }
+                })
+                await prisma.users.create({
+                    data: {
+                        name: sender.first_name,
+                        surname: `${sender.last_name}`,
+                        email: null,
+                        telegramAccountId: tg.id
+                    }
+                });
+            } catch (error) {
+                console.log({ error, context })
+            }
+        }
+
+        await context.sendMessage("🦉").catch(TgBot.catchPollingError)
+        context.sendMessage(`${sender.first_name}, добро пожаловать!` +
+            _ROW_BREAK +
+            `Если Вы учитесь в Люблино, то воспользуйтесь кнопкой 'Настройки профиля' ниже` +
+            _ROW_BREAK +
+            `/help покажет список доступных команд`, {
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        { text: `Показать замены`, callback_data: "changes" },
+                        { text: `Расписание практики`, callback_data: "practice" }
+                    ],
+                    [
+                        { text: `Аудитории`, callback_data: "cabinets" },
+                        { text: `Расписания`, callback_data: "timetables" },
+                        { text: "Звонки", callback_data: "callstable" }
+                    ],
+                    [
+                        { text: `Настройки профиля`, callback_data: "profile" }
+                    ],
+                    [
+                        { text: `Карта прохода к колледжу`, url: "https://yandex.ru/maps/213/moscow/?ll=37.643452%2C55.804215&mode=usermaps&source=constructorLink&um=constructor%3A761f4b5f3ab5e1ef399f9b57ab726d2834ed7dcaca7ef86b4eecefb68759b381&z=16" }
+                    ],
+                    [
+                        { text: `Информация разработчикам`, callback_data: "developerinfo" }
+                    ],
+                ]
+            }
+        }).catch(TgBot.catchPollingError);
+    }
+
+    async getCallsTable(context: Context) {
+        context.replyWithDocument({filename:"Расписание_Звонков.svg", url:"https://mkgt.ru/images/colledge/zvonki.svg"}, {
+            reply_markup: {
+                inline_keyboard: [[{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }]]
+            }
+        }).catch(TgBot.catchPollingError);
+        context.answerCbQuery().catch(TgBot.catchPollingError);
     }
 
     async getHelpMessage(context: Context) {
@@ -224,63 +294,6 @@ export class TgBot {
                 context.sendMessage(_DOCUMENT_ERROR).catch(TgBot.catchPollingError);
             }
         }
-    }
-
-    public async onStart(context: Context) {
-        const sender = context.from;
-        const user = await TgBot.checkUser(sender.id);
-        console.log({ user });
-        if (user == null) {
-            try {
-                const tg = await prisma.telegramAccount.create({
-                    data: {
-                        name: `${sender.first_name}`,
-                        surname: `${sender.last_name}`,
-                        telegramId: sender.id,
-                        username: `${sender.username}`
-                    }
-                })
-                await prisma.users.create({
-                    data: {
-                        name: sender.first_name,
-                        surname: `${sender.last_name}`,
-                        email: null,
-                        telegramAccountId: tg.id
-                    }
-                });
-            } catch (error) {
-                console.log({ error, context })
-            }
-        }
-
-        await context.sendMessage("🦉").catch(TgBot.catchPollingError)
-        context.sendMessage(`${sender.first_name}, добро пожаловать!` +
-            _ROW_BREAK +
-            `Если Вы учитесь в Люблино, то воспользуйтесь кнопкой 'Настройки профиля' ниже` +
-            _ROW_BREAK +
-            `/help покажет список доступных команд`, {
-            reply_markup: {
-                inline_keyboard: [
-                    [
-                        { text: `Показать замены`, callback_data: "changes" },
-                        { text: `Расписание практики`, callback_data: "practice" }
-                    ],
-                    [
-                        { text: `Аудитории`, callback_data: "cabinets" },
-                        { text: `Расписания`, callback_data: "timetables" },
-                    ],
-                    [
-                        { text: `Настройки профиля`, callback_data: "profile" }
-                    ],
-                    [
-                        { text: `Карта прохода к колледжу`, url: "https://yandex.ru/maps/213/moscow/?ll=37.643452%2C55.804215&mode=usermaps&source=constructorLink&um=constructor%3A761f4b5f3ab5e1ef399f9b57ab726d2834ed7dcaca7ef86b4eecefb68759b381&z=16" }
-                    ],
-                    [
-                        { text: `Информация разработчикам`, callback_data: "developerinfo" }
-                    ],
-                ]
-            }
-        }).catch(TgBot.catchPollingError);
     }
 
     async onProfile(context: Context) {
@@ -547,10 +560,10 @@ export class TgBot {
         }
 
 
-        function replace(text:string):string{
+        function replace(text: string): string {
             let newText = text;
 
-            newText = newText.replace(/\{username\}/gm,user.name)
+            newText = newText.replace(/\{username\}/gm, user.name)
 
             return newText;
         }
