@@ -17,12 +17,6 @@ const tokenSchema = {
   }
 }
 
-const ItitledDocSchema = {
-
-}
-
-
-
 
 
 
@@ -56,7 +50,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success" })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("changes")
-  @CacheTTL(200)
+  @CacheTTL(60)
   @UseGuards(RequireApiKeyGuard)
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getChanges(territory);
@@ -91,7 +85,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success", })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("auditories")
-  @CacheTTL(200)
+  @CacheTTL(60)
   @UseGuards(RequireApiKeyGuard)
   async getAuditories(): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getAuditories();
