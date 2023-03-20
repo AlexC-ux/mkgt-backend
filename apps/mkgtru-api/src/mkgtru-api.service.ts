@@ -179,8 +179,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
     const dataType: string = documentResponse.headers['content-type'];
     const lastModifiedDate = new Date(documentResponse.headers['last-modified']);
 
-    const htmlViewCode = `<html><body><embed src='https://${process.env.SITE_DOMAIN}${linkToFile}' style='width:98vw; height:98vh;'/></body></html>`;
-    const htmlViewBase64 = Buffer.from(htmlViewCode).toString('base64');
+    const url = `https://${process.env.SITE_DOMAIN}${linkToFile}`;
     return (
       {
         'title': node.innerText,
@@ -190,10 +189,11 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
           'timestamp': lastModifiedDate.getTime()
         },
         'links': {
-          'file': `https://${process.env.SITE_DOMAIN}${linkToFile}`,
+          'file': `https://${url}`,
           'views': {
-            'google_docs': `https://docs.google.com/gview?url=https://${process.env.SITE_DOMAIN}${linkToFile}&embed=true`,
-            'local_html': `data:text/html;base64,${htmlViewBase64}`,
+            'google_docs': `https://docs.google.com/gview?url=${url}&embed=true`,
+            'viewer1':`http://www.nice-rf.ru/viewer?url=${url}`,
+            'viewer2':`https://pdfviewer.softgateon.net/?file=${url}`
           },
         },
         'data_type': dataType,

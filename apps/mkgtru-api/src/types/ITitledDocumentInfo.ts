@@ -11,7 +11,8 @@ export interface ITitledDocumentInfo {
         'file': string,
         'views': {
             'google_docs': string,
-            'local_html': string,
+            'viewer1':string,
+            'viewer2':string,
         },
     },
     'data_type': string,
