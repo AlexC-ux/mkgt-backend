@@ -32,7 +32,6 @@ const tokenSchema = {
  */
 @Controller("mkgtru-api")
 @ApiTags('mkgtru-api')
-@CacheTTL(200)
 @UseInterceptors(CacheInterceptor)
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
@@ -41,6 +40,7 @@ export class MkgtruApiController {
   @ApiOperation({ summary: "Getting server status" })
   @ApiResponse({ status: HttpStatus.OK, description: "Server is available", })
   @Get("status")
+  @CacheTTL(0)
   getPing(): "OK" {
     return "OK"
   }
@@ -52,6 +52,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("changes")
   @UseGuards(RequireApiKeyGuard)
+  @CacheTTL(200)
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getChanges(territory);
   }
@@ -62,10 +63,12 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("practicelist")
   @UseGuards(RequireApiKeyGuard)
+  @CacheTTL(80000)
   async getPracticeList(): Promise<ITitledDocumentInfo[]> {
     return this.mkgtruApiService.getPracticeList();
   }
 
+  
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Getting array of timetables" })
   @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
@@ -73,6 +76,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("timetables")
   @UseGuards(RequireApiKeyGuard)
+  @CacheTTL(80000)
   async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
     return this.mkgtruApiService.getTimetables(territory)
   }
@@ -84,6 +88,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("auditories")
   @UseGuards(RequireApiKeyGuard)
+  @CacheTTL(200)
   async getAuditories(): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getAuditories();
   }
@@ -100,6 +105,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Patch("token")
   @UseGuards(RequireApiKeyGuard)
+  @CacheTTL(0)
   async revokeToken(@Headers("Authorization") bearerToken: string): Promise<ITokenResponse> {
     return this.mkgtruApiService.revokeToken(bearerToken.replace("Bearer ", ""));
   }
