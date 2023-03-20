@@ -216,6 +216,8 @@ export class TgBot {
             //skip errrors
             error?.response?.error_code != 403 //if user not found
             &&
+            error?.response?.error_code != 400 //if chat not found
+            &&
             !error?.toString().includes(`"answerCbQuery" isn't available for "message"`) //if answer callback on message
         ) {
             console.log("ЧТО-ТО НАЕБНУЛОСЬ!")
