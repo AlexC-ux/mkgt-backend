@@ -677,7 +677,7 @@ async function updateProfile(context: Context) {
 }
 
 async function isUserInChannel(context: Context):Promise<boolean> {
-    const from: any = context.callbackQuery?.from || context.message?.from || context.inlineQuery.from;
+    const from: any = context.callbackQuery?.from || context.message?.from || context.inlineQuery?.from || null;
     if (!!from) {
         const userTelegramId = from.id;
         const channeluser = await TgBot.botObject.telegram.getChatMember(adminChannelName, userTelegramId);
