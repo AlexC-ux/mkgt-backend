@@ -136,15 +136,15 @@ export class TgBot {
                 const tg = await prisma.telegramAccount.create({
                     data: {
                         name: `${sender.first_name}`,
-                        surname: `${sender.last_name}`,
+                        surname: sender.last_name||null,
                         telegramId: sender.id,
-                        username: `${sender.username}`
+                        username: sender.username||null
                     }
                 })
                 await prisma.users.create({
                     data: {
                         name: sender.first_name,
-                        surname: `${sender.last_name}`,
+                        surname: sender.last_name||null,
                         email: null,
                         telegramAccountId: tg.id
                     }
