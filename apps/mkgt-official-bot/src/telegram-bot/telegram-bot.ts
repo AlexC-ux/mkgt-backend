@@ -226,64 +226,68 @@ export class TgBot {
 
         async function updateProfile(context: Context) {
             const from: any = context.callbackQuery?.from || context.message?.from;
-            prisma.telegramAccount.findUnique({
-                where: {
-                    telegramId: from.id
-                },
-                include: {
-                    Users: true
-                }
-            }).then(async user => {
-                if (!!user) {
-                    const identifer = user.Users[0].identifer;
-                    if (user.name != from.first_name) {
-                        await prisma.users.update({
-                            where: {
-                                identifer,
-                            },
-                            data: {
-                                name: from.first_name,
-                                tgAccount: {
-                                    update: {
-                                        name: from.first_name
-                                    }
-                                }
-                            }
-                        })
-                    }
 
-                    if (user.surname != from.last_name || null) {
-                        await prisma.users.update({
-                            where: {
-                                identifer,
-                            },
-                            data: {
-                                surname: from.last_name || null,
-                                tgAccount: {
-                                    update: {
-                                        surname: from.last_name || null
+            if (!!from) {
+                console.log({from})
+                prisma.telegramAccount.findUnique({
+                    where: {
+                        telegramId: from.id
+                    },
+                    include: {
+                        Users: true
+                    }
+                }).then(async user => {
+                    if (!!user) {
+                        const identifer = user.Users[0].identifer;
+                        if (user.name != from.first_name) {
+                            await prisma.users.update({
+                                where: {
+                                    identifer,
+                                },
+                                data: {
+                                    name: from.first_name,
+                                    tgAccount: {
+                                        update: {
+                                            name: from.first_name
+                                        }
                                     }
                                 }
-                            }
-                        })
-                    }
+                            })
+                        }
 
-                    if (user.username != from.username || null) {
-                        await prisma.users.update({
-                            where: {
-                                identifer,
-                            },
-                            data: {
-                                tgAccount: {
-                                    update: {
-                                        username: from.username || null
+                        if (user.surname != from.last_name || null) {
+                            await prisma.users.update({
+                                where: {
+                                    identifer,
+                                },
+                                data: {
+                                    surname: from.last_name || null,
+                                    tgAccount: {
+                                        update: {
+                                            surname: from.last_name || null
+                                        }
                                     }
                                 }
-                            }
-                        })
+                            })
+                        }
+
+                        if (user.username != from.username || null) {
+                            await prisma.users.update({
+                                where: {
+                                    identifer,
+                                },
+                                data: {
+                                    tgAccount: {
+                                        update: {
+                                            username: from.username || null
+                                        }
+                                    }
+                                }
+                            })
+                        }
                     }
-                }
-            })
+                })
+            }
         }
     }
 
@@ -364,7 +368,7 @@ export class TgBot {
                 context.editMessageText(`Расписания занятий:`,
                     {
                         reply_markup: {
-                            inline_keyboard: [...buttons,[{ text: "Вернуться", callback_data: "showMainMenu" }]]
+                            inline_keyboard: [...buttons, [{ text: "Вернуться", callback_data: "showMainMenu" }]]
                         }
                     }).catch(TgBot.catchPollingError);
                 context.answerCbQuery().catch(TgBot.catchPollingError);
@@ -475,12 +479,12 @@ export class TgBot {
                     if (!buttons[index]) {
                         buttons[index] = [];
                     }
-                    buttons[index] = [{ text: document.title, url: document.links.views.google_docs },...buttons[index]]
+                    buttons[index] = [{ text: document.title, url: document.links.views.google_docs }, ...buttons[index]]
                 })
                 context.editMessageText(`Расписания практики:`,
                     {
                         reply_markup: {
-                            inline_keyboard: [...buttons,[{ text: "Вернуться", callback_data: "showMainMenu" }]]
+                            inline_keyboard: [...buttons, [{ text: "Вернуться", callback_data: "showMainMenu" }]]
                         }
                     }).catch(TgBot.catchPollingError);
                 context.answerCbQuery().catch(TgBot.catchPollingError);
@@ -549,7 +553,7 @@ export class TgBot {
         TgBot.botObject.telegram.editMessageText(context.callbackQuery.from.id, context.callbackQuery.message.message_id, context.inlineMessageId, "Главное меню", TgBot.mainMenu).catch(TgBot.catchPollingError);
     }
 
-    private deleteOnCallback(context:Context){
+    private deleteOnCallback(context: Context) {
         TgBot.botObject.telegram.deleteMessage(context.callbackQuery.from.id, context.callbackQuery.message.message_id).catch(TgBot.catchPollingError);
     }
 
@@ -636,13 +640,13 @@ export class TgBot {
 
             const users = await prisma.telegramAccount.findMany();
 
-            context.sendMessage(`Рассылка займёт ${Math.floor(users.length*2/60)} минут ${users.length*2%60} секунд` ).catch(TgBot.catchPollingError);
-            
+            context.sendMessage(`Рассылка займёт ${Math.floor(users.length * 2 / 60)} минут ${users.length * 2 % 60} секунд`).catch(TgBot.catchPollingError);
+
             try {
                 setTimeout(() => {
                     context.sendMessage("Рассылка выполнена").catch(TgBot.catchPollingError);
                 }, 2000 * users.length)
-            } catch (error) {}
+            } catch (error) { }
 
             users.forEach(async (tgUser, index) => {
                 setTimeout(() => {
