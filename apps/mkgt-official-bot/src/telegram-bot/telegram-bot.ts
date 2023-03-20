@@ -187,7 +187,7 @@ export class TgBot {
     }
 
     async getCallsTable(context: Context) {
-        context.replyWithDocument({filename:"Расписание_Звонков.svg", url:"https://mkgt.ru/images/colledge/zvonki.svg"}, {
+        context.replyWithDocument({ filename: "Расписание_Звонков.svg", url: "https://mkgt.ru/images/colledge/zvonki.svg" }, {
             reply_markup: {
                 inline_keyboard: [[{ text: "Скрыть сообщение", callback_data: "deleteOnClick" }]]
             }
@@ -551,21 +551,23 @@ export class TgBot {
 
 
             const users = await prisma.telegramAccount.findMany();
-            users.forEach(async (user, index) => {
+            users.forEach(async (tgUser, index) => {
                 setTimeout(() => {
-                    TgBot.botObject.telegram.sendMessage(user.telegramId.toString(), replace(text)).catch(TgBot.catchPollingError);
+                    TgBot.botObject.telegram.sendMessage(tgUser.telegramId.toString(), replace(text)).catch(TgBot.catchPollingError);
                 }, 2000 * index)
+
+                function replace(text: string): string {
+                    let newText = text;
+
+                    newText = newText.replace(/\{username\}/gm, tgUser.name)
+
+                    return newText;
+                }
             })
             console.log({ text })
         }
 
 
-        function replace(text: string): string {
-            let newText = text;
 
-            newText = newText.replace(/\{username\}/gm, user.name)
-
-            return newText;
-        }
     }
 }
