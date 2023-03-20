@@ -13,6 +13,8 @@ const _ROW_BREAK: string = "\n\n";
 
 const _DOCUMENT_ERROR = "Не удалось получить документ с сервера";
 
+const adminChannelName = "@alexcux_dev"
+
 export class TgBot {
 
     public static botObject: Telegraf;
@@ -217,77 +219,15 @@ export class TgBot {
     }
 
     async botMiddleware(context: Context, next: () => Promise<any>,) {
+        const ignoreChannel = ["/start", "/status", "admin", "users", "sendAll"]
         updateProfile(context);
         const sended: any = context.update;
         const incomingMessage = sended?.message?.text || sended?.callback_query?.data
         console.log(`Collected message ${incomingMessage}`)
-        await next();
-
-
-        async function updateProfile(context: Context) {
-            const from: any = context.callbackQuery?.from || context.message?.from;
-
-            if (!!from) {
-                console.log({from})
-                prisma.telegramAccount.findUnique({
-                    where: {
-                        telegramId: from.id
-                    },
-                    include: {
-                        Users: true
-                    }
-                }).then(async user => {
-                    if (!!user) {
-                        const identifer = user.Users[0].identifer;
-                        if (user.name != from.first_name) {
-                            await prisma.users.update({
-                                where: {
-                                    identifer,
-                                },
-                                data: {
-                                    name: from.first_name,
-                                    tgAccount: {
-                                        update: {
-                                            name: from.first_name
-                                        }
-                                    }
-                                }
-                            })
-                        }
-
-                        if (user.surname != from.last_name || null) {
-                            await prisma.users.update({
-                                where: {
-                                    identifer,
-                                },
-                                data: {
-                                    surname: from.last_name || null,
-                                    tgAccount: {
-                                        update: {
-                                            surname: from.last_name || null
-                                        }
-                                    }
-                                }
-                            })
-                        }
-
-                        if (user.username != from.username || null) {
-                            await prisma.users.update({
-                                where: {
-                                    identifer,
-                                },
-                                data: {
-                                    tgAccount: {
-                                        update: {
-                                            username: from.username || null
-                                        }
-                                    }
-                                }
-                            })
-                        }
-                    }
-                })
-            }
+        if (await isUserInChannel(context)||ignoreChannel.includes(incomingMessage)) {
+            await next();
+        }else{
+            context.sendMessage(`Бот совершенно бесплатен для пользователей, но в знак поддержки мы просим только подписку на канал разработчика: ${adminChannelName}`)
         }
     }
 
@@ -666,5 +606,87 @@ export class TgBot {
 
 
 
+    }
+}
+
+
+async function updateProfile(context: Context) {
+    const from: any = context.callbackQuery?.from || context.message?.from;
+
+    if (!!from) {
+        console.log({ from })
+        prisma.telegramAccount.findUnique({
+            where: {
+                telegramId: from.id
+            },
+            include: {
+                Users: true
+            }
+        }).then(async user => {
+            if (!!user) {
+                const identifer = user.Users[0].identifer;
+                if (user.name != from.first_name) {
+                    await prisma.users.update({
+                        where: {
+                            identifer,
+                        },
+                        data: {
+                            name: from.first_name,
+                            tgAccount: {
+                                update: {
+                                    name: from.first_name
+                                }
+                            }
+                        }
+                    })
+                }
+
+                if (user.surname != from.last_name || null) {
+                    await prisma.users.update({
+                        where: {
+                            identifer,
+                        },
+                        data: {
+                            surname: from.last_name || null,
+                            tgAccount: {
+                                update: {
+                                    surname: from.last_name || null
+                                }
+                            }
+                        }
+                    })
+                }
+
+                if (user.username != from.username || null) {
+                    await prisma.users.update({
+                        where: {
+                            identifer,
+                        },
+                        data: {
+                            tgAccount: {
+                                update: {
+                                    username: from.username || null
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    }
+}
+
+async function isUserInChannel(context: Context):Promise<boolean> {
+    const from: any = context.callbackQuery?.from || context.message?.from || context.inlineQuery.from;
+    if (!!from) {
+        const userTelegramId = from.id;
+        const channeluser = await TgBot.botObject.telegram.getChatMember(adminChannelName, userTelegramId);
+        if (!!channeluser) {
+            return channeluser.status!="left"
+        }else{
+            return false
+        }
+    }else{
+        return true
     }
 }
