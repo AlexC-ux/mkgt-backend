@@ -11,7 +11,7 @@ const cuid = require("cuid");
 @Injectable()
 export class MkgtruApiService {
 
-  
+
   /**
    * Creating new account in database
    * @date 3/14/2023 - 1:22:12 AM
@@ -22,24 +22,24 @@ export class MkgtruApiService {
    * @param {string} email
    * @returns {Promise<ITokenResponse>}
    */
-  async createAccount(name:string, surname:string, email:string):Promise<ITokenResponse>{
+  async createAccount(name: string, surname: string, email: string): Promise<ITokenResponse> {
     const token = cuid();
 
     const prisma = new PrismaClient();
     await prisma.users.create({
-      data:{
+      data: {
         name,
         surname,
         email,
-        token:token
+        token: token
       }
     });
     prisma.$disconnect();
 
-    return {token}
+    return { token }
   }
 
-  
+
   /**
    * Updates token in db
    * @date 3/14/2023 - 1:22:34 AM
@@ -65,7 +65,7 @@ export class MkgtruApiService {
     }
   }
 
-  
+
   /**
    * Getting changes info
    * @date 3/14/2023 - 1:22:52 AM
@@ -79,7 +79,7 @@ export class MkgtruApiService {
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
-  
+
   /**
    * Getting information about auditories
    * @date 3/14/2023 - 1:23:02 AM
@@ -92,7 +92,7 @@ export class MkgtruApiService {
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
-  
+
   /**
    * Getting timetables array
    * @date 3/14/2023 - 1:24:07 AM
@@ -113,7 +113,7 @@ export class MkgtruApiService {
     return files
   }
 
-  
+
   /**
    * Getting array of available practice timetables
    * @date 3/14/2023 - 1:24:51 AM
@@ -192,8 +192,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
           'file': `https://${url}`,
           'views': {
             'google_docs': `https://docs.google.com/gview?url=${url}&embed=true`,
-            'viewer1':`http://www.nice-rf.ru/viewer?url=${url}`,
-            'viewer2':`https://pdfviewer.softgateon.net/?file=${url}`
+            'viewer1': `https://pdfviewer.softgateon.net/?file=${url}`,
           },
         },
         'data_type': dataType,
