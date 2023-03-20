@@ -32,6 +32,7 @@ const tokenSchema = {
  */
 @Controller("mkgtru-api")
 @ApiTags('mkgtru-api')
+@CacheTTL(200)
 @UseInterceptors(CacheInterceptor)
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
@@ -50,7 +51,6 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success" })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("changes")
-  @CacheTTL(60)
   @UseGuards(RequireApiKeyGuard)
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getChanges(territory);
@@ -61,7 +61,6 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success", })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("practicelist")
-  @CacheTTL(18000)
   @UseGuards(RequireApiKeyGuard)
   async getPracticeList(): Promise<ITitledDocumentInfo[]> {
     return this.mkgtruApiService.getPracticeList();
@@ -73,7 +72,6 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success", })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("timetables")
-  @CacheTTL(18000)
   @UseGuards(RequireApiKeyGuard)
   async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
     return this.mkgtruApiService.getTimetables(territory)
@@ -85,7 +83,6 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success", })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("auditories")
-  @CacheTTL(60)
   @UseGuards(RequireApiKeyGuard)
   async getAuditories(): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getAuditories();
