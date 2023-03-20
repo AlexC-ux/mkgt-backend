@@ -131,7 +131,6 @@ export class TgBot {
     public async onStart(context: Context) {
         const sender = context.from;
         const user = await TgBot.checkUser(sender.id);
-        console.log({ user });
         if (user == null) {
             try {
                 const tg = await prisma.telegramAccount.create({
@@ -204,10 +203,74 @@ export class TgBot {
     }
 
     async botMiddleware(context: Context, next: () => Promise<any>,) {
+        updateProfile(context);
         const sended: any = context.update;
         const incomingMessage = sended?.message?.text || sended?.callback_query?.data
         console.log(`Collected message ${incomingMessage}`)
         await next();
+
+
+        async function updateProfile(context: Context) {
+            const from: any = context.callbackQuery?.from || context.message?.from;
+            prisma.telegramAccount.findUnique({
+                where: {
+                    telegramId: from.id
+                },
+                include: {
+                    Users: true
+                }
+            }).then(async user => {
+                if (!!user) {
+                    const identifer = user.Users[0].identifer;
+                    if (user.name != from.first_name) {
+                        await prisma.users.update({
+                            where: {
+                                identifer,
+                            },
+                            data: {
+                                name: from.first_name,
+                                tgAccount: {
+                                    update: {
+                                        name: from.first_name
+                                    }
+                                }
+                            }
+                        })
+                    }
+
+                    if (user.surname != from.last_name||null) {
+                        await prisma.users.update({
+                            where: {
+                                identifer,
+                            },
+                            data: {
+                                surname: from.last_name||null,
+                                tgAccount: {
+                                    update: {
+                                        surname: from.last_name||null
+                                    }
+                                }
+                            }
+                        })
+                    }
+
+                    if (user.username != from.username||null) {
+                        await prisma.users.update({
+                            where: {
+                                identifer,
+                            },
+                            data: {
+                                tgAccount: {
+                                    update: {
+                                        username:from.username||null
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+            })
+        }
     }
 
     //error handler
@@ -479,6 +542,9 @@ export class TgBot {
         TgBot.botObject.catch(TgBot.catchPollingError);
         TgBot.botObject.launch();
     }
+
+
+
 
 
 
