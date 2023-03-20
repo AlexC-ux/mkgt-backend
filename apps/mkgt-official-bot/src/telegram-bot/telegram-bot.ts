@@ -553,6 +553,13 @@ export class TgBot {
 
 
             const users = await prisma.telegramAccount.findMany();
+
+            try {
+                setTimeout(() => {
+                    context.sendMessage("Рассылка выполнена")
+                }, 2000 * users.length)
+            } catch (error) { }
+
             users.forEach(async (tgUser, index) => {
                 setTimeout(() => {
                     TgBot.botObject.telegram.sendMessage(tgUser.telegramId.toString(), replace(text)).catch(TgBot.catchPollingError);
