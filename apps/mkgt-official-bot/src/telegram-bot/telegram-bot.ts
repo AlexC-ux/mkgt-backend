@@ -272,7 +272,7 @@ export class TgBot {
                             inline_keyboard: [
                                 [
                                     { text: "Скачать", url: doc?.links.file },
-                                    { text: "Просмотреть", url: doc?.links.views.viewer1 },
+                                    { text: "Просмотреть", url: doc?.links.views.google_docs },
                                 ],
                                 [{ text: "Вернуться", callback_data: "showMainMenu" }]
                             ]
@@ -298,7 +298,7 @@ export class TgBot {
                     if (!buttons[index]) {
                         buttons[index] = [];
                     }
-                    buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.viewer1 }]
+                    buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.google_docs }]
                 })
                 context.editMessageText(`Расписания занятий:`,
                     {
@@ -387,7 +387,7 @@ export class TgBot {
                             inline_keyboard: [
                                 [
                                     { text: "Скачать", url: doc?.links.file },
-                                    { text: "Просмотреть", url: doc?.links.views.viewer1 },
+                                    { text: "Просмотреть", url: doc?.links.views.google_docs },
                                 ],
                                 [
                                     { text: "Вернуться", callback_data: "showMainMenu" }
@@ -414,7 +414,7 @@ export class TgBot {
                     if (!buttons[index]) {
                         buttons[index] = [];
                     }
-                    buttons[index] = [{ text: document.title, url: document.links.views.viewer1 }, ...buttons[index]]
+                    buttons[index] = [{ text: document.title, url: document.links.views.google_docs }, ...buttons[index]]
                 })
                 context.editMessageText(`Расписания практики:`,
                     {
