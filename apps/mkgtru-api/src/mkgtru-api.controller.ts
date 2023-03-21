@@ -32,7 +32,6 @@ const tokenSchema = {
  * @typedef {MkgtruApiController}
  */
 @Controller("mkgtru-api")
-@UseInterceptors(CacheInterceptor)
 @ApiTags('mkgtru-api')
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService,
@@ -57,7 +56,7 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
-    const value = await this.cacheManager.get<ITitledDocumentInfo>(`changes_${territory}`)
+    const value = await this.cacheManager.get<ITitledDocumentInfo|null>(`changes_${territory}`)
     if (!!value) {
       return value;
     } else {
