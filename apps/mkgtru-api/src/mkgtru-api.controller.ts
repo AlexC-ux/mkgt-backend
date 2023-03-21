@@ -31,6 +31,7 @@ const tokenSchema = {
  * @typedef {MkgtruApiController}
  */
 @Controller("mkgtru-api")
+@UseInterceptors(CacheInterceptor)
 @ApiTags('mkgtru-api')
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
