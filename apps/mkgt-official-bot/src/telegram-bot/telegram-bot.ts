@@ -204,7 +204,7 @@ export class TgBot {
     async getCallsTable(context: Context) {
         context.replyWithDocument({ filename: "Расписание_Звонков.svg", url: "https://mkgt.ru/images/colledge/zvonki.svg" }, {
             reply_markup: {
-                inline_keyboard: [[{ text: "Скрыть", callback_data: "deleteCb" }]]
+                inline_keyboard: [[{text:"Просмотреть", url:"https://docs.google.com/gview?url=https://mkgt.ru/images/colledge/zvonki.svg"}],[{ text: "Скрыть", callback_data: "deleteCb" }]]
             }
         }).catch(TgBot.catchPollingError);
         context.answerCbQuery().catch(TgBot.catchPollingError);
