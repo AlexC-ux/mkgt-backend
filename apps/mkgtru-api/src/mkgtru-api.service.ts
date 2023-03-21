@@ -189,7 +189,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
           'timestamp': lastModifiedDate.getTime()
         },
         'links': {
-          'file': `https://${url}`,
+          'file': url,
           'views': {
             'google_docs': `https://docs.google.com/gview?url=${url}&embed=true`,
             'viewer1': `https://pdfviewer.softgateon.net/?file=${url}`,
