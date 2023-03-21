@@ -32,6 +32,7 @@ const tokenSchema = {
  */
 @Controller("mkgtru-api")
 @ApiTags('mkgtru-api')
+@UseInterceptors(CacheInterceptor)
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
 
@@ -43,13 +44,13 @@ export class MkgtruApiController {
     return "OK"
   }
 
+  @CacheTTL(10000)
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Getting information about timetable updates" })
   @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
   @ApiResponse({ status: HttpStatus.OK, description: "Success" })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("changes")
-  @CacheTTL(10000)
   @UseGuards(RequireApiKeyGuard)
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getChanges(territory);
@@ -65,7 +66,7 @@ export class MkgtruApiController {
     return this.mkgtruApiService.getPracticeList();
   }
 
-  
+
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Getting array of timetables" })
   @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
