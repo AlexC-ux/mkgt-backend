@@ -6,14 +6,9 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: "./apps/mkgtru-api/.env" }),
-    CacheModule.register({isGlobal:true}),
+    CacheModule.register({ isGlobal: true }),
   ],
   controllers: [MkgtruApiController],
-  providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
-    MkgtruApiService],
+  providers: [MkgtruApiService],
 })
 export class MkgtruApiModule { }
