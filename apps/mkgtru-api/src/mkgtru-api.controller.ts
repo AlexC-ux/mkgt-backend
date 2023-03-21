@@ -56,16 +56,7 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
-    const value = await this.cacheManager.get<ITitledDocumentInfo|null>(`changes_${territory}`)
-    if (!!value) {
-      return value;
-    } else {
-      const result = await this.mkgtruApiService.getChanges(territory);
-      await this.cacheManager.set(`changes_${territory}`, result, 5000)
-      return result;
-    }
-
-    return
+    return this.getResultFromCache(`practicelist`, 5*1000, this.mkgtruApiService.getChanges(territory));
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -75,9 +66,19 @@ export class MkgtruApiController {
   @Get("practicelist")
   @UseGuards(RequireApiKeyGuard)
   async getPracticeList(): Promise<ITitledDocumentInfo[]> {
-    return this.mkgtruApiService.getPracticeList();
+    return this.getResultFromCache(`practicelist`, 30 * 60 * 1000, this.mkgtruApiService.getPracticeList());
   }
 
+  async getResultFromCache<T>(key: string, ttlMs: number, func: Promise<T>): Promise<T> {
+    const value = await this.cacheManager.get<T | null>(key)
+    if (!!value) {
+      return value;
+    } else {
+      const result = await func;
+      await this.cacheManager.set(key, result, ttlMs)
+      return result
+    }
+  }
 
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Getting array of timetables" })
