@@ -12,5 +12,5 @@ app.use(createProxyMiddleware({
 }))
 
 app.listen(6036, () => {
-  console.info('proxy server is running on port 8088')
+  console.info('proxy server is running on port 6036')
 })
