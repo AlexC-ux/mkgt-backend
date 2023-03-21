@@ -206,7 +206,8 @@ export class TgBot {
             reply_markup: {
                 inline_keyboard: [
                     [{text:"Просмотреть", url:"https://docs.google.com/gview?url=https://mkgt.ru/images/colledge/zvonki.svg"}],
-                    [{text:"Скачать", url:"https://mkgt.ru/images/colledge/zvonki.svg"}]
+                    [{text:"Скачать", url:"https://mkgt.ru/images/colledge/zvonki.svg"}],
+                    [{ text: "Вернуться", callback_data: "showMainMenu" }]
             ]
             }
         }).catch(TgBot.catchPollingError);
