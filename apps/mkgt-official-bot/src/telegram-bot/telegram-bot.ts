@@ -224,9 +224,9 @@ export class TgBot {
         const sended: any = context.update;
         const incomingMessage = sended?.message?.text || sended?.callback_query?.data
         console.log(`Collected message ${incomingMessage}`)
-        if (await isUserInChannel(context)||ignoreChannel.includes(incomingMessage)) {
+        if (await isUserInChannel(context) || ignoreChannel.includes(incomingMessage)) {
             await next();
-        }else{
+        } else {
             context.sendMessage(`Бот совершенно бесплатен для пользователей, но в знак поддержки мы просим только подписку на канал разработчика: ${adminChannelName}`)
         }
     }
@@ -234,12 +234,7 @@ export class TgBot {
     //error handler
     static async catchPollingError(error: any, context?: Context) {
         if (
-            //skip errrors
-            error?.response?.error_code != 403 //if user not found
-            &&
-            error?.response?.error_code != 400 //if chat not found
-            &&
-            !error?.toString().includes(`"answerCbQuery" isn't available for "message"`) //if answer callback on message
+            true
         ) {
             console.log("ЧТО-ТО НАЕБНУЛОСЬ!")
             console.log(error)
@@ -384,7 +379,7 @@ export class TgBot {
 
         if (!!user) {
             const doc: ITitledDocumentInfo | null = await TgBot.getAPIResponse("/changes", user.territory);
-            console.log({ doc })
+
             if (!!doc) {
                 context.editMessageText(`Замены от ${doc?.last_modified.ru}`,
                     {
@@ -676,17 +671,17 @@ async function updateProfile(context: Context) {
     }
 }
 
-async function isUserInChannel(context: Context):Promise<boolean> {
+async function isUserInChannel(context: Context): Promise<boolean> {
     const from: any = context.callbackQuery?.from || context.message?.from || context.inlineQuery?.from || null;
     if (!!from) {
         const userTelegramId = from.id;
         const channeluser = await TgBot.botObject.telegram.getChatMember(adminChannelName, userTelegramId);
         if (!!channeluser) {
-            return channeluser.status!="left"
-        }else{
+            return channeluser.status != "left"
+        } else {
             return false
         }
-    }else{
+    } else {
         return true
     }
 }
