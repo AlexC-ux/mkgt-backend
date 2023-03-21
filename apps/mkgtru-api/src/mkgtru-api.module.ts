@@ -9,6 +9,11 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     CacheModule.register({isGlobal:true,ttl:5, max:100}),
   ],
   controllers: [MkgtruApiController],
-  providers: [MkgtruApiService],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+    MkgtruApiService],
 })
 export class MkgtruApiModule { }
