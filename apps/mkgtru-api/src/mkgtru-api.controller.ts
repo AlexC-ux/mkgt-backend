@@ -32,7 +32,6 @@ const tokenSchema = {
  */
 @Controller("mkgtru-api")
 @ApiTags('mkgtru-api')
-@UseInterceptors(CacheInterceptor)
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
 
@@ -40,7 +39,6 @@ export class MkgtruApiController {
   @ApiOperation({ summary: "Getting server status" })
   @ApiResponse({ status: HttpStatus.OK, description: "Server is available", })
   @Get("status")
-  @CacheTTL(0)
   getPing(): "OK" {
     return "OK"
   }
@@ -51,6 +49,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success" })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("changes")
+  @UseInterceptors(CacheInterceptor)
   @UseGuards(RequireApiKeyGuard)
   @CacheTTL(8)
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
