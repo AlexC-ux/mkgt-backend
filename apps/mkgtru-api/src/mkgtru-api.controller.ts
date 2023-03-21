@@ -44,6 +44,7 @@ export class MkgtruApiController {
   }
 
   @UseInterceptors(CacheInterceptor)
+  @CacheKey('custom-key')
   @CacheTTL(1)
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Getting information about timetable updates" })
