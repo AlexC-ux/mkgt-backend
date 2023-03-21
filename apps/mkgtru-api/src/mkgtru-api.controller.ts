@@ -40,6 +40,7 @@ export class MkgtruApiController {
   @ApiOperation({ summary: "Getting server status" })
   @ApiResponse({ status: HttpStatus.OK, description: "Server is available", })
   @Get("status")
+  @CacheKey("status")
   @CacheTTL(2)
   getPing(): "OK" {
     return "OK"
@@ -52,6 +53,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("changes")
   @UseGuards(RequireApiKeyGuard)
+  @CacheKey("changes")
   @CacheTTL(2)
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getChanges(territory);
