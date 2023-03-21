@@ -1,4 +1,4 @@
-import { Body, CacheInterceptor, CacheKey, CacheTTL, Controller, Get, HttpException, HttpStatus, Patch, Query, UseGuards, UseInterceptors, Headers, Post, Delete } from '@nestjs/common';
+import { Body, CacheInterceptor, CacheKey, Controller, Get, HttpException, HttpStatus, Patch, Query, UseGuards, UseInterceptors, Headers, Post, Delete, CacheTTL } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { PrismaClient } from '@prisma/client';
 import { type } from 'os';
@@ -31,7 +31,6 @@ const tokenSchema = {
  * @typedef {MkgtruApiController}
  */
 @Controller("mkgtru-api")
-@UseInterceptors(CacheInterceptor)
 @ApiTags('mkgtru-api')
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
@@ -51,7 +50,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("changes")
   @UseInterceptors(CacheInterceptor)
-  @CacheTTL(5000)
+  @CacheTTL(10000)
   @UseGuards(RequireApiKeyGuard)
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getChanges(territory);
