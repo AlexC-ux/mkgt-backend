@@ -56,7 +56,7 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`practicelist`, 10*1000, this.mkgtruApiService.getChanges(territory));
+    return this.getResultFromCache(`practicelist`, 150 * 1000, this.mkgtruApiService.getChanges(territory));
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -66,18 +66,7 @@ export class MkgtruApiController {
   @Get("practicelist")
   @UseGuards(RequireApiKeyGuard)
   async getPracticeList(): Promise<ITitledDocumentInfo[]> {
-    return this.getResultFromCache(`practicelist`, 30 * 60 * 1000, this.mkgtruApiService.getPracticeList());
-  }
-
-  async getResultFromCache<T>(key: string, ttlMs: number, func: Promise<T>): Promise<T> {
-    const value = await this.cacheManager.get<T | null>(key)
-    if (!!value) {
-      return value;
-    } else {
-      const result = await func;
-      await this.cacheManager.set(key, result, ttlMs)
-      return result
-    }
+    return this.getResultFromCache(`practicelist`, 3 * 24 * 60 * 60 * 1000, this.mkgtruApiService.getPracticeList());
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -88,7 +77,7 @@ export class MkgtruApiController {
   @Get("timetables")
   @UseGuards(RequireApiKeyGuard)
   async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
-    return this.mkgtruApiService.getTimetables(territory)
+    return this.getResultFromCache(`timetables_${territory}`, 3 * 24 * 60 * 60 * 1000, this.mkgtruApiService.getTimetables(territory));
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -99,7 +88,7 @@ export class MkgtruApiController {
   @Get("auditories")
   @UseGuards(RequireApiKeyGuard)
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    return this.mkgtruApiService.getAuditories();
+    return this.getResultFromCache(`practicelist`, 150 * 1000, this.mkgtruApiService.getAuditories());
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -160,4 +149,17 @@ export class MkgtruApiController {
     throw new HttpException("DELETED", HttpStatus.OK)
   }
   */
+
+
+
+  async getResultFromCache<T>(key: string, ttlMs: number, func: Promise<T>): Promise<T> {
+    const value = await this.cacheManager.get<T | null>(key)
+    if (!!value) {
+      return value;
+    } else {
+      const result = await func;
+      await this.cacheManager.set(key, result, ttlMs)
+      return result
+    }
+  }
 }
