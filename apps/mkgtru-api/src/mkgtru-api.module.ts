@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: "./apps/mkgtru-api/.env" }),
-    CacheModule.register({ttl:1200, max:10, isGlobal:true}),
+    CacheModule.register(),
   ],
   controllers: [MkgtruApiController],
   providers: [MkgtruApiService],
