@@ -62,7 +62,7 @@ export class MkgtruApiController {
       return value;
     } else {
       const result = await this.mkgtruApiService.getChanges(territory);
-      await this.cacheManager.set(`changes_${territory}`, result, 100)
+      await this.cacheManager.set(`changes_${territory}`, result, 5)
       return result;
     }
 
