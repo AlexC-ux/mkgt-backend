@@ -32,6 +32,8 @@ const tokenSchema = {
  */
 @Controller("mkgtru-api")
 @ApiTags('mkgtru-api')
+@UseInterceptors(CacheInterceptor)
+@CacheTTL(100)
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
 
@@ -43,8 +45,6 @@ export class MkgtruApiController {
     return "OK"
   }
 
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(100)
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Getting information about timetable updates" })
   @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
