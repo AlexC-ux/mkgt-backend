@@ -234,7 +234,7 @@ export class TgBot {
     //error handler
     static async catchPollingError(error: any, context?: Context) {
         if (
-            true
+            !error?.toString().includes(`"answerCbQuery" isn't available for "message"`) //if answer callback on message
         ) {
             console.log("ЧТО-ТО НАЕБНУЛОСЬ!")
             console.log(error)
@@ -379,7 +379,7 @@ export class TgBot {
 
         if (!!user) {
             const doc: ITitledDocumentInfo | null = await TgBot.getAPIResponse("/changes", user.territory);
-
+            console.log({ doc })
             if (!!doc) {
                 context.editMessageText(`Замены от ${doc?.last_modified.ru}`,
                     {
