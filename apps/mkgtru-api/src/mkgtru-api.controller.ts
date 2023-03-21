@@ -32,7 +32,6 @@ const tokenSchema = {
  */
 @Controller("mkgtru-api")
 @ApiTags('mkgtru-api')
-@UseInterceptors(CacheInterceptor)
 export class MkgtruApiController {
   constructor(private readonly mkgtruApiService: MkgtruApiService) { }
 
