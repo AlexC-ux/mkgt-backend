@@ -44,8 +44,7 @@ export class MkgtruApiController {
   }
 
   @UseInterceptors(CacheInterceptor)
-  @CacheKey('custom-key')
-  @CacheTTL(1000)
+  @CacheTTL(0)
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Getting information about timetable updates" })
   @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
