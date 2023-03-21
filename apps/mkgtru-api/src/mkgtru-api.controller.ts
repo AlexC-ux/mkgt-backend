@@ -43,6 +43,8 @@ export class MkgtruApiController {
     return "OK"
   }
 
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(1)
   @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Getting information about timetable updates" })
   @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
@@ -50,8 +52,6 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
-  @CacheTTL(1)
-  @UseInterceptors(CacheInterceptor)
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
     return this.mkgtruApiService.getChanges(territory);
   }
