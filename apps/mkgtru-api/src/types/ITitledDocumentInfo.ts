@@ -6,6 +6,7 @@ export interface ITitledDocumentInfo {
         'ru': string,
         'en-US': string,
         'timestamp': number,
+        'now':string,
     },
     'links': {
         'file': string,
