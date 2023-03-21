@@ -49,7 +49,6 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success" })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("changes")
-  @UseInterceptors(CacheInterceptor)
   @CacheTTL(10000)
   @UseGuards(RequireApiKeyGuard)
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
