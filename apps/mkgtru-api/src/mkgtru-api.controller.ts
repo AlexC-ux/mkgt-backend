@@ -56,7 +56,7 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`practicelist`, 5*1000, this.mkgtruApiService.getChanges(territory));
+    return this.getResultFromCache(`practicelist`, 10*1000, this.mkgtruApiService.getChanges(territory));
   }
 
   @ApiSecurity("ApiKeyAuth")
