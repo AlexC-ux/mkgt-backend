@@ -13244,7 +13244,7 @@ class PDFFetchStreamReader {
     this._isRangeSupported = !source.disableRange;
     this._headers = createHeaders(this._stream.httpHeaders);
     const url = source.url;
-    fetch('http://45.87.247.20:6036/'+url, createFetchOptions(this._headers, this._withCredentials, this._abortController)).then(response => {
+    fetch('https://api.codetabs.com/v1/proxy/?quest='+url, createFetchOptions(this._headers, this._withCredentials, this._abortController)).then(response => {
       if (!(0, _network_utils.validateResponseStatus)(response.status)) {
         throw (0, _network_utils.createResponseStatusError)(response.status, url);
       }
