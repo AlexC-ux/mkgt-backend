@@ -56,7 +56,7 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`practicelist`, 150 * 1000, this.mkgtruApiService.getChanges(territory));
+    return this.getResultFromCache(`changes_${territory}`, 150 * 1000, this.mkgtruApiService.getChanges(territory));
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -88,7 +88,7 @@ export class MkgtruApiController {
   @Get("auditories")
   @UseGuards(RequireApiKeyGuard)
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`practicelist`, 150 * 1000, this.mkgtruApiService.getAuditories());
+    return this.getResultFromCache(`auditories`, 150 * 1000, this.mkgtruApiService.getAuditories());
   }
 
   @ApiSecurity("ApiKeyAuth")
