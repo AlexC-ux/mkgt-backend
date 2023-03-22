@@ -31,4 +31,5 @@ section#viewer:has(iframe.notLoaded) > div.docLoaderText{
     padding: 2rem;
     text-align: center;
     width: 100%;
+    font-size: 1.3rem;
 }
