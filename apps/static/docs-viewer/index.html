@@ -1,0 +1,42 @@
+<Html> <!-- This tag is compulsory for any HTML document. -->
+
+<head>
+    <link rel="stylesheet" href="normalize.css" />
+    <link rel="stylesheet" href="index.css" />
+</head>
+
+<Body>
+    <section class="advert">
+
+    </section>
+    <section id="viewer">
+        <iframe>
+
+        </iframe>
+    </section>
+
+    <section class="advert">
+
+    </section>
+    <script>
+        const frame = document.querySelector("#viewer > iframe");
+        function updSrc() { frame.setAttribute("src", `https://docs.google.com/viewerng/viewer?embedded=true&url=${new URLSearchParams(window.location.search).get("file")}`); }
+
+        const checker = setInterval(() => {
+            console.log({ frame })
+            try {
+
+
+                if (!frame.contentWindow.document.body.innerHTML.length < 1000) {
+                    updSrc();
+                } else {
+                    clearInterval(checker)
+                }
+            } catch (error) {
+                clearInterval(checker)
+            }
+        }, 100)
+    </script>
+</Body>
+
+</Html>
