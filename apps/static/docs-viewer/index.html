@@ -25,12 +25,8 @@
         const checker = setInterval(() => {
             console.log({ frame })
             try {
-
-
-                if (!frame.contentWindow.document.body.innerHTML.length < 1000) {
+                if (!frame.contentWindow.document.body.innerText.length < 1000) {
                     updSrc();
-                } else {
-                    clearInterval(checker)
                 }
             } catch (error) {
                 clearInterval(checker)
