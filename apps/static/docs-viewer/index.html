@@ -3,12 +3,13 @@
 <head>
     <link rel="stylesheet" href="normalize.css" />
     <link rel="stylesheet" href="index.css" />
+
+    <!-- Yandex.RTB -->
+    <script>window.yaContextCb = window.yaContextCb || []</script>
+    <script src="https://yandex.ru/ads/system/context.js" async></script>
 </head>
 
 <Body>
-    <section class="advert">
-
-    </section>
     <section id="viewer">
         <div class="docLoaderText"></div>
         <iframe class="notLoaded">
@@ -17,7 +18,14 @@
     </section>
 
     <section class="advert">
-
+        <!-- Yandex.RTB R-A-2271927-1 -->
+        <div id="yandex_rtb_R-A-2271927-1"></div>
+        <script>window.yaContextCb.push(() => {
+                Ya.Context.AdvManager.render({
+                    renderTo: 'yandex_rtb_R-A-2271927-1',
+                    blockId: 'R-A-2271927-1'
+                })
+            })</script>
     </section>
     <script>
         const frame = document.querySelector("#viewer > iframe");
