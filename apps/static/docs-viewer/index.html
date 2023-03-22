@@ -9,7 +9,7 @@
     <section class="advert">
 
     </section>
-    <section id="viewer">
+    <section id="viewer" class="notLoaded">
         <iframe>
             Loading ...
         </iframe>
@@ -20,7 +20,8 @@
     </section>
     <script>
         const frame = document.querySelector("#viewer > iframe");
-        frame.setAttribute("display", "none")
+        
+        
         function updSrc() { frame.setAttribute("src", `https://docs.google.com/viewerng/viewer?embedded=true&url=${new URLSearchParams(window.location.search).get("file")}`); }
 
         const checker = setInterval(() => {
@@ -30,7 +31,8 @@
                     updSrc();
                 }
             } catch (error) {
-                clearInterval(checker)
+                clearInterval(checker);
+                frame.setAttribute("class","");
             }
         }, 1000)
     </script>
