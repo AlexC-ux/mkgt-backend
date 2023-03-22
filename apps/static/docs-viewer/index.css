@@ -17,3 +17,10 @@ section#viewer > iframe{
     height: 100%;
     border: 0;
 }
+
+iframe.notLoaded{
+    display: none;
+}
+iframe.notLoaded::before{
+    content: 'Loading';
+}

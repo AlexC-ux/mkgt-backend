@@ -11,7 +11,7 @@
     </section>
     <section id="viewer">
         <iframe>
-
+            Loading ...
         </iframe>
     </section>
 
@@ -20,6 +20,7 @@
     </section>
     <script>
         const frame = document.querySelector("#viewer > iframe");
+        frame.setAttribute("display", "none")
         function updSrc() { frame.setAttribute("src", `https://docs.google.com/viewerng/viewer?embedded=true&url=${new URLSearchParams(window.location.search).get("file")}`); }
 
         const checker = setInterval(() => {
