@@ -22,5 +22,5 @@ iframe.notLoaded{
     display: none;
 }
 iframe.notLoaded::before{
-    content: 'Loading';
+    content: '1';
 }
