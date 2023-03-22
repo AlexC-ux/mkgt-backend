@@ -12,7 +12,7 @@ export interface ITitledDocumentInfo {
         'file': string,
         'views': {
             'google_docs': string,
-            'viewer1':string,
+            'server_viewer':string,
         },
     },
     'data_type': string,

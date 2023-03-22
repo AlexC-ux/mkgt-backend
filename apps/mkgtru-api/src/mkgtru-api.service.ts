@@ -193,7 +193,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
           'file': url,
           'views': {
             'google_docs': `https://docs.google.com/gview?url=${url}&embed=true`,
-            'viewer1': `http://45.87.247.20:8890?file=${url}`,
+            'server_viewer': `http://45.87.247.20/docs-viewer/?file=${url}`,
           },
         },
         'data_type': dataType,
