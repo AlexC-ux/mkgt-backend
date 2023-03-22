@@ -21,9 +21,27 @@
     </section>
     <script>
         const frame = document.querySelector("#viewer > iframe");
-        
-        
-        function updSrc() { frame.setAttribute("src", `https://docs.google.com/viewerng/viewer?embedded=true&url=${new URLSearchParams(window.location.search).get("file")}`); }
+        const preloader = document.querySelector("section#viewer > div.docLoaderText");
+
+        let timerCount = 30;
+
+        function updSrc() {
+            frame.setAttribute("src", `https://docs.google.com/viewerng/viewer?embedded=true&url=${new URLSearchParams(window.location.search).get("file")}`);
+        }
+
+        function updCounter() {
+            preloader.innerText = `Загрузка... Ещё ${timerCount}`;
+            timerCount -= 1;
+        }
+
+        const timer = setInterval(() => {
+            if (timerCount > 1) {
+                updCounter()
+            } else {
+                clearInterval(timer);
+                preloader.innerHTML = "Слишком медленное соединение с сетью!<br/>Обновите страницу!";
+            }
+        }, 1000)
 
         const checker = setInterval(() => {
             console.log({ frame })
@@ -33,7 +51,7 @@
                 }
             } catch (error) {
                 clearInterval(checker);
-                frame.setAttribute("class","");
+                frame.setAttribute("class", "");
             }
         }, 1000)
     </script>
