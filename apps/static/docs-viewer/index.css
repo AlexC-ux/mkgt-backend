@@ -21,6 +21,14 @@ section#viewer > iframe{
 iframe.notLoaded{
     display: none;
 }
-iframe.notLoaded::before{
-    content: '1';
+
+.docLoaderText{
+    display: none;
+}
+
+section#viewer:has(iframe.notLoaded) > div.docLoaderText{
+    display: block;
+    padding: 2rem;
+    text-align: center;
+    width: 100%;
 }
