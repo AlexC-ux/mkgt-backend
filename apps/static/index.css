@@ -28,9 +28,22 @@ img.botbuttons {
     height: fit-content;
 }
 
+div.features-list {
+    display: block;
+    margin: auto;
+}
+
 @media (max-width:1200px) {
     img.botqr {
         width: 90vw;
+    }
+
+    div.features-list {
+        width: 82vw;
+    }
+
+    div.feature {
+        font-size: 3vw;
     }
 
     img.botbuttons {
@@ -51,6 +64,14 @@ img.botbuttons {
         width: 460px;
     }
 
+    div.features-list {
+        width: 1000px;
+    }
+
+    div.feature {
+        font-size: 2rem;
+    }
+
     h1.hugetitle {
         font-size: 4rem;
     }
@@ -64,4 +85,9 @@ section#firstview {
 section {
     padding-top: 30px;
     padding-bottom: 30px;
+}
+
+div.feature {
+    width: 100%;
+    text-align: left;
 }
