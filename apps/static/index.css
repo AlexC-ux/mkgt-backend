@@ -1,0 +1,67 @@
+body {
+    background: url('/images/mainpage/background1.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+* {
+    color: white;
+    font-family: 'M PLUS 1p', sans-serif;
+}
+
+h1.hugetitle {
+    text-align: center;
+    padding-top: 2rem;
+}
+
+img.botqr {
+    display: block;
+    position: relative;
+    margin: auto;
+    height: fit-content;
+}
+
+img.botbuttons {
+    display: block;
+    position: relative;
+    margin: auto;
+    height: fit-content;
+}
+
+@media (max-width:1200px) {
+    img.botqr {
+        width: 90vw;
+    }
+
+    img.botbuttons {
+        width: 82vw;
+    }
+
+    h1.hugetitle {
+        font-size: 6vw;
+    }
+}
+
+@media (min-width:1201px) {
+    img.botqr {
+        width: 500px;
+    }
+
+    img.botbuttons {
+        width: 460px;
+    }
+
+    h1.hugetitle {
+        font-size: 4rem;
+    }
+}
+
+section#firstview {
+    display: block;
+    position: relative;
+}
+
+section {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
