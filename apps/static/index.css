@@ -1,7 +1,7 @@
 body {
     background: url('/images/mainpage/background1.jpg');
-    background-attachment: fixed;
-    background-size: cover;
+    background-attachment:fixed;
+    background-size: auto 110%;
 }
 
 * {
