@@ -77,17 +77,19 @@
             }
         }, 1000)
 
-        const checker = setInterval(() => {
-            console.log({ frame })
-            try {
-                if (!frame.contentWindow.document.body.innerText.length < 1000) {
-                    updSrc();
+        setTimeout(() => {
+            const checker = setInterval(() => {
+                console.log({ frame })
+                try {
+                    if (!frame.contentWindow.document.body.innerText.length < 1000) {
+                        updSrc();
+                    }
+                } catch (error) {
+                    clearInterval(checker);
+                    frame.setAttribute("class", "");
                 }
-            } catch (error) {
-                clearInterval(checker);
-                frame.setAttribute("class", "");
-            }
-        }, 1000)
+            }, 1000)
+        },700)
     </script>
 </Body>
 
