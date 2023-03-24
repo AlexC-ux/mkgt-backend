@@ -6,6 +6,12 @@ section.advert {
     padding: 10px;
 }
 
+section.advert-recomends {
+    width: calc(100% - 20px);
+    padding: 10px;
+    height: auto;
+}
+
 section#viewer {
     position: relative;
     display: block;
