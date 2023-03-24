@@ -1,16 +1,15 @@
 section.advert {
-    position: absolute;
-    bottom: 10%;
+    position: relative;
     display: block;
     width: 100%;
-    height: 90px;
+    height: 120px;
 }
 
 section#viewer {
     position: relative;
     display: block;
     width: 100%;
-    height: calc(90% - 90px);
+    height: calc(100% - 120px);
 }
 
 section#viewer>iframe {
