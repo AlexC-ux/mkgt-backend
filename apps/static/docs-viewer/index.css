@@ -27,6 +27,9 @@ iframe.notLoaded {
 .docLoaderText {
     display: none;
 }
+section#viewer:has(iframe.notLoaded){
+    height: 20%;
+}
 
 section#viewer:has(iframe.notLoaded)>div.docLoaderText {
     display: block;
