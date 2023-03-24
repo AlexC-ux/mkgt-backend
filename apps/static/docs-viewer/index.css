@@ -4,6 +4,7 @@ section.advert {
     width: calc(100% - 20px);
     height: 120px;
     padding: 10px;
+    background: #d1d1d1;
 }
 
 section.advert-recomends {
