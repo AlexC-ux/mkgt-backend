@@ -3,7 +3,7 @@ section.advert {
     display: block;
     width: calc( 100% - 20px );
     height: 120px;
-    margin: 10px;
+    padding: 10px;
 }
 
 section#viewer {
