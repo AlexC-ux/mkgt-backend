@@ -2,7 +2,7 @@ section#viewer {
     position: relative;
     display: block;
     width: 100%;
-    height: calc(100% - 280px);
+    height: calc(100% - 140px);
 }
 
 section.advert {
