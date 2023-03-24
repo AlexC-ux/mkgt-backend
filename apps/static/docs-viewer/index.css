@@ -1,10 +1,9 @@
 section.advert {
     position: relative;
     display: block;
-    width: calc( 100% - 20px );
+    width: calc(100% - 20px);
     height: 120px;
     padding: 10px;
-    background-color: #d1d1d1;
 }
 
 section#viewer {
@@ -28,7 +27,8 @@ iframe.notLoaded {
 .docLoaderText {
     display: none;
 }
-section#viewer:has(iframe.notLoaded){
+
+section#viewer:has(iframe.notLoaded) {
     height: 20%;
 }
 
