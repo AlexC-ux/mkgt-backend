@@ -10,7 +10,7 @@ section#viewer {
     position: relative;
     display: block;
     width: 100%;
-    height: calc(100% - 90px);
+    height: calc(90% - 90px);
 }
 
 section#viewer>iframe {
