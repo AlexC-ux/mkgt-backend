@@ -205,7 +205,7 @@ export class TgBot {
         context.editMessageText("Расписание звонков", {
             reply_markup: {
                 inline_keyboard: [
-                    [{text:"Просмотреть", url:"https://docs.google.com/gview?url=https://mkgt.ru/images/colledge/zvonki.svg"}],
+                    [{text:"Просмотреть", url:"http://paytoplay.space/docs-viewer/?file=https://mkgt.ru/images/colledge/zvonki.svg"}],
                     [{text:"Скачать", url:"https://mkgt.ru/images/colledge/zvonki.svg"}],
                     [{ text: "Вернуться", callback_data: "showMainMenu" }]
             ]
