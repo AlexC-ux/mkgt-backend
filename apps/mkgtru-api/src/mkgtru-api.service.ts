@@ -172,7 +172,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
  */
 async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocumentInfo> {
   const linkToFile = node.getAttribute("href")
-  const documentResponse = await axios.get(`http://${process.env.SITE_DOMAIN}${linkToFile}`);
+  const documentResponse = await axios.get(`https://${process.env.SITE_DOMAIN}${linkToFile}`);
   if (documentResponse.status != 200 || !linkToFile) {
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {
