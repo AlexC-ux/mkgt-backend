@@ -145,7 +145,14 @@ export class MkgtruApiService {
  * @returns {Promise<HTMLElement[]>}
  */
 async function getElementsFromPage(uri: string, selector: string): Promise<HTMLElement[]> {
-  const pageResponse = await axios.get(uri, {timeout:30000});
+  const pageResponse = await axios.get(uri, {
+    timeout: 30000,
+    proxy: {
+      protocol: "http",
+      host: "85.26.146.169",
+      port: 80
+    }
+  });
   if (pageResponse.status != 200) {
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {
@@ -187,7 +194,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
           'ru': lastModifiedDate.toLocaleString('ru'),
           'en-US': lastModifiedDate.toLocaleString('en-US'),
           'timestamp': lastModifiedDate.getTime(),
-          'now':`${Date.now()}`
+          'now': `${Date.now()}`
         },
         'links': {
           'file': url,
