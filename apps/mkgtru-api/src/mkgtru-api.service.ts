@@ -145,7 +145,7 @@ export class MkgtruApiService {
  * @returns {Promise<HTMLElement[]>}
  */
 async function getElementsFromPage(uri: string, selector: string): Promise<HTMLElement[]> {
-  const pageResponse = await axios.get(uri);
+  const pageResponse = await axios.get(uri, {timeout:30000});
   if (pageResponse.status != 200) {
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {
