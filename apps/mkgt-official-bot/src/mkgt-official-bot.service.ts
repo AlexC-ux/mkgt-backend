@@ -43,11 +43,11 @@ export class MkgtOfficialBotService {
     async function checkChanges(territory: territories) {
       const changesDocInfo: ITitledDocumentInfo = await TgBot.getAPIResponse("/changes", territory);
 
-      if (TgBot.info.changesTimestamp[territory] == 0) {
-        TgBot.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp
-      }
       //определение необходимости рассылки
       if (!!changesDocInfo && !!changesDocInfo?.last_modified?.timestamp) {
+        if (TgBot.info.changesTimestamp[territory] == 0) {
+          TgBot.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp
+        }
         if (changesDocInfo.last_modified.timestamp != TgBot.info.changesTimestamp[territory]) {
           TgBot.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp;
 

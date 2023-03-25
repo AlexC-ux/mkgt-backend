@@ -9,6 +9,7 @@ import { ITokenResponse } from './types/tokenObject';
 const cuid = require("cuid");
 
 const httpsProxyAgent = require('https-proxy-agent');
+
 const httpsAgent = new httpsProxyAgent('http://45.146.167.237:3128');
 
 const axiosDefaultConfig: AxiosRequestConfig<any> = {
