@@ -97,7 +97,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("callstable")
   async getCallstable(): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`callstable`, 150 * 24 * 60 * 60 * 60 * 1000, this.mkgtruApiService.getAuditories());
+    return this.getResultFromCache(`callstable`, 150 * 24 * 60 * 60 * 60 * 1000, this.mkgtruApiService.getTimeCalls());
   }
 
   @ApiSecurity("ApiKeyAuth")
