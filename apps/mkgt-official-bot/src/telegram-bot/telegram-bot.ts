@@ -202,16 +202,19 @@ export class TgBot {
     }
 
     async getCallsTable(context: Context) {
-        context.editMessageText("Расписание звонков", {
-            reply_markup: {
-                inline_keyboard: [
-                    [{text:"Просмотреть", url:"http://paytoplay.space/docs-viewer/?file=https://mkgt.ru/images/colledge/zvonki.svg"}],
-                    [{text:"Скачать", url:"https://mkgt.ru/images/colledge/zvonki.svg"}],
-                    [{ text: "Вернуться", callback_data: "showMainMenu" }]
-            ]
-            }
-        }).catch(TgBot.catchPollingError);
-        context.answerCbQuery().catch(TgBot.catchPollingError);
+        const callstableInfo: ITitledDocumentInfo = await TgBot.getAPIResponse("/callstable");
+        if (callstableInfo && callstableInfo?.last_modified?.ru) {
+            context.editMessageText(`Расписание звонков от ${callstableInfo.last_modified.ru}`, {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: "Просмотреть", url: callstableInfo.links.views.server_viewer }],
+                        [{ text: "Скачать", url: callstableInfo.links.file }],
+                        [{ text: "Вернуться", callback_data: "showMainMenu" }]
+                    ]
+                }
+            }).catch(TgBot.catchPollingError);
+            context.answerCbQuery().catch(TgBot.catchPollingError);
+        }
     }
 
     async getHelpMessage(context: Context) {
@@ -463,7 +466,7 @@ export class TgBot {
         } catch (e) { }
     }
 
-    static async getAPIResponse(path: "/changes" | "/status" | "/practicelist" | "/auditories" | "/timetables", territory?: territories): Promise<any> {
+    static async getAPIResponse(path: "/changes" | "/status" | "/practicelist" | "/auditories" | "/timetables" | '/callstable', territory?: territories): Promise<any> {
         const url = `${process.env.MKGT_API_PATH}${path}?territory=${!!territory ? territory : "lublino"}`;
         try {
             const response = (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout: 80000 }));

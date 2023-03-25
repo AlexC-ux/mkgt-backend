@@ -92,6 +92,15 @@ export class MkgtruApiController {
   }
 
   @ApiSecurity("ApiKeyAuth")
+  @ApiOperation({ summary: "Getting calls table document information" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Success", })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
+  @Get("callstable")
+  async getCallstable(): Promise<ITitledDocumentInfo> {
+    return this.getResultFromCache(`callstable`, 150 * 24 * 60 * 60 * 60 * 1000, this.mkgtruApiService.getAuditories());
+  }
+
+  @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Updating token" })
   @ApiParam({
     name: 'Authorization',

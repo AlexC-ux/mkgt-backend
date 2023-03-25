@@ -88,7 +88,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChanges(territory?: territories): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, territory === "lublino" ? "#btn-1679752997246" : "#btn-1679752997245");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>*>div.sppb-panel-body div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -101,7 +101,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#btn-1679752997247");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(1)>*>div.sppb-panel-body div:nth-child(1) a");
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -115,7 +115,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
   async getTimetables(territory?: territories): Promise<ITitledDocumentInfo[]> {
-    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, territory === "lublino" ? "#sppb-addon-1632589047343 > div > div > p > a" : "#sppb-addon-1632589047342 > div > div > a");
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(5)>*>div.sppb-panel-body>div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
     const files = [];
     for (const index in linkElements) {
       if (Object.prototype.hasOwnProperty.call(linkElements, index)) {
@@ -124,6 +124,19 @@ export class MkgtruApiService {
       }
     }
     return files
+  }
+
+  
+  /**
+   * Getting calls table
+   * @date 3/26/2023 - 2:12:51 AM
+   *
+   * @async
+   * @returns {unknown}
+   */
+  async getTimeCalls() {
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(6) div.sppb-panel-body a");
+    return await getTitledFileInfoByATag(linkElement[0])
   }
 
 
@@ -135,7 +148,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
   async getPracticeList(): Promise<ITitledDocumentInfo[]> {
-    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#sppb-addon-1646804333482 > div > div > p > a");
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(3) div.sppb-panel-body a");
     const files = [];
     for (const index in linkElements) {
       if (Object.prototype.hasOwnProperty.call(linkElements, index)) {
