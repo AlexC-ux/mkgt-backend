@@ -149,7 +149,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
     timeout: 30000,
     proxy: {
       protocol: "http",
-      host: "23.228.98.157",
+      host: "68.183.143.134",
       port: 80
     }
   });
