@@ -10,7 +10,10 @@ const cuid = require("cuid");
 
 const httpsProxyAgent = require('https-proxy-agent');
 
-const httpsAgent = new httpsProxyAgent('http://45.146.167.237:3128');
+const httpsAgent = new httpsProxyAgent('http://5.75.224.218:8080');
+//const httpsAgent = new httpsProxyAgent('http://168.119.155.246:8080');
+//const httpsAgent = new httpsProxyAgent('http://142.132.177.174:8080');
+//const httpsAgent = new httpsProxyAgent('http://5.78.44.142:8080');
 
 const axiosDefaultConfig: AxiosRequestConfig<any> = {
   timeout: 30000,
