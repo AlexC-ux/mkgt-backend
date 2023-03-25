@@ -84,7 +84,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChanges(territory?: territories): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, territory === "lublino" ? "#btn-1679752997246 > div > div > a" : "#btn-1679752997245");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, territory === "lublino" ? "#btn-1679752997246" : "#btn-1679752997245");
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
