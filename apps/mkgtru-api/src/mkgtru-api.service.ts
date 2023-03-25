@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import parse from 'node-html-parser';
 import { territories } from './types/territories';
 import { ITitledDocumentInfo } from './types/ITitledDocumentInfo';
@@ -7,6 +7,15 @@ import HTMLElement from "node_modules/node-html-parser/dist/nodes/html";
 import { PrismaClient } from '@prisma/client';
 import { ITokenResponse } from './types/tokenObject';
 const cuid = require("cuid");
+
+const httpsProxyAgent = require('https-proxy-agent');
+const httpsAgent = new httpsProxyAgent('http://45.146.167.237:3128');
+
+const axiosDefaultConfig: AxiosRequestConfig<any> = {
+  timeout: 30000,
+  httpsAgent,
+  maxRedirects: 7,
+}
 
 @Injectable()
 export class MkgtruApiService {
@@ -75,7 +84,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChanges(territory?: territories): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, territory === "lublino" ? "#sppb-addon-1643455125007 > div > div > a" : "#sppb-addon-1643455125006 > div > div > a");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, territory === "lublino" ? "#btn-1679752997246 > div > div > a" : "#btn-1679752997245");
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -88,7 +97,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#sppb-addon-1643621942381 > div > div > a");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#btn-1679752997247");
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -145,14 +154,7 @@ export class MkgtruApiService {
  * @returns {Promise<HTMLElement[]>}
  */
 async function getElementsFromPage(uri: string, selector: string): Promise<HTMLElement[]> {
-  const pageResponse = await axios.get(uri, {
-    timeout: 30000,
-    proxy: {
-      protocol: "http",
-      host: "20.111.54.16",
-      port: 80
-    }
-  });
+  const pageResponse = await axios.get(uri, axiosDefaultConfig);
   if (pageResponse.status != 200) {
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {
@@ -179,7 +181,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
  */
 async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocumentInfo> {
   const linkToFile = node.getAttribute("href")
-  const documentResponse = await axios.get(`https://${process.env.SITE_DOMAIN}${linkToFile}`);
+  const documentResponse = await axios.get(`https://${process.env.SITE_DOMAIN}${linkToFile}`, axiosDefaultConfig);
   if (documentResponse.status != 200 || !linkToFile) {
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {

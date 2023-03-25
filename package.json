@@ -33,6 +33,7 @@
     "cache-manager": "^5.1.7",
     "cuid": "^3.0.0",
     "http-proxy-middleware": "^2.0.6",
+    "https-proxy-agent": "^5.0.1",
     "nest": "^0.1.6",
     "node-html-parser": "^6.1.5",
     "node-schedule": "^2.1.1",
