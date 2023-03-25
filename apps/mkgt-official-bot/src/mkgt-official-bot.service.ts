@@ -47,7 +47,7 @@ export class MkgtOfficialBotService {
         TgBot.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp
       }
       //определение необходимости рассылки
-      if (!!changesDocInfo && !!changesDocInfo.last_modified?.timestamp) {
+      if (!!changesDocInfo && !!changesDocInfo?.last_modified?.timestamp) {
         if (changesDocInfo.last_modified.timestamp != TgBot.info.changesTimestamp[territory]) {
           TgBot.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp;
 
