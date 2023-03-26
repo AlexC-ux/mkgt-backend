@@ -82,7 +82,35 @@ body {
 }
 </style>
 
-
+<style>
+div.yrvote_box{
+    display:none;
+}
+html > script:nth-child(1){
+    display:none;
+}
+footer{
+    display:none;
+}
+header{
+    display:none;
+}
+ul.tags{
+    display:none;
+}
+nav{
+    display:none;
+}
+div.jo-whatsappcontactbutton{
+    display:none;
+}
+.offcanvas-menu{
+    display:none;
+}
+.offcanvas-overlay{
+    display:none;
+}
+</sctyle>
 
 
 
@@ -114,7 +142,6 @@ function clearPage(){
     document.documentElement.querySelector('div.yrvote_box').remove();
 
 document.documentElement.querySelector('html > script:nth-child(1)').remove();
-document.documentElement.querySelector('footer').remove();
 document.documentElement.querySelector('header').remove();
     document.querySelectorAll("img[data-src]").forEach((element)=>{
         console.log(element)
