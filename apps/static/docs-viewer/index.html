@@ -130,7 +130,13 @@
         let timerCount = 30;
 
         function updSrc() {
-            frame.setAttribute("src", `https://docs.google.com/viewerng/viewer?embedded=true&url=${new URLSearchParams(window.location.search).get("file")}`);
+            const linkToFile=new URLSearchParams(window.location.search).get("file");
+            if (linkToFile.endsWith(".jpg")||linkToFile.endsWith(".png")) {
+                frame.setAttribute("src", linkToFile);
+                
+            }else{
+                frame.setAttribute("src", `https://docs.google.com/viewerng/viewer?embedded=true&url=${linkToFile}`);
+            }
         }
 
         function updCounter() {
