@@ -36,7 +36,18 @@
 
 <Body>
     <section id="viewer">
-        <div class="docLoaderText">Загрузка... Ещё 31</div>
+        <div class="docLoaderText">
+            <p class="loadertext">
+                Загрузка
+            </p>
+            <div class="semipolar-spinner" :style="spinnerStyle">
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+            </div>
+        </div>
         <iframe class="notLoaded">
             Loading ...
         </iframe>
@@ -84,7 +95,7 @@
 
     <script>
         const frame = document.querySelector("#viewer > iframe");
-        const preloader = document.querySelector("section#viewer > div.docLoaderText");
+        const preloader = document.querySelector("section#viewer p.loadertext");
 
         let timerCount = 30;
 
@@ -97,6 +108,7 @@
             timerCount -= 1;
         }
 
+        
         const timer = setInterval(() => {
             if (timerCount > 1) {
                 updCounter()
@@ -118,7 +130,7 @@
                     frame.setAttribute("class", "");
                 }
             }, 1000)
-        }, 700)
+        }, 2000)
     </script>
 </Body>
 
