@@ -313,7 +313,7 @@ export class TgBot {
                     if (!buttons[index]) {
                         buttons[index] = [];
                     }
-                    buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.server_viewer }]
+                    buttons[index] = [...buttons[index], { text: document.title, url: `http://paytoplay.space:8080/mkgtru-api/material?location=${document.links.file.replace("https://mkgt.ru/index.php/component/content/article/","")}` }]
                 })
                 context.editMessageText(`Последние новости:`,
                     {
