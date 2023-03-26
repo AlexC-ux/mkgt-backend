@@ -32,7 +32,7 @@ export class MkgtOfficialBotService {
     }
 
 
-    const changesChecker = schedule.scheduleJob("*/3 * * * *", checkChangesCronJob);
+    const changesChecker = schedule.scheduleJob("2 * * * *", checkChangesCronJob);
 
 
     async function checkChangesCronJob() {
@@ -82,7 +82,7 @@ export class MkgtOfficialBotService {
                 }
               }).catch(TgBot.catchPollingError);
               console.log(`sending to ${user.telegramId}`)
-            }, 2000 * index)
+            }, 5000 * index)
 
 
           })
