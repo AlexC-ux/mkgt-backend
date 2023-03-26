@@ -44,8 +44,8 @@ export class MkgtruApiController {
   @ApiOperation({ summary: "Getting server status" })
   @ApiResponse({ status: HttpStatus.OK, description: "Server is available", })
   @Get("status")
-  getPing(): "OK" {
-    return "OK"
+  async getPing(): Promise<string> {
+    return await this.mkgtruApiService.getStatus();
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -161,12 +161,12 @@ export class MkgtruApiController {
 
 
 
-  async getResultFromCache<T>(key: string, ttlMs: number, func: Promise<T>): Promise<T> {
+  async getResultFromCache<T>(key: string, ttlMs: number, getterAsyncFunc: Promise<T>): Promise<T> {
     const value = await this.cacheManager.get<T | null>(key)
     if (!!value) {
       return value;
     } else {
-      const result = await func;
+      const result = await getterAsyncFunc;
       await this.cacheManager.set(key, result, ttlMs)
       return result
     }
