@@ -60,6 +60,9 @@ export class TgBot {
                     { text: "Звонки", callback_data: "callstable" }
                 ],
                 [
+                    {text:"Новости", callback_data:"news"}
+                ],
+                [
                     { text: `Настройки профиля`, callback_data: "profile" }
                 ],
                 [
@@ -179,31 +182,7 @@ export class TgBot {
             `По умолчанию режим работы для студентов с Кучина пер. Если Вы учитесь в Люблино, то воспользуйтесь кнопкой 'Настройки профиля' ниже` +
             _ROW_BREAK +
             `/help покажет список доступных команд`, {
-            reply_markup: {
-                inline_keyboard: [
-                    [
-                        { text: `Показать замены`, callback_data: "changes" },
-                        { text: `Расписание практики`, callback_data: "practice" }
-                    ],
-                    [
-                        { text: `Аудитории`, callback_data: "cabinets" },
-                        { text: `Расписания`, callback_data: "timetables" },
-                        { text: "Звонки", callback_data: "callstable" }
-                    ],
-                    [
-                        { text: "Новости", callback_data: "news" }
-                    ],
-                    [
-                        { text: `Настройки профиля`, callback_data: "profile" }
-                    ],
-                    [
-                        { text: `Карта прохода к колледжу`, url: "https://yandex.ru/maps/213/moscow/?ll=37.643452%2C55.804215&mode=usermaps&source=constructorLink&um=constructor%3A761f4b5f3ab5e1ef399f9b57ab726d2834ed7dcaca7ef86b4eecefb68759b381&z=16" }
-                    ],
-                    [
-                        { text: `Информация разработчикам`, callback_data: "developerinfo" }
-                    ],
-                ]
-            }
+                ...TgBot.mainMenu
         }).catch(TgBot.catchPollingError);
     }
 
