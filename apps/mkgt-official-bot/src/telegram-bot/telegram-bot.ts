@@ -262,6 +262,9 @@ export class TgBot {
                 admins.forEach(admin => {
                     TgBot.botObject.telegram.sendMessage(admin.tgAccount.telegramId.toString(), `*ERROR LOG* \`\`\`${_LINE_BREAK}${error?.toString() || JSON.stringify(error)}${_LINE_BREAK}\`\`\``, { parse_mode: "MarkdownV2" }).catch(TgBot.catchPollingError);
                 });
+                try {
+                    context.answerCbQuery();
+                } catch (error) {}
             })
         }
     };
