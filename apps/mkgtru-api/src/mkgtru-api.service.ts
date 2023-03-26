@@ -8,17 +8,21 @@ import { PrismaClient } from '@prisma/client';
 import { ITokenResponse } from './types/tokenObject';
 const cuid = require("cuid");
 
-const httpsProxyAgent = require('https-proxy-agent');
 
-//const httpsAgent = new httpsProxyAgent('http://5.75.224.218:8080');
-const httpsAgent = new httpsProxyAgent('http://168.119.155.246:8080');
-//const httpsAgent = new httpsProxyAgent('http://142.132.177.174:8080');
-//const httpsAgent = new httpsProxyAgent('http://5.78.44.142:8080');
+const tunnel = require("tunnel")
+const tunnelingAgent = tunnel.httpsOverHttp({
+  proxy: {
+    host: '194.67.215.171',
+    port: 9369,
+    proxyAuth: 'QcjKwX:7ExR7W'
+  }
+});
 
 const axiosDefaultConfig: AxiosRequestConfig<any> = {
   timeout: 30000,
-  httpsAgent,
-  maxRedirects: 7,
+  httpsAgent: tunnelingAgent,
+  maxRedirects: 70,
+  maxContentLength: 10000000000
 }
 
 @Injectable()
@@ -78,6 +82,12 @@ export class MkgtruApiService {
     }
   }
 
+  async getStatus(): Promise<string> {
+    const result = await axios.get("https://mkgt.ru/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/", axiosDefaultConfig);
+    console.log({ statusRequest: result })
+    return result.statusText;
+  }
+
 
   /**
    * Getting changes info
@@ -88,7 +98,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChanges(territory?: territories): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>*>div.sppb-panel-body div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/`, `div:nth-child(2)>*>div.sppb-panel-body div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -126,7 +136,7 @@ export class MkgtruApiService {
     return files
   }
 
-  
+
   /**
    * Getting calls table
    * @date 3/26/2023 - 2:12:51 AM
@@ -198,7 +208,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
  */
 async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocumentInfo> {
   const linkToFile = node.getAttribute("href")
-  const documentResponse = await axios.get(`https://${process.env.SITE_DOMAIN}${linkToFile}`, axiosDefaultConfig);
+  const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, axiosDefaultConfig);
   if (documentResponse.status != 200 || !linkToFile) {
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {
