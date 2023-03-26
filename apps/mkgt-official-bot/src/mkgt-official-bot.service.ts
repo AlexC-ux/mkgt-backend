@@ -8,13 +8,6 @@ import { territories } from 'apps/mkgtru-api/src/types/territories';
 import { TgBot } from './telegram-bot/telegram-bot';
 const schedule = require('node-schedule');
 
-
-
-
-const _CHECK_CHANGES_INTERVAL = 2 * 60 * 60 * 1000;
-
-
-
 const prisma = new PrismaClient();
 
 
@@ -32,7 +25,7 @@ export class MkgtOfficialBotService {
     }
 
 
-    //const changesChecker = schedule.scheduleJob("*/3 * * * *", checkChangesCronJob);
+    const changesChecker = schedule.scheduleJob("*/3 * * * *", checkChangesCronJob);
 
 
     async function checkChangesCronJob() {
@@ -45,11 +38,11 @@ export class MkgtOfficialBotService {
 
       //определение необходимости рассылки
       if (!!changesDocInfo && !!changesDocInfo?.last_modified?.timestamp) {
-        if (TgBot.info.changesTimestamp[territory] == 0) {
-          TgBot.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp
+        if (TgBot.info.changesData[territory] == "") {
+          TgBot.info.changesData[territory] = changesDocInfo.links.file_base64
         }
-        if (changesDocInfo.last_modified.timestamp != TgBot.info.changesTimestamp[territory]) {
-          TgBot.info.changesTimestamp[territory] = changesDocInfo.last_modified.timestamp;
+        if (changesDocInfo.links.file_base64 != TgBot.info.changesData[territory]) {
+          TgBot.info.changesData[territory] = changesDocInfo.links.file_base64;
 
           const users = await prisma.telegramAccount.findMany({
             select: {

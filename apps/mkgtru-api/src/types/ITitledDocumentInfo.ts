@@ -6,14 +6,15 @@ export interface ITitledDocumentInfo {
         'ru': string,
         'en-US': string,
         'timestamp': number,
-        'now':string,
+        'now': string,
     },
     'links': {
         'file': string,
+        'file_base64':string,
         'views': {
             'google_docs': string,
-            'server_viewer':string,
-        },
+            'server_viewer': string,
+        }
     },
     'data_type': string,
 }

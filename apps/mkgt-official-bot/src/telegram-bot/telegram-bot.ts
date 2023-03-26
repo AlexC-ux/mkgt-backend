@@ -21,9 +21,9 @@ export class TgBot {
 
     static info = {
         started: false,
-        changesTimestamp: {
-            "kuchin": 0,
-            "lublino": 0
+        changesData: {
+            "kuchin": "",
+            "lublino": ""
         },
     }
 

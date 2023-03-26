@@ -208,13 +208,15 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
  */
 async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocumentInfo> {
   const linkToFile = node.getAttribute("href")
-  const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, axiosDefaultConfig);
+  const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
   if (documentResponse.status != 200 || !linkToFile) {
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {
     const dataType: string = documentResponse.headers['content-type'];
 
-    const lastModifiedDate = new Date(documentResponse.headers['date']);
+    const lastModifiedDate = new Date(documentResponse.headers['last-modified']);
+
+    var b64 = Buffer.from(documentResponse.data).toString("base64");
 
     const url = `${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`;
     return (
@@ -228,6 +230,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
         },
         'links': {
           'file': url,
+          'file_base64': `${b64}`,
           'views': {
             'google_docs': `https://docs.google.com/gview?url=${url}&embed=true`,
             'server_viewer': `http://paytoplay.space/docs-viewer/?file=${url}`,
