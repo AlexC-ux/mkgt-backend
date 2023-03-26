@@ -56,10 +56,6 @@ section#viewer:has(iframe.notLoaded) p.loadertext {
     font-size: 1.5rem;
 }
 
-div.advertcontainer{
-    position: absolute;
-    bottom: 0;
-}
 
 /*PRELOADER*/
 .semipolar-spinner, .semipolar-spinner * {
