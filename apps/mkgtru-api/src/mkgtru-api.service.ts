@@ -12,9 +12,9 @@ const cuid = require("cuid");
 const tunnel = require("tunnel")
 const tunnelingAgent = tunnel.httpsOverHttp({
   proxy: {
-    host: '194.67.215.171',
-    port: 9369,
-    proxyAuth: 'QcjKwX:7ExR7W'
+    host: '46.3.181.172',
+    port: 8000,
+    proxyAuth: 'MJWGyH:3C7VSk'
   }
 });
 

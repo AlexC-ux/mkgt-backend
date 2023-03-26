@@ -579,21 +579,22 @@ export class TgBot {
             const text = /\/send[aA]ll((.*\n*)*)/gm.exec(command)[1];
 
 
+            const secondsInterval = 4;
 
             const users = await prisma.telegramAccount.findMany();
 
-            context.sendMessage(`Рассылка займёт ${Math.floor(users.length * 2 / 60)} минут ${users.length * 2 % 60} секунд`).catch(TgBot.catchPollingError);
+            context.sendMessage(`Рассылка займёт ${Math.floor(users.length * secondsInterval / 60)} минут ${users.length * secondsInterval % 60} секунд`).catch(TgBot.catchPollingError);
 
             try {
                 setTimeout(() => {
                     context.sendMessage("Рассылка выполнена").catch(TgBot.catchPollingError);
-                }, 2000 * users.length)
+                }, secondsInterval * 1000 * users.length)
             } catch (error) { }
 
             users.forEach(async (tgUser, index) => {
                 setTimeout(() => {
                     TgBot.botObject.telegram.sendMessage(tgUser.telegramId.toString(), replace(text)).catch(TgBot.catchPollingError);
-                }, 2000 * index)
+                }, secondsInterval * 1000 * index)
 
                 function replace(text: string): string {
                     let newText = text;

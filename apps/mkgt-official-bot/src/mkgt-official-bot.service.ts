@@ -32,7 +32,7 @@ export class MkgtOfficialBotService {
     }
 
 
-    const changesChecker = schedule.scheduleJob("2 * * * *", checkChangesCronJob);
+    //const changesChecker = schedule.scheduleJob("*/3 * * * *", checkChangesCronJob);
 
 
     async function checkChangesCronJob() {
