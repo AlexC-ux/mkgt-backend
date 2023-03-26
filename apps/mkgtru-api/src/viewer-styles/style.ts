@@ -68,7 +68,9 @@ div:has(div.os-cat-tab-images) ul {
 html{
     background: linear-gradient(rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)), url('https://happywall-img-gallery.imgix.net/229/bocker_svartvit_display.jpg');
     background-attachment: fixed;
-    background-size: 100vw, 100vh;
+    background-size: 130vw, 130vh;
+    background-position-x:center;
+    background-position-y:center;
 }
 
 div.sppb-addon{
