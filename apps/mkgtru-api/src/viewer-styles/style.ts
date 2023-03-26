@@ -36,6 +36,34 @@ div.img-block img {
     border-radius:1.2rem;
     filter: grayscale(40%);
 }
+div:has(div.os-cat-tab-images) li a {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    font-weight:600;
+    font-size:1.8rem;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+}
+
+div:has(div.os-cat-tab-images) ul {
+    list-style-type: none;
+}
+
 
 html{
     background:black;
@@ -73,6 +101,9 @@ document.documentElement.querySelector('header').remove();
         element.remove();
     })
     document.querySelectorAll("nav").forEach((element)=>{
+        element.remove();
+    })
+    document.querySelectorAll("ul.tags").forEach((element)=>{
         element.remove();
     })
     document.querySelectorAll("footer").forEach((element)=>{
