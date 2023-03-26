@@ -82,9 +82,35 @@ body {
 }
 </style>
 
+
+
+
+
+
+
+`
+
+export const materialViewerBody = `
 <script>
-document.addEventListener("DOMContentLoaded",()=>{
-    document.documentElement.querySelector('head > script').remove();
+
+const remover = setInterval(()=>{
+    switch (document.readyState) {
+        case "loading":
+          // Страница все ещё загружается
+          break;
+        case "interactive":
+            clearPage()
+            clearInterval(remover)
+          break;
+        case "complete":
+            clearPage()
+            clearInterval(remover)
+          break;
+      }
+},500)
+
+
+function clearPage(){
     document.documentElement.querySelector('div.yrvote_box').remove();
 
 document.documentElement.querySelector('html > script:nth-child(1)').remove();
@@ -118,12 +144,6 @@ document.documentElement.querySelector('header').remove();
     document.querySelectorAll("div.jo-whatsappcontactbutton").forEach((element)=>{
         element.remove();
     })
-})
+}
 </script>
-
-
-
-
-
-
 `
