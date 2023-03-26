@@ -36,7 +36,7 @@ iframe.notLoaded {
 }
 
 section#viewer:has(iframe.notLoaded) {
-    height: 20%;
+    height: 250px;
 }
 
 section#viewer:has(iframe.notLoaded)>div.docLoaderText {
