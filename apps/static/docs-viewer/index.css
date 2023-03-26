@@ -54,6 +54,11 @@ section#viewer:has(iframe.notLoaded) p.loadertext {
     font-family: cursive;
 }
 
+div.advertcontainer{
+    position: absolute;
+    bottom: 0;
+}
+
 /*PRELOADER*/
 .semipolar-spinner, .semipolar-spinner * {
     box-sizing: border-box;
