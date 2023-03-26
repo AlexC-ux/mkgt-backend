@@ -214,7 +214,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
   } else {
     const dataType: string = documentResponse.headers['content-type'];
 
-    const lastModifiedDate = new Date(documentResponse.headers['last-modified']);
+    const lastModifiedDate = new Date(documentResponse.headers['last-modified'])||new Date();
 
     var b64 = Buffer.from(documentResponse.data).toString("base64");
 
