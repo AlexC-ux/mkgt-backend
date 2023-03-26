@@ -55,7 +55,15 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("news")
   async getNews(): Promise<ITitledDocumentInfo[]> {
-    return this.getResultFromCache(`news`, 2 * 60 * 60 * 100, this.mkgtruApiService.getNews());
+    return this.getResultFromCache(`news`, 2 * 60 * 60 * 1000, this.mkgtruApiService.getNews());
+  }
+
+  @ApiOperation({ summary: "Getting news" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Success" })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
+  @Get("material")
+  async getMaterial(@Query("location") location: string): Promise<string> {
+    return this.getResultFromCache(`article_${location}`, 1 * 24 * 60 * 60 * 1000, this.mkgtruApiService.getMaterialContent(location));
   }
 
   @ApiSecurity("ApiKeyAuth")

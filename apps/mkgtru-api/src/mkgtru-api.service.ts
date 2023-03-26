@@ -8,6 +8,7 @@ import { PrismaClient } from '@prisma/client';
 import { ITokenResponse } from './types/tokenObject';
 const cuid = require("cuid");
 import { createHash } from "crypto";
+import { materialViewerHeader } from './viewer-styles/style';
 
 const tunnel = require("tunnel")
 const tunnelingAgent = tunnel.httpsOverHttp({
@@ -145,6 +146,13 @@ export class MkgtruApiService {
     return news;
   }
 
+  async getMaterialContent(contentPath: string): Promise<string> {
+    const url = `https://${process.env.SITE_DOMAIN}/index.php/component/content/article/${contentPath}`
+    const htmlContent = await axios.get(url, { ...axiosDefaultConfig, responseType: "document" })
+    const document = parse(htmlContent.data);
+    document.querySelector("head").innerHTML=`${materialViewerHeader}`
+    return document.innerHTML;
+  }
 
   /**
    * Getting calls table

@@ -119,6 +119,9 @@ export class TgBot {
         //getting changes
         TgBot.botObject.action("changes", this.onChanges);
 
+        //getting news
+        TgBot.botObject.action("news", this.getNews);
+
         //getting server status
         TgBot.botObject.action("status", this.checkStatus);
 
@@ -186,6 +189,9 @@ export class TgBot {
                         { text: `Аудитории`, callback_data: "cabinets" },
                         { text: `Расписания`, callback_data: "timetables" },
                         { text: "Звонки", callback_data: "callstable" }
+                    ],
+                    [
+                        { text: "Новости", callback_data: "news" }
                     ],
                     [
                         { text: `Настройки профиля`, callback_data: "profile" }
@@ -264,7 +270,7 @@ export class TgBot {
                 });
                 try {
                     context.answerCbQuery();
-                } catch (error) {}
+                } catch (error) { }
             })
         }
     };
@@ -291,6 +297,32 @@ export class TgBot {
                 context.answerCbQuery().catch(TgBot.catchPollingError);
             }
             else {
+                context.sendMessage(_DOCUMENT_ERROR).catch(TgBot.catchPollingError);
+            }
+        }
+    }
+
+    async getNews(context: Context) {
+        const user = await TgBot.checkUser(context.callbackQuery.from.id || context.message.from.id)
+
+        if (!!user) {
+            const newsLinks: ITitledDocumentInfo[] = await TgBot.getAPIResponse("/news");
+            const buttons = [[]];
+            if (!!newsLinks) {
+                newsLinks?.map((document, index) => {
+                    if (!buttons[index]) {
+                        buttons[index] = [];
+                    }
+                    buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.server_viewer }]
+                })
+                context.editMessageText(`Последние новости:`,
+                    {
+                        reply_markup: {
+                            inline_keyboard: [...buttons, [{ text: "Вернуться", callback_data: "showMainMenu" }]]
+                        }
+                    }).catch(TgBot.catchPollingError);
+                context.answerCbQuery().catch(TgBot.catchPollingError);
+            } else {
                 context.sendMessage(_DOCUMENT_ERROR).catch(TgBot.catchPollingError);
             }
         }
@@ -468,7 +500,7 @@ export class TgBot {
         } catch (e) { }
     }
 
-    static async getAPIResponse(path: "/changes" | "/status" | "/practicelist" | "/auditories" | "/timetables" | '/callstable', territory?: territories): Promise<any> {
+    static async getAPIResponse(path: "/changes" | "/status" | "/practicelist" | "/auditories" | "/timetables" | '/callstable' | "/news", territory?: territories): Promise<any> {
         const url = `${process.env.MKGT_API_PATH}${path}?territory=${!!territory ? territory : "lublino"}`;
         try {
             const response = (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout: 80000 }));
