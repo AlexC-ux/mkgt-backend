@@ -29,15 +29,15 @@ describe('MkgtruApiController', () => {
   })
 
   it("changes kuchin", async ()=>{
-    expect((await mkgtruApiController.getChanges("kuchin")).last_modified.difference).toBeGreaterThan(1);
-    expect((await mkgtruApiController.getChanges("kuchin")).last_modified.difference).toBeLessThan(604800000);
-    expect((await mkgtruApiController.getChanges("kuchin")).last_modified.timestamp).toBeLessThan(Date.now());
+    expect((await mkgtruApiController.getNews("kuchin")).last_modified.difference).toBeGreaterThan(1);
+    expect((await mkgtruApiController.getNews("kuchin")).last_modified.difference).toBeLessThan(604800000);
+    expect((await mkgtruApiController.getNews("kuchin")).last_modified.timestamp).toBeLessThan(Date.now());
   })
 
   it("changes lublino", async ()=>{
-    expect((await mkgtruApiController.getChanges("lublino")).last_modified.difference).toBeGreaterThan(1);
-    expect((await mkgtruApiController.getChanges("lublino")).last_modified.difference).toBeLessThan(604800000);
-    expect((await mkgtruApiController.getChanges("lublino")).last_modified.difference).toBeLessThan(Date.now());
+    expect((await mkgtruApiController.getNews("lublino")).last_modified.difference).toBeGreaterThan(1);
+    expect((await mkgtruApiController.getNews("lublino")).last_modified.difference).toBeLessThan(604800000);
+    expect((await mkgtruApiController.getNews("lublino")).last_modified.difference).toBeLessThan(Date.now());
   })
 
 });

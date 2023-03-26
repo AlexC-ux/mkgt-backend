@@ -10,7 +10,7 @@ export interface ITitledDocumentInfo {
     },
     'links': {
         'file': string,
-        'file_base64':string,
+        'file_hash':string,
         'views': {
             'google_docs': string,
             'server_viewer': string,

@@ -7,7 +7,7 @@ import HTMLElement from "node_modules/node-html-parser/dist/nodes/html";
 import { PrismaClient } from '@prisma/client';
 import { ITokenResponse } from './types/tokenObject';
 const cuid = require("cuid");
-
+import { createHash } from "crypto";
 
 const tunnel = require("tunnel")
 const tunnelingAgent = tunnel.httpsOverHttp({
@@ -136,6 +136,16 @@ export class MkgtruApiService {
     return files
   }
 
+  async getNews(): Promise<ITitledDocumentInfo[]> {
+    const elements = await getElementsFromPage("https://mkgt.ru/index.php?option=com_minitekwall&task=masonry.getContent&widget_id=3&page=19999&tag_operator=OR&date_format=Y-m&grid=masonry", 'h3 a');
+    console.log({ elements })
+    let news: ITitledDocumentInfo[] = [];
+    for (let index = 0; index < 6; index++) {
+      news[index] = await getTitledFileInfoByATag(elements[index]);
+    }
+    return news;
+  }
+
 
   /**
    * Getting calls table
@@ -218,22 +228,20 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
 
     const lastModifiedDate = getLastMod();
 
-    function getLastMod():Date{
-      if (dataType=="application/pdf") {
+    function getLastMod(): Date {
+      if (dataType == "application/pdf") {
         const modDate = /<xmp:ModifyDate>(.*)<\/xmp:ModifyDate>/gm.exec(docText)[1]
         if (!!modDate) {
-          console.log({modDate})
+          console.log({ modDate })
           return new Date(modDate)
-        }else{
-          return new Date(documentResponse.headers["last-modified"]||Date.now())
+        } else {
+          return new Date(documentResponse.headers["last-modified"] || Date.now())
         }
       }
-      else{
-        return new Date(documentResponse.headers["last-modified"]||Date.now())
+      else {
+        return new Date(documentResponse.headers["last-modified"] || Date.now())
       }
     }
-
-    var docB64 = Buffer.from(documentResponse.data).toString("base64");
 
     const url = `${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`;
     return (
@@ -247,7 +255,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
         },
         'links': {
           'file': url,
-          'file_base64': `${docB64}`,
+          'file_hash': `${createHash("sha1").update(docText).digest("hex")}`,
           'views': {
             'google_docs': `https://docs.google.com/gview?url=${url}&embed=true`,
             'server_viewer': `http://paytoplay.space/docs-viewer/?file=${url}`,

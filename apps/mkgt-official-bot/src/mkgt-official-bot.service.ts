@@ -39,10 +39,10 @@ export class MkgtOfficialBotService {
       //определение необходимости рассылки
       if (!!changesDocInfo && !!changesDocInfo?.last_modified?.timestamp) {
         if (TgBot.info.changesData[territory] == "") {
-          TgBot.info.changesData[territory] = changesDocInfo.links.file_base64
+          TgBot.info.changesData[territory] = changesDocInfo.links.file_hash
         }
-        if (changesDocInfo.links.file_base64 != TgBot.info.changesData[territory]) {
-          TgBot.info.changesData[territory] = changesDocInfo.links.file_base64;
+        if (changesDocInfo.links.file_hash != TgBot.info.changesData[territory]) {
+          TgBot.info.changesData[territory] = changesDocInfo.links.file_hash;
 
           const users = await prisma.telegramAccount.findMany({
             select: {

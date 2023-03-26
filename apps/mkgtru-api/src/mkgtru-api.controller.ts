@@ -49,6 +49,16 @@ export class MkgtruApiController {
   }
 
   @ApiSecurity("ApiKeyAuth")
+  @ApiOperation({ summary: "Getting news" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Success" })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
+  @UseGuards(RequireApiKeyGuard)
+  @Get("news")
+  async getNews(): Promise<ITitledDocumentInfo[]> {
+    return this.getResultFromCache(`news`, 2 * 60 * 60 * 100, this.mkgtruApiService.getNews());
+  }
+
+  @ApiSecurity("ApiKeyAuth")
   @ApiOperation({ summary: "Getting information about timetable updates" })
   @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
   @ApiResponse({ status: HttpStatus.OK, description: "Success" })
