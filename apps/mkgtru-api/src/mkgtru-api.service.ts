@@ -213,7 +213,8 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {
     const dataType: string = documentResponse.headers['content-type'];
-    const lastModifiedDate = new Date(documentResponse.headers['last-modified']);
+
+    const lastModifiedDate = new Date(documentResponse.headers['date']);
 
     const url = `${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`;
     return (
