@@ -120,57 +120,15 @@ div.jo-whatsappcontactbutton{
 
 export const materialViewerBody = `
 <script>
+updPage();
 
-const remover = setInterval(()=>{
-    switch (document.readyState) {
-        case "loading":
-          // Страница все ещё загружается
-          break;
-        case "interactive":
-            clearPage()
-            clearInterval(remover)
-          break;
-        case "complete":
-            clearPage()
-            clearInterval(remover)
-          break;
-      }
-},500)
-
-
-function clearPage(){
-    document.documentElement.querySelector('div.yrvote_box').remove();
-
-document.documentElement.querySelector('html > script:nth-child(1)').remove();
-document.documentElement.querySelector('header').remove();
+function updPage(){
     document.querySelectorAll("img[data-src]").forEach((element)=>{
         console.log(element)
             element.setAttribute('src',element.getAttribute("data-src"));
     })
 
     document.querySelector("div.os-cat-tab-images > div").style="";
-
-    document.querySelectorAll("div.mod-custom").forEach((element)=>{
-        element.remove();
-    })
-    document.querySelectorAll("nav").forEach((element)=>{
-        element.remove();
-    })
-    document.querySelectorAll("ul.tags").forEach((element)=>{
-        element.remove();
-    })
-    document.querySelectorAll("footer").forEach((element)=>{
-        element.remove();
-    })
-    document.querySelectorAll(".offcanvas-overlay").forEach((element)=>{
-        element.remove();
-    })
-    document.querySelectorAll(".offcanvas-menu").forEach((element)=>{
-        element.remove();
-    })
-    document.querySelectorAll("div.jo-whatsappcontactbutton").forEach((element)=>{
-        element.remove();
-    })
 }
 </script>
 `
