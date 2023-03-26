@@ -215,7 +215,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
     const dataType: string = documentResponse.headers['content-type'];
     const lastModifiedDate = new Date(documentResponse.headers['last-modified']);
 
-    const url = `https://${process.env.SITE_DOMAIN}${linkToFile}`;
+    const url = `${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`;
     return (
       {
         'title': node.innerText,
