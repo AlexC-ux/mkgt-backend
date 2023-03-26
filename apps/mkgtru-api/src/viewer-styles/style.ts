@@ -137,7 +137,7 @@ const remover = setInterval(()=>{
 function clearPage(){
     document.querySelectorAll("img[data-src]").forEach((element)=>{
         console.log(element)
-        element.setAttribute('src',element.getAttribute("data-src"));
+        element.setAttribute('src',"http://paytoplay.space/docs-viewer/?file="+element.getAttribute("data-src"));
     })
 
     document.querySelector("div[style='display:none!important;']").style=''
