@@ -50,7 +50,8 @@ section#viewer:has(iframe.notLoaded)>div.docLoaderText {
 
 section#viewer:has(iframe.notLoaded) p.loadertext {
     padding: 1rem;
-    color: #1d21ff;
+    color: #ffffff;
+    font-family: cursive;
 }
 
 /*PRELOADER*/
@@ -69,8 +70,8 @@ section#viewer:has(iframe.notLoaded) p.loadertext {
     border-radius: 50%;
     position: absolute;
     border: calc(65px * 0.05) solid transparent;
-    border-top-color: #1d21ff;
-    border-left-color: #1d21ff;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
     animation: semipolar-spinner-animation 2s infinite;
   }
 
