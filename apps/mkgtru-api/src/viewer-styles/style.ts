@@ -31,8 +31,8 @@ div.os-cat-tab-images > div {
 }
 
 div.img-block img {
-    width:300px!important;
-    height:180px!important;
+    width:250px!important;
+    height:130px!important;
     border-radius:1.2rem;
     filter: grayscale(40%);
 }
@@ -66,19 +66,15 @@ div:has(div.os-cat-tab-images) ul {
 
 
 html{
-    background:black;
+    background: linear-gradient(rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)), url('https://happywall-img-gallery.imgix.net/229/bocker_svartvit_display.jpg');
+    background-attachment: fixed;
+    background-size: 100vw, 100vh;
 }
 
 div.sppb-addon{
     background:rgba(0,0,0,0.6);
     border-radius:1.4rem;
     padding:1rem;
-}
-
-body {
-    background: linear-gradient(rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)), url('https://happywall-img-gallery.imgix.net/229/bocker_svartvit_display.jpg');
-    background-attachment: fixed;
-    background-size: cover;
 }
 </style>
 
@@ -120,15 +116,29 @@ div.jo-whatsappcontactbutton{
 
 export const materialViewerBody = `
 <script>
-updPage();
+const remover = setInterval(()=>{
+    switch (document.readyState) {
+        case "loading":
+          // Страница все ещё загружается
+          break;
+        case "interactive":
+            clearPage()
+            clearInterval(remover)
+          break;
+        case "complete":
+            clearPage()
+            clearInterval(remover)
+          break;
+      }
+},500)
 
-function updPage(){
+function clearPage(){
     document.querySelectorAll("img[data-src]").forEach((element)=>{
         console.log(element)
-            element.setAttribute('src',element.getAttribute("data-src"));
+        element.setAttribute('src',element.getAttribute("data-src"));
     })
 
-    document.querySelector("div.os-cat-tab-images > div").style="";
+    document.querySelector("div[style='display:none!important;']").style=''
 }
 </script>
 `
