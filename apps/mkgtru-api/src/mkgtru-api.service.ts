@@ -209,14 +209,31 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
 async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocumentInfo> {
   const linkToFile = node.getAttribute("href")
   const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
+  const docText = Buffer.from(documentResponse.data).toString("utf-8");
+
   if (documentResponse.status != 200 || !linkToFile) {
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {
     const dataType: string = documentResponse.headers['content-type'];
 
-    const lastModifiedDate = documentResponse.headers['last-modified']?new Date(documentResponse.headers['last-modified']):new Date();
+    const lastModifiedDate = getLastMod();
 
-    var b64 = Buffer.from(documentResponse.data).toString("base64");
+    function getLastMod():Date{
+      if (dataType=="application/pdf") {
+        const modDate = /<xmp:ModifyDate>(.*)<\/xmp:ModifyDate>/gm.exec(docText)[1]
+        if (!!modDate) {
+          console.log({modDate})
+          return new Date(modDate)
+        }else{
+          return new Date(documentResponse.headers["last-modified"]||Date.now())
+        }
+      }
+      else{
+        return new Date(documentResponse.headers["last-modified"]||Date.now())
+      }
+    }
+
+    var docB64 = Buffer.from(documentResponse.data).toString("base64");
 
     const url = `${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`;
     return (
@@ -230,7 +247,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
         },
         'links': {
           'file': url,
-          'file_base64': `${b64}`,
+          'file_base64': `${docB64}`,
           'views': {
             'google_docs': `https://docs.google.com/gview?url=${url}&embed=true`,
             'server_viewer': `http://paytoplay.space/docs-viewer/?file=${url}`,
