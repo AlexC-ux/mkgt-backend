@@ -389,7 +389,6 @@ export class TgBot {
 
         if (!!user) {
             const doc: ITitledDocumentInfo | null = await TgBot.getAPIResponse("/changes", user.territory);
-            console.log({ doc })
             if (!!doc) {
                 context.editMessageText(`Замены от ${doc?.last_modified.ru}`,
                     {
