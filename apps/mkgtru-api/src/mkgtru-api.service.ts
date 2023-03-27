@@ -255,7 +255,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
  * @returns {Promise<ITitledDocumentInfo>}
  */
 async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocumentInfo> {
-  if (!!node) {
+  if (!!node&&!!node.getAttribute("href")) {
     try {
       const linkToFile = node.getAttribute("href")
       const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
@@ -308,7 +308,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
       updateProxy();
       console.error("cannot getDoc by a tag: "+node)
       return {
-        'title': "wait for proxy update",
+        'title': "parsing error document!",
         'last_modified': {
           'ru': "",
           'en-US': "",
@@ -316,11 +316,11 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
           'now': `${Date.now()}`
         },
         'links': {
-          'file': "",
-          'file_hash': "",
+          'file': "https://docs.google.com/gview?url=",
+          'file_hash': "https://docs.google.com/gview?url=",
           'views': {
-            'google_docs':"",
-            'server_viewer': ``,
+            'google_docs':"https://docs.google.com/gview?url=",
+            'server_viewer': `https://docs.google.com/gview?url=`,
           },
         },
         'data_type': "error",
