@@ -35,15 +35,12 @@ export let axiosDefaultConfig: AxiosRequestConfig = {
   }
 }
 
-function updateProxy(callback?: () => Promise<HTMLElement[]> | void): any {
+function updateProxy() {
   console.log("proxy updating")
   updateProxyAgents((config) => {
     axiosDefaultConfig = { ...axiosDefaultConfig, httpsAgent: config.httpsAgent, };
     console.log({ axiosDefaultConfig })
     console.log("proxy updated")
-    if (!!callback) {
-      return callback();
-    }
   })
 }
 
@@ -108,6 +105,9 @@ export class MkgtruApiService {
 
   async getStatus(): Promise<string> {
     const result = await axios.get(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/`, axiosDefaultConfig);
+    if (result.status != 200) {
+      updateProxy();
+    }
     return result.statusText;
   }
 
@@ -235,7 +235,8 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
       }
     }
   } catch (error) {
-    return updateProxy(() => { return getElementsFromPage(uri, selector) });
+    updateProxy();
+    return null;
   }
 }
 
