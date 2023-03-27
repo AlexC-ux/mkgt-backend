@@ -36,7 +36,7 @@ export let axiosDefaultConfig: AxiosRequestConfig = {
 
 function updateProxy() {
   updateProxyAgents((config) => {
-    axiosDefaultConfig = { ...config, ...axiosDefaultConfig, };
+    axiosDefaultConfig = { ...axiosDefaultConfig, httpsAgent:config.httpsAgent,  };
     console.log({ axiosDefaultConfig })
     console.log("proxy updated")
   })
