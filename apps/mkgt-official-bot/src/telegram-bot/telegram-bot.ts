@@ -482,7 +482,7 @@ export class TgBot {
     static async getAPIResponse(path: "/changes" | "/status" | "/practicelist" | "/auditories" | "/timetables" | '/callstable' | "/news", territory?: territories): Promise<any> {
         const url = `${process.env.MKGT_API_PATH}${path}?territory=${!!territory ? territory : "lublino"}`;
         try {
-            const response = (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout: 80000 }));
+            const response = (await axios.get(url, { headers: { "authorization": `Bearer ${process.env.ACCESS_TOKEN}` }, timeout: 2000 }));
             console.log({ 'req_to_api': url, status: response.statusText })
             return response.data;
         } catch (error) {
