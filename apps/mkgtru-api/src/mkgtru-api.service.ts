@@ -11,19 +11,20 @@ import { createHash } from "crypto";
 import { materialViewerBody, materialViewerHeader } from './viewer-styles/style';
 import { updateProxyAgents } from './proxy';
 
-//onst tunnel = require("tunnel")
-/*const tunnelingAgent = tunnel.httpsOverHttp({
+const tunnel = require("tunnel");
+const tunnelingAgent = tunnel.httpsOverHttp({
   proxy: {
     host: '46.3.181.172',
     port: 8000,
     proxyAuth: 'MJWGyH:3C7VSk'
   }
-});*/
+});
 
 export let axiosDefaultConfig: AxiosRequestConfig = {
   timeout: 30000,
   maxRedirects: 70,
   maxContentLength: 10000000000,
+  httpAgent:tunnelingAgent,
   validateStatus: (status) => {
     if (status < 200 || (status > 400&&status!=404) || !axiosDefaultConfig.httpsAgent) {
       updateProxy();
@@ -45,7 +46,7 @@ function updateProxy() {
 @Injectable()
 export class MkgtruApiService {
   constructor() {
-    updateProxy();
+    //updateProxy();
   }
 
   /**
