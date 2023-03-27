@@ -183,9 +183,9 @@ async function onStart(context: Context) {
         _ROW_BREAK +
         `По умолчанию режим работы для студентов с Кучина пер. Если Вы учитесь в Люблино, то воспользуйтесь кнопкой 'Настройки профиля' ниже` +
         _ROW_BREAK +
-        `/help покажет список доступных команд`, {
-        ...mainMenu
-    }).catch(TgBot.catchPollingError);
+        `/help покажет список доступных команд`,
+        mainMenu
+    ).catch(TgBot.catchPollingError);
 }
 
 async function getCallsTable(context: Context) {
