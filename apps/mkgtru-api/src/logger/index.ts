@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 export function LogRequest(req: Request, res: Response, next: NextFunction) {
     console.log(req)
-    console.log(buildLogString({path:req.url, method:req.method, ip:req.ip, httpV:req.httpVersion}))
+    console.log(buildLogString({path:req.url, method:req.method, ip:req.ips[req.ips.length-1], httpV:req.httpVersion}))
     next();
 }
 
