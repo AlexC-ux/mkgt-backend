@@ -102,9 +102,16 @@ export class MkgtruApiService {
   }
 
   async getStatus(): Promise<string> {
-    const result = await axios.get(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/`, axiosDefaultConfig);
-    console.log({ statusRequest: result })
-    return result.statusText;
+    try {
+      const result = await axios.get(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/`, axiosDefaultConfig);
+      console.log({ statusRequest: result })
+      return result.statusText;
+    } catch (error) {
+      updateProxy();
+      return this.getStatus();
+    }
+
+
   }
 
 
@@ -215,19 +222,24 @@ export class MkgtruApiService {
  * @returns {Promise<HTMLElement[]>}
  */
 async function getElementsFromPage(uri: string, selector: string): Promise<HTMLElement[]> {
-  const pageResponse = await axios.get(uri, axiosDefaultConfig);
-  if (pageResponse.status != 200) {
-    throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
-  } else {
-    const root = parse(pageResponse.data);
-
-    const linkElements = root.querySelectorAll(selector);
-
-    if (!!linkElements && linkElements.length > 0) {
-      return linkElements;
-    } else {
+  try {
+    const pageResponse = await axios.get(uri, axiosDefaultConfig);
+    if (pageResponse.status != 200) {
       throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
+    } else {
+      const root = parse(pageResponse.data);
+
+      const linkElements = root.querySelectorAll(selector);
+
+      if (!!linkElements && linkElements.length > 0) {
+        return linkElements;
+      } else {
+        throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
+  } catch (error) {
+    updateProxy();
+    return getElementsFromPage(uri, selector)
   }
 }
 
@@ -244,7 +256,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
   const linkToFile = node.getAttribute("href")
   const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
   const docText = Buffer.from(documentResponse.data).toString("utf-8");
-  console.log({linkToFile})
+  console.log({ linkToFile })
   if (documentResponse.status != 200 || !linkToFile) {
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {

@@ -12,7 +12,7 @@ const controller = new AbortController();
 export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => void) {
     console.log("started")
     const proxies = await axios.get("https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=responseTime&sort_type=asc&protocols=http");
-    const proxy_list:{ip:string, port:string, protocols:string[]}[] = proxies.data.data
+    const proxy_list: { ip: string, port: string, protocols: string[] }[] = shuffle(proxies.data.data)
 
     const count = proxy_list.length;
     let updated = false;
@@ -22,13 +22,13 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
             console.log(`${index}/${count}`)
             const config: AxiosRequestConfig = { ...axiosDefaultConfig, ...getTunnelingAgent(proxy), timeout: 0, validateStatus: () => true };
             try {
-                axios.get("https://mkgt.ru/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/", {...config,signal: controller.signal}).then((resp) => {
+                axios.get("https://mkgt.ru/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/", { ...config, signal: controller.signal }).then((resp) => {
                     if (resp.status == 200) {
                         if (!updated) {
                             updated = true;
                             controller.abort();
                             console.log("proxy updated")
-                            console.log({proxy:`${proxy.protocols} ${proxy.ip} ${proxy.port}`})
+                            console.log({ proxy: `${proxy.protocols} ${proxy.ip} ${proxy.port}` })
                             callback(config);
                             return;
                         }
@@ -76,4 +76,23 @@ function getTunnelingAgent(proxy: IPRoxy): IAgents {
     } else {
         throw new Error("UnknownProxyType: " + proxy.protocols);
     }
+}
+
+
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
 }
