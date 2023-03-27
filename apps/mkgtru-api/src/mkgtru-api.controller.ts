@@ -63,7 +63,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("material")
   async getMaterial(@Query("location") location: string): Promise<string> {
-    return this.getResultFromCache(`article_${location}`, 1 * 24 * 60 * 60 * 1000, this.mkgtruApiService.getMaterialContent(location));
+    return this.getResultFromCache(`article_${location}`, 6 * 60 * 60 * 1000, this.mkgtruApiService.getMaterialContent(location));
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -74,7 +74,7 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`changes_${territory}`, 150 * 1000, this.mkgtruApiService.getChanges(territory));
+    return this.getResultFromCache(`changes_${territory}`, 200 * 1000, this.mkgtruApiService.getChanges(territory));
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -84,7 +84,7 @@ export class MkgtruApiController {
   @Get("practicelist")
   @UseGuards(RequireApiKeyGuard)
   async getPracticeList(): Promise<ITitledDocumentInfo[]> {
-    return this.getResultFromCache(`practicelist`, 3 * 24 * 60 * 60 * 1000, this.mkgtruApiService.getPracticeList());
+    return this.getResultFromCache(`practicelist`, 12 * 60 * 60 * 1000, this.mkgtruApiService.getPracticeList());
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -95,7 +95,7 @@ export class MkgtruApiController {
   @Get("timetables")
   @UseGuards(RequireApiKeyGuard)
   async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
-    return this.getResultFromCache(`timetables_${territory}`, 3 * 24 * 60 * 60 * 1000, this.mkgtruApiService.getTimetables(territory));
+    return this.getResultFromCache(`timetables_${territory}`, 12 * 60 * 60 * 1000, this.mkgtruApiService.getTimetables(territory));
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -106,7 +106,7 @@ export class MkgtruApiController {
   @Get("auditories")
   @UseGuards(RequireApiKeyGuard)
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`auditories`, 150 * 1000, this.mkgtruApiService.getAuditories());
+    return this.getResultFromCache(`auditories`, 200*1000, this.mkgtruApiService.getAuditories());
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -115,7 +115,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("callstable")
   async getCallstable(): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`callstable`, 7 * 24 * 60 * 60 * 1000, this.mkgtruApiService.getTimeCalls());
+    return this.getResultFromCache(`callstable`, 12 * 60 * 60 * 1000, this.mkgtruApiService.getTimeCalls());
   }
 
   @ApiSecurity("ApiKeyAuth")
