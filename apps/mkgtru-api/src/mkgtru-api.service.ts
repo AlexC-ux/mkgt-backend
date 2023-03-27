@@ -9,9 +9,9 @@ import { ITokenResponse } from './types/tokenObject';
 const cuid = require("cuid");
 import { createHash } from "crypto";
 import { materialViewerBody, materialViewerHeader } from './viewer-styles/style';
-import { getProxyAgents } from './proxy';
+import { updateProxyAgents } from './proxy';
 
-const tunnel = require("tunnel")
+//onst tunnel = require("tunnel")
 /*const tunnelingAgent = tunnel.httpsOverHttp({
   proxy: {
     host: '46.3.181.172',
@@ -24,20 +24,29 @@ export let axiosDefaultConfig: AxiosRequestConfig = {
   timeout: 30000,
   maxRedirects: 70,
   maxContentLength: 10000000000,
-  ...getProxyAgents(),
   validateStatus: (status) => {
-    if (status == 403) {
-      axiosDefaultConfig = { ...axiosDefaultConfig, ...getProxyAgents() };
-      return false
+    if (status < 200 || (status > 400&&status!=404) || !axiosDefaultConfig.httpsAgent) {
+      updateProxy();
+      return false;
     } else {
       return true;
     }
   }
 }
 
+function updateProxy() {
+  updateProxyAgents((config) => {
+    axiosDefaultConfig = { ...config, ...axiosDefaultConfig, };
+    console.log({ axiosDefaultConfig })
+    console.log("proxy updated")
+  })
+}
+
 @Injectable()
 export class MkgtruApiService {
-
+  constructor() {
+    updateProxy();
+  }
 
   /**
    * Creating new account in database
@@ -93,7 +102,7 @@ export class MkgtruApiService {
   }
 
   async getStatus(): Promise<string> {
-    const result = await axios.get("https://mkgt.ru/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/", axiosDefaultConfig);
+    const result = await axios.get(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/`, axiosDefaultConfig);
     console.log({ statusRequest: result })
     return result.statusText;
   }

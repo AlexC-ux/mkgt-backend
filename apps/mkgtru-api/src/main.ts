@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { LogRequest } from './logger';
 import { MkgtruApiModule } from './mkgtru-api.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(MkgtruApiModule);
+  const app = await NestFactory.create(MkgtruApiModule,{logger:["log", "error"]});
 
   const config = new DocumentBuilder()
     .setTitle('MKGTRU-API DOCUMENTATION')
@@ -16,6 +17,7 @@ async function bootstrap() {
     })
     .build();
 
+    app.use(LogRequest);
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-doc', app, document);
 
