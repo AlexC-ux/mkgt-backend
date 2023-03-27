@@ -4,7 +4,7 @@ import { LogRequest } from './logger';
 import { MkgtruApiModule } from './mkgtru-api.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(MkgtruApiModule,{logger:["log", "error"]});
+  const app = await NestFactory.create(MkgtruApiModule);
 
   const config = new DocumentBuilder()
     .setTitle('MKGTRU-API DOCUMENTATION')
