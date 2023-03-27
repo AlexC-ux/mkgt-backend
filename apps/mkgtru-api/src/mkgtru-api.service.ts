@@ -235,7 +235,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
       }
     }
   } catch (error) {
-    console.log(error)
+    console.error(`Not found elements: ${uri} selector:'${selector}'`)
     updateProxy();
     return [null];
   }
