@@ -35,12 +35,15 @@ export let axiosDefaultConfig: AxiosRequestConfig = {
   }
 }
 
-function updateProxy() {
+function updateProxy(callback?: () => Promise<HTMLElement[]> | void): any {
   console.log("proxy updating")
   updateProxyAgents((config) => {
     axiosDefaultConfig = { ...axiosDefaultConfig, httpsAgent: config.httpsAgent, };
     console.log({ axiosDefaultConfig })
     console.log("proxy updated")
+    if (!!callback) {
+      return callback();
+    }
   })
 }
 
@@ -132,9 +135,6 @@ export class MkgtruApiService {
    */
   async getAuditories(): Promise<ITitledDocumentInfo> {
     const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(1)>*>div.sppb-panel-body div:nth-child(1) a");
-    if (!linkElement) {
-      return this.getAuditories()
-    }
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -235,7 +235,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
       }
     }
   } catch (error) {
-    updateProxy();
+    return updateProxy(() => { return getElementsFromPage(uri, selector) });
   }
 }
 
