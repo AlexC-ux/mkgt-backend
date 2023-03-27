@@ -8,9 +8,10 @@ export interface IPRoxy { ip: string, port: string, protocols: string[] }
 
 export interface IAgents { httpsAgent: any }
 
-const controller = new AbortController();
+
 
 export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => void) {
+    const controller = new AbortController();
     console.log("started")
     const proxies = await axios.get("https://sslproxies.org/");
     const root = parse(proxies.data)
@@ -40,7 +41,7 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
                         controller.abort();
                         return;
                     } 
-                }).catch((err) => { console.log(err)})
+                }).catch((err) => { })
             } catch (error) {
                 
             }
