@@ -40,7 +40,7 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
                         callback(config);
                         return;
                     } 
-                }).catch((err) => { })
+                }).catch((err) => { console.log(err)})
             } catch (error) {
                 
             }
