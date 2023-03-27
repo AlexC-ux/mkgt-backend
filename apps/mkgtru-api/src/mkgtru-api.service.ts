@@ -121,7 +121,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChanges(territory?: territories): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/`, `div:nth-child(2)>*>div.sppb-panel-body div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>*>div.sppb-panel-body div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -235,7 +235,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
       }
     }
   } catch (error) {
-    console.error(`Not found elements: ${uri} selector:'${selector}'`)
+    console.error(`Not found elements: ${uri} selector:'${selector}'\n\n${error}`)
     updateProxy();
     return [null];
   }
