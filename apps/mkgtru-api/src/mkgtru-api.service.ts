@@ -24,7 +24,7 @@ export let axiosDefaultConfig: AxiosRequestConfig = {
   timeout: 14000,
   maxRedirects: 70,
   maxContentLength: 10000000000,
-  proxy:false,
+  proxy: false,
   validateStatus: (status) => {
     if (status != 200 || !axiosDefaultConfig.httpsAgent) {
       updateProxy();
@@ -36,6 +36,7 @@ export let axiosDefaultConfig: AxiosRequestConfig = {
 }
 
 function updateProxy() {
+  console.log("proxy updating")
   updateProxyAgents((config) => {
     axiosDefaultConfig = { ...axiosDefaultConfig, httpsAgent: config.httpsAgent, };
     console.log({ axiosDefaultConfig })
@@ -103,8 +104,8 @@ export class MkgtruApiService {
   }
 
   async getStatus(): Promise<string> {
-      const result = await axios.get(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/`, axiosDefaultConfig);
-      return result.statusText;
+    const result = await axios.get(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/`, axiosDefaultConfig);
+    return result.statusText;
   }
 
 
@@ -215,6 +216,7 @@ export class MkgtruApiService {
  * @returns {Promise<HTMLElement[]>}
  */
 async function getElementsFromPage(uri: string, selector: string): Promise<HTMLElement[]> {
+  try {
     const pageResponse = await axios.get(uri, axiosDefaultConfig);
     if (pageResponse.status != 200) {
       throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -229,6 +231,9 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
         throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+  } catch (error) {
+    updateProxy();
+  }
 }
 
 
