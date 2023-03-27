@@ -25,7 +25,7 @@ export let axiosDefaultConfig: AxiosRequestConfig = {
   maxRedirects: 70,
   maxContentLength: 10000000000,
   validateStatus: (status) => {
-    if (status < 200 || (status > 400&&status!=404) || !axiosDefaultConfig.httpsAgent) {
+    if (status!=200 || !axiosDefaultConfig.httpsAgent) {
       updateProxy();
       return false;
     } else {
