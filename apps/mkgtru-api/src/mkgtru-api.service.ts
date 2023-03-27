@@ -27,7 +27,7 @@ export let axiosDefaultConfig: AxiosRequestConfig = {
   httpAgent:tunnelingAgent,
   validateStatus: (status) => {
     if (status < 200 || (status > 400&&status!=404) || !axiosDefaultConfig.httpsAgent) {
-      updateProxy();
+      //updateProxy();
       return false;
     } else {
       return true;
