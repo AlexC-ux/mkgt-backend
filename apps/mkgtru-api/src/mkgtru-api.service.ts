@@ -104,7 +104,6 @@ export class MkgtruApiService {
   async getStatus(): Promise<string> {
     try {
       const result = await axios.get(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/`, axiosDefaultConfig);
-      console.log({ statusRequest: result })
       return result.statusText;
     } catch (error) {
       updateProxy();
