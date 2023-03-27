@@ -5,7 +5,7 @@ import { axiosDefaultConfig } from "../mkgtru-api.service";
 const tunnel = require("tunnel")
 
 export interface IPRoxy { ip: string, port: string, protocols: string[] }
-const blacklistedIPs: IPRoxy[] = []
+
 export interface IAgents { httpsAgent: any }
 
 const controller = new AbortController();
@@ -29,7 +29,6 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
 
     for (let index = 0; index < proxy_list.length; index++) {
         const proxy = proxy_list[index];
-        if (!blacklistedIPs.includes(proxy)) {
             console.log(`${index + 1}/${count}`)
             const config: AxiosRequestConfig = { ...axiosDefaultConfig, ...getTunnelingAgent(proxy), timeout: 0, validateStatus: () => true };
             try {
@@ -40,13 +39,11 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
                         console.log({ proxy: `${proxy.protocols} ${proxy.ip} ${proxy.port}` })
                         callback(config);
                         return;
-                    } else { blacklistedIPs.push(proxy); console.log("blacklisted " + index + JSON.stringify(proxy)) }
-                }).catch((err) => { blacklistedIPs.push(proxy); })
+                    } 
+                }).catch((err) => { })
             } catch (error) {
-                blacklistedIPs.push(proxy)
+                
             }
-        }
-
     }
 }
 
