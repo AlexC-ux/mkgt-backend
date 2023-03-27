@@ -406,8 +406,7 @@ async function onPractice(context: Context) {
                 if (!buttons[index]) {
                     buttons[index] = [];
                 }
-                buttons[index] = [{ text: document.title, url: document.links.views.server_viewer }, ...buttons[index]]
-                console.log(buttons)
+                buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.server_viewer }]
             })
             context.editMessageText(`Расписания практики:`,
                 {
@@ -420,7 +419,6 @@ async function onPractice(context: Context) {
         else {
             context.sendMessage(_DOCUMENT_ERROR).catch(TgBot.catchPollingError);
         }
-
     }
 }
 
