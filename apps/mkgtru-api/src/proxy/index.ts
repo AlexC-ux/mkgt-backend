@@ -24,6 +24,7 @@ export async function updateProxyAgents(callback: (cfg:AxiosRequestConfig) => vo
                         console.log("proxy updated")
                         callback(config);
                         updated = true;
+                        return;
                     }
                 } else { }
             }).catch((err) => { })
