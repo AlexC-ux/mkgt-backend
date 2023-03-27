@@ -235,8 +235,9 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
       }
     }
   } catch (error) {
+    console.log(error)
     updateProxy();
-    return null;
+    return [null];
   }
 }
 
