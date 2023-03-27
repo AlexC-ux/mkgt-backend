@@ -21,7 +21,7 @@ const tunnel = require("tunnel");
 });*/
 
 export let axiosDefaultConfig: AxiosRequestConfig = {
-  timeout: 5000,
+  timeout: 14000,
   maxRedirects: 70,
   maxContentLength: 10000000000,
   validateStatus: (status) => {
