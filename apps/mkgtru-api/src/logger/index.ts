@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 export function LogRequest(req: Request, res: Response, next: NextFunction) {
-    console.log(req)
     console.log(buildLogString({path:req.url, method:req.method, ip:req.ip, httpV:req.httpVersion, token:`${req.headers.authorization}`}))
     next();
 }
