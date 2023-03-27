@@ -407,7 +407,9 @@ async function onPractice(context: Context) {
                     buttons[index] = [];
                 }
                 buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.server_viewer }]
+                
             })
+            console.log(JSON.stringify([...buttons, [{ text: "Вернуться", callback_data: "showMainMenu" }]]))
             context.editMessageText(`Расписания практики:`,
                 {
                     reply_markup: {

@@ -306,6 +306,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
       }
     } catch (error) {
       updateProxy();
+      console.error("cannot getDoc by a tag: "+node)
       return {
         'title': "wait for proxy update",
         'last_modified': {
@@ -318,7 +319,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
           'file': "",
           'file_hash': "",
           'views': {
-            'google_docs': "",
+            'google_docs':"",
             'server_viewer': ``,
           },
         },
@@ -326,7 +327,6 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
       }
     }
   } else {
-    console.error("Node not found at getTitledFileInfoByATag(node)")
   }
 
 }
