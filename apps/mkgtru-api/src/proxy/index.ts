@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
+import parse from "node-html-parser";
 const SocksAgent = require('axios-socks5-agent')
 import { axiosDefaultConfig } from "../mkgtru-api.service";
 const tunnel = require("tunnel")
@@ -14,8 +15,18 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
     if (!started) {
         started = true;
         console.log("started")
-        const proxies = await axios.get("https://proxylist.geonode.com/api/proxy-list?limit=100&page=1&sort_by=speed&sort_type=asc&protocols=http%2Chttps%2Csocks5");
-        const proxy_list: { ip: string, port: string, protocols: string[] }[] = proxies.data.data
+        const proxies = await axios.get("https://sslproxies.org/");
+        const root = parse(proxies.data)
+        const rows = root.querySelectorAll("tbody tr")
+        const proxy_list: { ip: string, port: string, protocols: string[] }[] = rows.map(element => {
+            const columns = element.querySelectorAll("td");
+            return {
+                ip: columns[0].innerText,
+                port: columns[1].innerText,
+                protocols: [`${columns[6].innerText == "yes" ? "https" : "http"}`]
+            }
+        }
+        )
 
         const count = proxy_list.length;
 
@@ -38,8 +49,8 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
                                 callback(config);
                                 return;
                             }
-                        } else { blacklistedIPs.push(proxy) }
-                    }).catch((err) => { blacklistedIPs.push(proxy) })
+                        } else { blacklistedIPs.push(proxy); console.log("blacklisted " + index + JSON.stringify(proxy)) }
+                    }).catch((err) => { blacklistedIPs.push(proxy); })
                 } catch (error) {
                     blacklistedIPs.push(proxy)
                 }
@@ -61,17 +72,7 @@ function getTunnelingAgent(proxy: IPRoxy): IAgents {
         })
         return { httpsAgent }
     }
-    else if (proxy.protocols.includes("https")) {
-        return {
-            httpsAgent: tunnel.httpsOverHttps({
-                proxy: {
-                    host: proxy.ip,
-                    port: proxy.port,
-                }
-            })
-        }
-    }
-    else if (proxy.protocols.includes("http")) {
+    else if (proxy.protocols.includes("https") || proxy.protocols.includes("http")) {
         return {
             httpsAgent: tunnel.httpsOverHttp({
                 proxy: {
@@ -79,7 +80,7 @@ function getTunnelingAgent(proxy: IPRoxy): IAgents {
                     port: proxy.port,
                 }
             })
-        };
+        }
     } else {
         throw new Error("UnknownProxyType: " + proxy.protocols);
     }
