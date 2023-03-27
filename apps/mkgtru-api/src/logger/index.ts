@@ -1,5 +1,7 @@
-export function LogRequest(req: {httpVersion:string,method:string, url:string, response:any},res:any,next:()=>void) {
-    console.log(buildLogString({path:req.url, method:req.method, ip:"", httpV:req.httpVersion}))
+import { Request, Response, NextFunction } from 'express';
+export function LogRequest(req: Request, res: Response, next: NextFunction) {
+    console.log(req)
+    console.log(buildLogString({path:req.url, method:req.method, ip:req.ip, httpV:req.httpVersion}))
     next();
 }
 
