@@ -21,11 +21,11 @@ const tunnel = require("tunnel");
 });*/
 
 export let axiosDefaultConfig: AxiosRequestConfig = {
-  timeout: 30000,
+  timeout: 5000,
   maxRedirects: 70,
   maxContentLength: 10000000000,
   validateStatus: (status) => {
-    if (status!=200 || !axiosDefaultConfig.httpsAgent) {
+    if (status != 200 || !axiosDefaultConfig.httpsAgent) {
       updateProxy();
       return false;
     } else {
@@ -36,7 +36,7 @@ export let axiosDefaultConfig: AxiosRequestConfig = {
 
 function updateProxy() {
   updateProxyAgents((config) => {
-    axiosDefaultConfig = { ...axiosDefaultConfig, httpsAgent:config.httpsAgent,  };
+    axiosDefaultConfig = { ...axiosDefaultConfig, httpsAgent: config.httpsAgent, };
     console.log({ axiosDefaultConfig })
     console.log("proxy updated")
   })
@@ -147,10 +147,8 @@ export class MkgtruApiService {
     const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(5)>*>div.sppb-panel-body>div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
     const files = [];
     for (const index in linkElements) {
-      if (Object.prototype.hasOwnProperty.call(linkElements, index)) {
-        const element = linkElements[index];
-        files.push(await getTitledFileInfoByATag(element))
-      }
+      const element = linkElements[index];
+      files.push(await getTitledFileInfoByATag(element))
     }
     return files
   }
@@ -246,7 +244,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
   const linkToFile = node.getAttribute("href")
   const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
   const docText = Buffer.from(documentResponse.data).toString("utf-8");
-
+  console.log({linkToFile})
   if (documentResponse.status != 200 || !linkToFile) {
     throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
   } else {

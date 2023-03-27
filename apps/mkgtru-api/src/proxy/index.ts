@@ -12,7 +12,7 @@ const controller = new AbortController();
 export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => void) {
     console.log("started")
     const proxies = await axios.get("https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=responseTime&sort_type=asc&protocols=http");
-    const proxy_list = proxies.data.data
+    const proxy_list:{ip:string, port:string, protocols:string[]}[] = proxies.data.data
 
     const count = proxy_list.length;
     let updated = false;
@@ -28,7 +28,7 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
                             updated = true;
                             controller.abort();
                             console.log("proxy updated")
-                            console.log({config})
+                            console.log({proxy:`${proxy.protocols} ${proxy.ip} ${proxy.port}`})
                             callback(config);
                             return;
                         }
