@@ -11,7 +11,6 @@ export interface IAgents { httpsAgent: any }
 const controller = new AbortController();
 
 export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => void) {
-    let updated = false;
     console.log("started")
     const proxies = await axios.get("https://sslproxies.org/");
     const root = parse(proxies.data)
@@ -36,14 +35,11 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
             try {
                 axios.get("https://mkgt.ru/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/", { ...config, signal: controller.signal }).then((resp) => {
                     if (resp.status == 200) {
-                        if (!updated) {
-                            updated = true;
-                            controller.abort();
-                            console.log("proxy updated")
-                            console.log({ proxy: `${proxy.protocols} ${proxy.ip} ${proxy.port}` })
-                            callback(config);
-                            return;
-                        }
+                        controller.abort();
+                        console.log("proxy updated")
+                        console.log({ proxy: `${proxy.protocols} ${proxy.ip} ${proxy.port}` })
+                        callback(config);
+                        return;
                     } else { blacklistedIPs.push(proxy); console.log("blacklisted " + index + JSON.stringify(proxy)) }
                 }).catch((err) => { blacklistedIPs.push(proxy); })
             } catch (error) {
