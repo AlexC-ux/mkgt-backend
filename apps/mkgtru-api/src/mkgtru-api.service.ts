@@ -21,9 +21,9 @@ const tunnel = require("tunnel");
 });*/
 
 export let axiosDefaultConfig: AxiosRequestConfig = {
-  timeout: 14000,
+  timeout: 0,
   maxRedirects: 70,
-  maxContentLength: 10000000000,
+  maxContentLength: 990000000000,
   proxy: false,
   validateStatus: (status) => {
     if (status != 200 || !axiosDefaultConfig.httpsAgent) {
