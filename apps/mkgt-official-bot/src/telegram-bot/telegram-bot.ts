@@ -60,7 +60,7 @@ export class TgBot {
                     { text: "Звонки", callback_data: "callstable" }
                 ],
                 [
-                    {text:"Новости", callback_data:"news"}
+                    { text: "Новости", callback_data: "news" }
                 ],
                 [
                     { text: `Настройки профиля`, callback_data: "profile" }
@@ -182,7 +182,7 @@ export class TgBot {
             `По умолчанию режим работы для студентов с Кучина пер. Если Вы учитесь в Люблино, то воспользуйтесь кнопкой 'Настройки профиля' ниже` +
             _ROW_BREAK +
             `/help покажет список доступных команд`, {
-                ...TgBot.mainMenu
+            ...TgBot.mainMenu
         }).catch(TgBot.catchPollingError);
     }
 
@@ -258,26 +258,26 @@ export class TgBot {
         const user = await TgBot.checkUser(context.callbackQuery.from.id || context.message.from.id)
 
         if (!!user) {
-            const doc: ITitledDocumentInfo | null = await TgBot.getAPIResponse("/auditories", user.territory)
-
-            if (!!doc) {
-                context.editMessageText(`Распределение аудиторий от ${doc.last_modified.ru}`,
-                    {
-                        reply_markup: {
-                            inline_keyboard: [
-                                [
-                                    { text: "Скачать", url: doc?.links.file },
-                                    { text: "Просмотреть", url: doc?.links.views.server_viewer },
-                                ],
-                                [{ text: "Вернуться", callback_data: "showMainMenu" }]
-                            ]
-                        }
-                    }).catch(TgBot.catchPollingError);
-                context.answerCbQuery().catch(TgBot.catchPollingError);
-            }
-            else {
-                context.sendMessage(_DOCUMENT_ERROR).catch(TgBot.catchPollingError);
-            }
+            TgBot.getAPIResponse("/auditories", user.territory).then(doc => {
+                if (!!doc) {
+                    context.editMessageText(`Распределение аудиторий от ${doc.last_modified.ru}`,
+                        {
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [
+                                        { text: "Скачать", url: doc?.links.file },
+                                        { text: "Просмотреть", url: doc?.links.views.server_viewer },
+                                    ],
+                                    [{ text: "Вернуться", callback_data: "showMainMenu" }]
+                                ]
+                            }
+                        }).catch(TgBot.catchPollingError);
+                    context.answerCbQuery().catch(TgBot.catchPollingError);
+                }
+                else {
+                    context.sendMessage(_DOCUMENT_ERROR).catch(TgBot.catchPollingError);
+                }
+            })
         }
     }
 
@@ -292,7 +292,7 @@ export class TgBot {
                     if (!buttons[index]) {
                         buttons[index] = [];
                     }
-                    buttons[index] = [...buttons[index], { text: document.title, url: `http://paytoplay.space:8080/mkgtru-api/material?location=${document.links.file.replace("https://mkgt.ru/index.php/component/content/article/","")}` }]
+                    buttons[index] = [...buttons[index], { text: document.title, url: `http://paytoplay.space:8080/mkgtru-api/material?location=${document.links.file.replace("https://mkgt.ru/index.php/component/content/article/", "")}` }]
                 })
                 context.editMessageText(`Последние новости:`,
                     {
