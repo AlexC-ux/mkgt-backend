@@ -104,11 +104,15 @@ export class MkgtruApiService {
   }
 
   async getStatus(): Promise<string> {
+    try {
     const result = await axios.get(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/`, axiosDefaultConfig);
     if (result.status != 200) {
       updateProxy();
     }
     return result.statusText;
+  } catch (error) {
+      updateProxy();
+  }
   }
 
 
