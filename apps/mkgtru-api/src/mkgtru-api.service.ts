@@ -251,51 +251,55 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
  * @returns {Promise<ITitledDocumentInfo>}
  */
 async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocumentInfo> {
-  const linkToFile = node.getAttribute("href")
-  const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
-  const docText = Buffer.from(documentResponse.data).toString("utf-8");
-  console.log({ linkToFile })
-  if (documentResponse.status != 200 || !linkToFile) {
-    throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
-  } else {
-    const dataType: string = documentResponse.headers['content-type'];
+  if (!!node) {
+    const linkToFile = node.getAttribute("href")
+    const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
+    const docText = Buffer.from(documentResponse.data).toString("utf-8");
+    console.log({ linkToFile })
+    if (documentResponse.status != 200 || !linkToFile) {
+      throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
+    } else {
+      const dataType: string = documentResponse.headers['content-type'];
 
-    const lastModifiedDate = getLastMod();
+      const lastModifiedDate = getLastMod();
 
-    function getLastMod(): Date {
-      if (dataType == "application/pdf") {
-        const modDate = /<xmp:ModifyDate>(.*)<\/xmp:ModifyDate>/gm.exec(docText)
-        if (!!modDate && modDate.length > 1) {
-          return new Date(modDate[1])
-        } else {
+      function getLastMod(): Date {
+        if (dataType == "application/pdf") {
+          const modDate = /<xmp:ModifyDate>(.*)<\/xmp:ModifyDate>/gm.exec(docText)
+          if (!!modDate && modDate.length > 1) {
+            return new Date(modDate[1])
+          } else {
+            return new Date(documentResponse.headers["last-modified"] || Date.now())
+          }
+        }
+        else {
           return new Date(documentResponse.headers["last-modified"] || Date.now())
         }
       }
-      else {
-        return new Date(documentResponse.headers["last-modified"] || Date.now())
-      }
-    }
 
-    const url = `${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`;
-    return (
-      {
-        'title': node.innerText,
-        'last_modified': {
-          'ru': lastModifiedDate.toLocaleString('ru'),
-          'en-US': lastModifiedDate.toLocaleString('en-US'),
-          'timestamp': lastModifiedDate.getTime(),
-          'now': `${Date.now()}`
-        },
-        'links': {
-          'file': url,
-          'file_hash': `${createHash("sha1").update(docText).digest("hex")}`,
-          'views': {
-            'google_docs': `https://docs.google.com/gview?url=${url}&embed=true`,
-            'server_viewer': `http://paytoplay.space/docs-viewer/?file=${url}`,
+      const url = `${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`;
+      return (
+        {
+          'title': node.innerText,
+          'last_modified': {
+            'ru': lastModifiedDate.toLocaleString('ru'),
+            'en-US': lastModifiedDate.toLocaleString('en-US'),
+            'timestamp': lastModifiedDate.getTime(),
+            'now': `${Date.now()}`
           },
-        },
-        'data_type': dataType,
-      }
-    )
+          'links': {
+            'file': url,
+            'file_hash': `${createHash("sha1").update(docText).digest("hex")}`,
+            'views': {
+              'google_docs': `https://docs.google.com/gview?url=${url}&embed=true`,
+              'server_viewer': `http://paytoplay.space/docs-viewer/?file=${url}`,
+            },
+          },
+          'data_type': dataType,
+        }
+      )
+    }
+  }else{
+    console.error("Node not found at getTitledFileInfoByATag(node)")
   }
 }
