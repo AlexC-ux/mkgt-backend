@@ -407,6 +407,7 @@ async function onPractice(context: Context) {
                     buttons[index] = [];
                 }
                 buttons[index] = [{ text: document.title, url: document.links.views.server_viewer }, ...buttons[index]]
+                console.log(buttons)
             })
             context.editMessageText(`Расписания практики:`,
                 {
