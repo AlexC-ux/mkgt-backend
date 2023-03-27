@@ -185,6 +185,7 @@ export class MkgtruApiController {
       console.log(`${key} collected from cache`)
       return value;
     } else {
+      console.log(`${key} collected from site`)
       const result = await getterAsyncFunc;
       await this.cacheManager.set(key, result, ttlMs)
       return result
