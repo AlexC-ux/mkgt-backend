@@ -9,21 +9,30 @@ import { ITokenResponse } from './types/tokenObject';
 const cuid = require("cuid");
 import { createHash } from "crypto";
 import { materialViewerBody, materialViewerHeader } from './viewer-styles/style';
+import { getProxyAgents } from './proxy';
 
 const tunnel = require("tunnel")
-const tunnelingAgent = tunnel.httpsOverHttp({
+/*const tunnelingAgent = tunnel.httpsOverHttp({
   proxy: {
     host: '46.3.181.172',
     port: 8000,
     proxyAuth: 'MJWGyH:3C7VSk'
   }
-});
+});*/
 
-const axiosDefaultConfig: AxiosRequestConfig<any> = {
+export let axiosDefaultConfig: AxiosRequestConfig = {
   timeout: 30000,
-  httpsAgent: tunnelingAgent,
   maxRedirects: 70,
-  maxContentLength: 10000000000
+  maxContentLength: 10000000000,
+  ...getProxyAgents(),
+  validateStatus: (status) => {
+    if (status == 403) {
+      axiosDefaultConfig = {...axiosDefaultConfig,...getProxyAgents()};
+      return false
+    } else {
+      return true;
+    }
+  }
 }
 
 @Injectable()
@@ -150,8 +159,8 @@ export class MkgtruApiService {
     const url = `https://${process.env.SITE_DOMAIN}/index.php/component/content/article/${contentPath}`
     const htmlContent = await axios.get(url, { ...axiosDefaultConfig, responseType: "document" })
     const document = parse(htmlContent.data);
-    document.querySelector("head").innerHTML=`${materialViewerHeader}`
-    document.querySelector("body").innerHTML=`${materialViewerBody}${document.querySelector("body").innerHTML}`
+    document.querySelector("head").innerHTML = `${materialViewerHeader}`
+    document.querySelector("body").innerHTML = `${materialViewerBody}${document.querySelector("body").innerHTML}`
     return document.innerHTML;
   }
 
@@ -239,7 +248,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
     function getLastMod(): Date {
       if (dataType == "application/pdf") {
         const modDate = /<xmp:ModifyDate>(.*)<\/xmp:ModifyDate>/gm.exec(docText)
-        if (!!modDate&&modDate.length>1) {
+        if (!!modDate && modDate.length > 1) {
           console.log(JSON.stringify(modDate))
           return new Date(modDate[1])
         } else {

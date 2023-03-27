@@ -182,6 +182,7 @@ export class MkgtruApiController {
   async getResultFromCache<T>(key: string, ttlMs: number, getterAsyncFunc: Promise<T>): Promise<T> {
     const value = await this.cacheManager.get<T | null>(key)
     if (!!value) {
+      console.log(`${key} collected from cache`)
       return value;
     } else {
       const result = await getterAsyncFunc;
