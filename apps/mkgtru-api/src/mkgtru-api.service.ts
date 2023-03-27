@@ -27,7 +27,7 @@ export let axiosDefaultConfig: AxiosRequestConfig = {
   ...getProxyAgents(),
   validateStatus: (status) => {
     if (status == 403) {
-      axiosDefaultConfig = {...axiosDefaultConfig,...getProxyAgents()};
+      axiosDefaultConfig = { ...axiosDefaultConfig, ...getProxyAgents() };
       return false
     } else {
       return true;
@@ -249,7 +249,6 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
       if (dataType == "application/pdf") {
         const modDate = /<xmp:ModifyDate>(.*)<\/xmp:ModifyDate>/gm.exec(docText)
         if (!!modDate && modDate.length > 1) {
-          console.log(JSON.stringify(modDate))
           return new Date(modDate[1])
         } else {
           return new Date(documentResponse.headers["last-modified"] || Date.now())
