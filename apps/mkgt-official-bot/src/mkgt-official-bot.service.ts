@@ -18,13 +18,6 @@ export class MkgtOfficialBotService {
 
     const bot: TgBot = new TgBot(process.env.BOT_TOKEN);
 
-    if (!TgBot.info.started) {
-      bot.launchBot();
-    } else {
-      console.log("BOT_ALREADY_STARTED")
-    }
-
-
     const changesChecker = schedule.scheduleJob("*/3 * * * *", checkChangesCronJob);
 
 

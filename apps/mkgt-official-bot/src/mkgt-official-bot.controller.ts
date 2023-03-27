@@ -5,11 +5,8 @@ import { TgBot } from './telegram-bot/telegram-bot';
 @Controller()
 export class MkgtOfficialBotController {
   constructor(private readonly mkgtOfficialBotService: MkgtOfficialBotService) {
-    if (!TgBot.info.started) {
-      this.mkgtOfficialBotService.startBot();
-      console.log("BOT_STARTED")
-    }
-  }
+    mkgtOfficialBotService.startBot();
+   }
 
   @Get("/status")
   getBotDialog(@Res() res) {
