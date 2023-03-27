@@ -18,7 +18,7 @@ export async function updateProxyAgents(callback: (cfg:AxiosRequestConfig) => vo
         console.log(`${index}/${count}`)
         const config: AxiosRequestConfig = { ...axiosDefaultConfig, ...getTunnelingAgent(proxy), timeout: 0, validateStatus: () => true };
         try {
-            axios.get("https://mkgt.ru/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/", config).then((resp) => {
+            await axios.get("https://mkgt.ru/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/", config).then((resp) => {
                 if (resp.status == 200) {
                     if (!updated) {
                         console.log("proxy updated")
