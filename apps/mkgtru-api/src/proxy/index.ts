@@ -29,9 +29,9 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
                             return;
                         }
                     } else { blacklistedIPs.push(proxy) }
-                }).catch((err) => { })
+                }).catch((err) => { blacklistedIPs.push(proxy) })
             } catch (error) {
-
+                blacklistedIPs.push(proxy)
             }
         }
 
