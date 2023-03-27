@@ -132,6 +132,9 @@ export class MkgtruApiService {
    */
   async getAuditories(): Promise<ITitledDocumentInfo> {
     const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(1)>*>div.sppb-panel-body div:nth-child(1) a");
+    if (!linkElement) {
+      return this.getAuditories()
+    }
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
