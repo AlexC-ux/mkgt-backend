@@ -38,7 +38,7 @@ export class MkgtOfficialBotService {
 
       //определение необходимости рассылки
       if (!!changesDocInfo && !!changesDocInfo?.last_modified?.timestamp) {
-        if (TgBot.info.changesData[territory] == "1") {
+        if (TgBot.info.changesData[territory] == "") {
           TgBot.info.changesData[territory] = changesDocInfo.links.file_hash
         }
         if (changesDocInfo.links.file_hash != TgBot.info.changesData[territory]) {
