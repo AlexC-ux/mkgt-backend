@@ -197,6 +197,7 @@ export class MkgtruApiController {
       getterAsyncFunc.then(result => {
         cacheManager.del(key);
         cacheManager.set(key, result, ttlMs)
+        console.log(`${key} recached`)
       });
     }
   }
