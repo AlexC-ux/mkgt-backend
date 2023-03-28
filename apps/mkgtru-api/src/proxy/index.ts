@@ -38,10 +38,10 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
             try {
                 axios.get("https://mkgt.ru/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/", { ...config, signal: controller.signal }).then((resp) => {
                     if (resp.status == 200) {
+                        controller.abort();
                         console.log("proxy updated")
                         console.log({ proxy: `${proxy.protocols} ${proxy.ip} ${proxy.port}` })
                         callback(config);
-                        controller.abort();
                         proxyUpdateStarted=false;
                         return true;
                     }
