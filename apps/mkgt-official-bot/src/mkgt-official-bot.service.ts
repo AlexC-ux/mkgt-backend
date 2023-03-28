@@ -16,7 +16,7 @@ const prisma = new PrismaClient();
 export class MkgtOfficialBotService {
   async startBot() {
 
-    const bot: TgBot = new TgBot(process.env.BOT_TOKEN);
+    new TgBot(process.env.BOT_TOKEN);
 
     const changesChecker = schedule.scheduleJob("*/3 * * * *", checkChangesCronJob);
 
