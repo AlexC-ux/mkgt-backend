@@ -125,7 +125,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChanges(territory?: territories): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>*>div.sppb-panel-body div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2) div.sppb-panel-body div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -138,7 +138,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(1)>*>div.sppb-panel-body div:nth-child(1) a");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(1) div.sppb-panel-body div:nth-child(1) a");
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -152,7 +152,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
   async getTimetables(territory?: territories): Promise<ITitledDocumentInfo[]> {
-    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(5)>*>div.sppb-panel-body>div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(5) div.sppb-panel-body>div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
     const files = [];
     for (const index in linkElements) {
       const element = linkElements[index];
