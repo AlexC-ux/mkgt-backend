@@ -43,8 +43,7 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
                         callback(config);
                         controller.abort();
                         proxyUpdateStarted=false;
-                        Promise.resolve();
-                        return;
+                        return true;
                     }
                 }).catch((err) => { })
             } catch (error) {
