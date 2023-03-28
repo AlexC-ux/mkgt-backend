@@ -46,11 +46,7 @@ function updateProxy() {
 
 async function updateProxyAsync():Promise<any> {
   console.log("proxy updating")
-  await updateProxyAgents((config) => {
-    axiosDefaultConfig = { ...axiosDefaultConfig, httpsAgent: config.httpsAgent, };
-    console.log({ axiosDefaultConfig })
-    console.log("proxy updated")
-  });
+  updateProxy();
   Promise.resolve(true);
 }
 
