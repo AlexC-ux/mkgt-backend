@@ -241,7 +241,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
   } catch (error) {
     console.error(`Not found elements: ${uri} selector:'${selector}'\n\n${error}`)
     updateProxy();
-    return [null];
+    return getElementsFromPage(uri, selector)
   }
 }
 
@@ -255,7 +255,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
  * @returns {Promise<ITitledDocumentInfo>}
  */
 async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocumentInfo> {
-  if (!!node&&!!node.getAttribute("href")) {
+  if (!!node && !!node.getAttribute("href")) {
     try {
       const linkToFile = node.getAttribute("href")
       const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
@@ -306,25 +306,8 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
       }
     } catch (error) {
       updateProxy();
-      console.error("cannot getDoc by a tag: "+node)
-      return {
-        'title': "parsing error document!",
-        'last_modified': {
-          'ru': "",
-          'en-US': "",
-          'timestamp': 0,
-          'now': `${Date.now()}`
-        },
-        'links': {
-          'file': "https://docs.google.com/gview?url=",
-          'file_hash': "https://docs.google.com/gview?url=",
-          'views': {
-            'google_docs':"https://docs.google.com/gview?url=",
-            'server_viewer': `https://docs.google.com/gview?url=`,
-          },
-        },
-        'data_type': "error",
-      }
+      console.error("cannot getDoc by a tag: " + node)
+      return getTitledFileInfoByATag(node)
     }
   } else {
   }
