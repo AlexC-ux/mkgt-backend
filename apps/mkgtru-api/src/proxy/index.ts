@@ -8,28 +8,31 @@ export interface IPRoxy { ip: string, port: string, protocols: string[] }
 
 export interface IAgents { httpsAgent: any }
 
-
+let proxyUpdateStarted = false
 
 export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => void) {
-    const controller = new AbortController();
-    console.log("started")
-    const proxies = await axios.get("https://sslproxies.org/");
-    const root = parse(proxies.data)
-    const rows = root.querySelectorAll("tbody tr")
-    const proxy_list: { ip: string, port: string, protocols: string[] }[] = rows.map(element => {
-        const columns = element.querySelectorAll("td");
-        return {
-            ip: columns[0].innerText,
-            port: columns[1].innerText,
-            protocols: [`${columns[6].innerText == "yes" ? "https" : "http"}`]
+    if (!proxyUpdateStarted) {
+        proxyUpdateStarted = true;
+
+        const controller = new AbortController();
+        console.log("started")
+        const proxies = await axios.get("https://sslproxies.org/");
+        const root = parse(proxies.data)
+        const rows = root.querySelectorAll("tbody tr")
+        const proxy_list: { ip: string, port: string, protocols: string[] }[] = rows.map(element => {
+            const columns = element.querySelectorAll("td");
+            return {
+                ip: columns[0].innerText,
+                port: columns[1].innerText,
+                protocols: [`${columns[6].innerText == "yes" ? "https" : "http"}`]
+            }
         }
-    }
-    )
+        )
 
-    const count = proxy_list.length;
+        const count = proxy_list.length;
 
-    for (let index = 0; index < proxy_list.length; index++) {
-        const proxy = proxy_list[index];
+        for (let index = 0; index < proxy_list.length; index++) {
+            const proxy = proxy_list[index];
             console.log(`${index + 1}/${count}`)
             const config: AxiosRequestConfig = { ...axiosDefaultConfig, ...getTunnelingAgent(proxy), timeout: 0, validateStatus: () => true };
             try {
@@ -39,12 +42,14 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
                         console.log({ proxy: `${proxy.protocols} ${proxy.ip} ${proxy.port}` })
                         callback(config);
                         controller.abort();
+                        proxyUpdateStarted=false;
                         return;
-                    } 
+                    }
                 }).catch((err) => { })
             } catch (error) {
-                
+
             }
+        }
     }
 }
 
