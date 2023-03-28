@@ -50,7 +50,7 @@ async function updateProxyAsync():Promise<any> {
     axiosDefaultConfig = { ...axiosDefaultConfig, httpsAgent: config.httpsAgent, };
     console.log({ axiosDefaultConfig })
     console.log("proxy updated")
-  }).then(Promise.resolve);
+  });
   Promise.resolve(true);
 }
 
