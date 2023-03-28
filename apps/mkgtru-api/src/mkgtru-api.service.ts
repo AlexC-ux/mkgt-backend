@@ -162,7 +162,7 @@ export class MkgtruApiService {
   }
 
   async getNews(): Promise<ITitledDocumentInfo[]> {
-    const elements = await getElementsFromPage("https://mkgt.ru/index.php?option=com_minitekwall&task=masonry.getContent&widget_id=3&page=19999&tag_operator=OR&date_format=Y-m&grid=masonry", 'h3 a');
+    const elements = await getElementsFromPage("https://mkgt.ru/index.php?option=com_minitekwall&task=masonry.getContent&widget_id=3&page=1&tag_operator=OR&date_format=Y-m&grid=masonry", 'h3 a');
     let news: ITitledDocumentInfo[] = [];
     for (let index = 0; index < 6; index++) {
       news[index] = await getTitledFileInfoByATag(elements[index]);
