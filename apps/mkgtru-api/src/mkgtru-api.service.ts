@@ -44,6 +44,16 @@ function updateProxy() {
   })
 }
 
+async function updateProxyAsync():Promise<any> {
+  console.log("proxy updating")
+  await updateProxyAgents((config) => {
+    axiosDefaultConfig = { ...axiosDefaultConfig, httpsAgent: config.httpsAgent, };
+    console.log({ axiosDefaultConfig })
+    console.log("proxy updated")
+  })
+  Promise.resolve();
+}
+
 @Injectable()
 export class MkgtruApiService {
   constructor() {
@@ -240,7 +250,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
     }
   } catch (error) {
     console.error(`Not found elements: ${uri} selector:'${selector}'\n\n${error}`)
-    updateProxy();
+    await updateProxyAsync();
     return getElementsFromPage(uri, selector)
   }
 }
@@ -305,7 +315,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
         )
       }
     } catch (error) {
-      updateProxy();
+      await updateProxyAsync();
       console.error("cannot getDoc by a tag: " + node)
       return getTitledFileInfoByATag(node)
     }
