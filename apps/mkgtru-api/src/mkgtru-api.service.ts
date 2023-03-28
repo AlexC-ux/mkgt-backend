@@ -258,7 +258,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
   if (!!node && !!node.getAttribute("href")) {
     try {
       const linkToFile = node.getAttribute("href")
-      const documentResponse = await axios.get(`${linkToFile.startsWith("http") ? "" : `https://${process.env.SITE_DOMAIN}`}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
+      const documentResponse = await axios.get(`${linkToFile.startsWith("/") ? `https://${process.env.SITE_DOMAIN}`:""}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
       const docText = Buffer.from(documentResponse.data).toString("utf-8");
       console.log({ linkToFile })
       if (documentResponse.status != 200 || !linkToFile) {
