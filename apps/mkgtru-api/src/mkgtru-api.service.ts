@@ -44,12 +44,6 @@ function updateProxy() {
   })
 }
 
-async function updateProxyAsync():Promise<any> {
-  console.log("proxy updating")
-  updateProxy();
-  Promise.resolve(true);
-}
-
 @Injectable()
 export class MkgtruApiService {
   constructor() {
@@ -246,7 +240,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
     }
   } catch (error) {
     console.error(`Not found elements: ${uri} selector:'${selector}'\n\n${error}`)
-    await updateProxyAsync();
+    await updateProxyAgents(() => { });
     return getElementsFromPage(uri, selector)
   }
 }
@@ -264,7 +258,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
   if (!!node && !!node.getAttribute("href")) {
     try {
       const linkToFile = node.getAttribute("href")
-      const documentResponse = await axios.get(`${linkToFile.startsWith("/") ? `https://${process.env.SITE_DOMAIN}`:""}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
+      const documentResponse = await axios.get(`${linkToFile.startsWith("/") ? `https://${process.env.SITE_DOMAIN}` : ""}${linkToFile}`, { ...axiosDefaultConfig, responseType: "arraybuffer" });
       const docText = Buffer.from(documentResponse.data).toString("utf-8");
       console.log({ linkToFile })
       if (documentResponse.status != 200 || !linkToFile) {
@@ -311,7 +305,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
         )
       }
     } catch (error) {
-      await updateProxyAsync();
+      await updateProxyAgents(() => { });
       console.error(`cannot getDoc by a tag: ${node}\n\n${error}`)
       return getTitledFileInfoByATag(node)
     }
