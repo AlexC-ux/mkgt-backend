@@ -36,7 +36,7 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
             console.log(`${index + 1}/${count}`)
             const config: AxiosRequestConfig = { ...axiosDefaultConfig, ...getTunnelingAgent(proxy), timeout: 0, validateStatus: () => true };
             try {
-                axios.get("https://mkgt.ru/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah/", { ...config, signal: controller.signal }).then((resp) => {
+                axios.get("https://mkgt.ru/images/colledge/zvonki.svg", { ...config, signal: controller.signal }).then((resp) => {
                     if (resp.status == 200) {
                         controller.abort();
                         console.log("proxy updated")
