@@ -26,7 +26,7 @@ navigationScene.use(botMiddleware)
 
 //start message - registration
 navigationScene.start(onStart)
-navigationScene.enter(onStart)
+navigationScene.enter(showMainMenu)
 
 //set /help answer
 navigationScene.help(getHelpMessage)
@@ -440,7 +440,7 @@ async function changeProfileTerrritory(context: Context, terr: territories) {
 
             context.answerCbQuery(`Вам установлен режим для территории ${terr}`, { show_alert: true }).catch(TgBot.catchPollingError);
             //await context.deleteMessage(context.callbackQuery.message.message_id || context.message.message_id).catch(catchPollingError);
-            await this.showMainMenu(context);
+            await showMainMenu(context);
         }
     } catch (error) { }
 }
