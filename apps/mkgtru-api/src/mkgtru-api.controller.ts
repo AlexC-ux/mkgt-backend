@@ -189,7 +189,7 @@ export class MkgtruApiController {
           console.log(`${key} cache updated`)
           await this.cacheManager.set(key, result, ttlMs)
         })
-      },2000)
+      },5000)
       return value;
     } else {
       console.log(`${key} collected from site`)
