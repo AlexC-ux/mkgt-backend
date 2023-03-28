@@ -316,7 +316,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
       }
     } catch (error) {
       await updateProxyAsync();
-      console.error("cannot getDoc by a tag: " + node)
+      console.error(`cannot getDoc by a tag: ${node}\n\n${error}`)
       return getTitledFileInfoByATag(node)
     }
   } else {
