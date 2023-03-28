@@ -63,7 +63,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("material")
   async getMaterial(@Query("location") location: string): Promise<string> {
-    return this.getResultFromCache(`article_${location}`, 6 * 60 * 60 * 1000, this.mkgtruApiService.getMaterialContent(location));
+    return this.getResultFromCache(`article_${location||"def"}`, 6 * 60 * 60 * 1000, this.mkgtruApiService.getMaterialContent(location));
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -74,7 +74,7 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`changes_${territory}`, 200 * 1000, this.mkgtruApiService.getChanges(territory));
+    return this.getResultFromCache(`changes_${territory||"def"}`, 200 * 1000, this.mkgtruApiService.getChanges(territory));
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -95,7 +95,7 @@ export class MkgtruApiController {
   @Get("timetables")
   @UseGuards(RequireApiKeyGuard)
   async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
-    return this.getResultFromCache(`timetables_${territory}`, 12 * 60 * 60 * 1000, this.mkgtruApiService.getTimetables(territory));
+    return this.getResultFromCache(`timetables_${territory||"def"}`, 12 * 60 * 60 * 1000, this.mkgtruApiService.getTimetables(territory));
   }
 
   @ApiSecurity("ApiKeyAuth")
