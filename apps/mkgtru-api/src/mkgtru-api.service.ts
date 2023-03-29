@@ -51,6 +51,7 @@ export class MkgtruApiService {
   }
 
   async init() {
+    console.log("initializing service")
     await this.getAuditories();
     await this.getChanges("kuchin");
     await this.getChanges("lublino");
@@ -59,6 +60,7 @@ export class MkgtruApiService {
     await this.getTimeCalls();
     await this.getTimetables("kuchin");
     await this.getTimetables("lublino")
+    console.log("initializED! service")
   }
 
   /**
