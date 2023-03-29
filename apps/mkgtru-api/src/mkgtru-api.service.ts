@@ -208,7 +208,8 @@ export class MkgtruApiService {
     for (const index in linkElements) {
       if (Object.prototype.hasOwnProperty.call(linkElements, index)) {
         const element = linkElements[index];
-        files.push(await getTitledFileInfoByATag(element))
+        const pract = await getTitledFileInfoByATag(element);
+        files.push(pract)
       }
     }
     return files
@@ -227,6 +228,7 @@ export class MkgtruApiService {
  */
 async function getElementsFromPage(uri: string, selector: string): Promise<HTMLElement[]> {
   console.log({ uri, selector })
+  console.log(new Error().stack)
   try {
     const pageResponse = await axios.get(uri, axiosDefaultConfig);
     if (pageResponse.status != 200) {
@@ -312,7 +314,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
     } catch (error) {
       await updateProxyAgents(() => { });
       console.error(`cannot getDoc by a tag: ${node}\n\n${error}`)
-      return getTitledFileInfoByATag(node)
+      return await getTitledFileInfoByATag(node)
     }
   } else {
   }

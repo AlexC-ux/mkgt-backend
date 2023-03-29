@@ -54,7 +54,7 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("news")
   async getNews(): Promise<ITitledDocumentInfo[]> {
-    return this.getResultFromCache(`news`, { hours: 12, minutes: 0, seconds: 0 }, this.mkgtruApiService.getNews());
+    return this.getResultFromCache(`news`, { hours: 12, minutes: 0, seconds: 0 }, this.mkgtruApiService.getNews);
   }
 
   @ApiOperation({ summary: "Getting news" })
@@ -62,7 +62,10 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("material")
   async getMaterial(@Query("location") location: string): Promise<string> {
-    return this.getResultFromCache(`article_${location}`, { hours: 72, minutes: 0, seconds: 0 }, this.mkgtruApiService.getMaterialContent(location));
+    async function titm() {
+      return await this.mkgtruApiService.getMaterialContent(location)
+    }
+    return this.getResultFromCache(`article_${location}`, { hours: 72, minutes: 0, seconds: 0 }, titm);
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -73,7 +76,10 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`changes_${territory || "def"}`, { hours: 0, minutes: 30, seconds: 0 }, this.mkgtruApiService.getChanges(territory));
+    async function titm() {
+      return this.mkgtruApiService.getChanges(territory)
+    }
+    return this.getResultFromCache(`changes_${territory || "def"}`, { hours: 0, minutes: 30, seconds: 0 }, titm);
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -82,8 +88,8 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("practicelist")
   @UseGuards(RequireApiKeyGuard)
-  async getPracticeList(): Promise<ITitledDocumentInfo[]> {
-    return await this.getResultFromCache(`practicelist`, { hours: 24, minutes: 0, seconds: 0 }, this.mkgtruApiService.getPracticeList());
+  async gettPracticeList(): Promise<ITitledDocumentInfo[]> {
+    return await this.getResultFromCache(`practicelist`, { hours: 24, minutes: 0, seconds: 0 }, this.mkgtruApiService.getPracticeList);
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -94,7 +100,10 @@ export class MkgtruApiController {
   @Get("timetables")
   @UseGuards(RequireApiKeyGuard)
   async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
-    return this.getResultFromCache(`timetables_${territory || "def"}`, { hours: 72, minutes: 0, seconds: 0 }, this.mkgtruApiService.getTimetables(territory));
+    async function titm() {
+      return await this.mkgtruApiService.getTimetables(territory)
+    }
+    return this.getResultFromCache(`timetables_${territory || "def"}`, { hours: 72, minutes: 0, seconds: 0 }, titm);
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -105,7 +114,7 @@ export class MkgtruApiController {
   @Get("auditories")
   @UseGuards(RequireApiKeyGuard)
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`auditories`, { hours: 0, minutes: 30, seconds: 0 }, this.mkgtruApiService.getAuditories());
+    return this.getResultFromCache(`auditories`, { hours: 0, minutes: 30, seconds: 0 }, this.mkgtruApiService.getAuditories);
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -114,7 +123,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("callstable")
   async getCallstable(): Promise<ITitledDocumentInfo> {
-    return this.getResultFromCache(`callstable`, { hours: 0, minutes: 0, seconds: 0 }, this.mkgtruApiService.getTimeCalls());
+    return this.getResultFromCache(`callstable`, { hours: 0, minutes: 0, seconds: 0 }, this.mkgtruApiService.getTimeCalls);
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -178,7 +187,7 @@ export class MkgtruApiController {
   */
 
 
-  async getResultFromCache<T>(key: string, ttl: { hours: number, minutes: number, seconds: number }, getterAsyncFunc: Promise<T>): Promise<T> {
+  async getResultFromCache<T>(key: string, ttl: { hours: number, minutes: number, seconds: number }, getterAsyncFunc: () => Promise<T>): Promise<T> {
     console.log(new Error().stack)
     const ttlMs = ((ttl.hours * 60 * 60) + (ttl.minutes * 60) + ttl.seconds) * 1000
     console.log({ ttlMs })
@@ -202,7 +211,7 @@ export class MkgtruApiController {
 
     function reCacheValue() {
       console.log(`   ${key} recaching`)
-      getterAsyncFunc.then(result => {
+      getterAsyncFunc().then(result => {
         cacheManager.set(key, result, ttlMs * 2)
         console.log(`${key} recached`)
       });

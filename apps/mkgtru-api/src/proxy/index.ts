@@ -17,7 +17,7 @@ export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => v
         proxyUpdateStarted = true;
 
         const controller = new AbortController();
-        console.log("started")
+        console.log("started");
         const proxies = await axios.get("https://sslproxies.org/");
         const root = parse(proxies.data)
         const rows = root.querySelectorAll("tbody tr")
