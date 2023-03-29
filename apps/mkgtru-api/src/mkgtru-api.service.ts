@@ -138,8 +138,8 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChangesLublino(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>div>div.sppb-panel-body div:nth-child(2) a`);
-    return await getTitledFileInfoByATag(linkElement[0])
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>div>div.sppb-panel-body div:nth-child(1) a`);
+    return await getTitledFileInfoByATag(linkElement[1])
   }
 
 
