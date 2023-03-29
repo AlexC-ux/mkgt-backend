@@ -202,6 +202,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
   async getPracticeList(): Promise<ITitledDocumentInfo[]> {
+    console.log(new Error().stack)
     const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(3) div.sppb-panel-body a");
     const files = [];
     for (const index in linkElements) {
@@ -258,6 +259,7 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
  * @returns {Promise<ITitledDocumentInfo>}
  */
 async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocumentInfo> {
+  console.log(new Error().stack)
   if (!!node && !!node.getAttribute("href")) {
     try {
       const linkToFile = node.getAttribute("href")

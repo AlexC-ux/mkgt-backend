@@ -83,7 +83,7 @@ export class MkgtruApiController {
   @Get("practicelist")
   @UseGuards(RequireApiKeyGuard)
   async getPracticeList(): Promise<ITitledDocumentInfo[]> {
-    return this.getResultFromCache(`practicelist`, { hours: 24, minutes: 0, seconds: 0 }, this.mkgtruApiService.getPracticeList());
+    return await this.getResultFromCache(`practicelist`, { hours: 24, minutes: 0, seconds: 0 }, this.mkgtruApiService.getPracticeList());
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -179,6 +179,7 @@ export class MkgtruApiController {
 
 
   async getResultFromCache<T>(key: string, ttl: { hours: number, minutes: number, seconds: number }, getterAsyncFunc: Promise<T>): Promise<T> {
+    console.log(new Error().stack)
     const ttlMs = ((ttl.hours * 60 * 60) + (ttl.minutes * 60) + ttl.seconds) * 1000
     console.log({ ttlMs })
     const cacheManager = this.cacheManager;
