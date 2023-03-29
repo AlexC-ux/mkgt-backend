@@ -44,6 +44,14 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Server is available", })
   @Get("status")
   async getPing(): Promise<string> {
+    this.getAuditories();
+    this.getCallstable();
+    this.getChanges("kuchin");
+    this.getChanges("lublino");
+    this.getNews();
+    this.gettPracticeList();
+    this.getTimetables("kuchin");
+    this.getTimetables("lublino");
     return await this.mkgtruApiService.getStatus();
   }
 
