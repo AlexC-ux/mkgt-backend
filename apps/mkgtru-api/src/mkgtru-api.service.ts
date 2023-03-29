@@ -50,6 +50,14 @@ function updateProxy() {
 export class MkgtruApiService {
   constructor() {
     updateProxy();
+    this.getAuditories();
+    this.getChangesKuchin();
+    this.getChangesLublino();
+    this.getNews();
+    this.getPracticeList();
+    this.getTimeCalls();
+    this.getTimetablesKuchin();
+    this.getTimetablesLublino();
   }
 
   /**
