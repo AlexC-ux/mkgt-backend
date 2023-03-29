@@ -20,6 +20,8 @@ const tunnel = require("tunnel");
   }
 });*/
 
+let initStarted = false;
+
 export let axiosDefaultConfig: AxiosRequestConfig = {
   timeout: 0,
   maxRedirects: 70,
@@ -51,16 +53,19 @@ export class MkgtruApiService {
   }
 
   async init() {
-    console.log("initializing service")
-    await this.getAuditories();
-    await this.getChanges("kuchin");
-    await this.getChanges("lublino");
-    await this.getNews();
-    await this.getPracticeList();
-    await this.getTimeCalls();
-    await this.getTimetables("kuchin");
-    await this.getTimetables("lublino")
-    console.log("initializED! service")
+    if (!initStarted) {
+      initStarted = true;
+      console.log("initializing service")
+      await this.getAuditories();
+      await this.getChanges("kuchin");
+      await this.getChanges("lublino");
+      await this.getNews();
+      await this.getPracticeList();
+      await this.getTimeCalls();
+      await this.getTimetables("kuchin");
+      await this.getTimetables("lublino")
+      console.log("initializED! service")
+    }
   }
 
   /**
