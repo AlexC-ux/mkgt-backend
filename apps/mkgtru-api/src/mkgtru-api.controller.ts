@@ -32,7 +32,6 @@ const tokenSchema = {
  * @typedef {MkgtruApiController}
  */
 
-let initialized = false;
 @Controller("mkgtru-api")
 @ApiTags('mkgtru-api')
 export class MkgtruApiController {
@@ -181,11 +180,8 @@ export class MkgtruApiController {
 
   async getResultFromCache<T>(key: string, ttl: { hours: number, minutes: number, seconds: number }, getterAsyncFunc: Promise<T>): Promise<T> {
 
-    if (!initialized) {
-      await this.mkgtruApiService.init();
-    }
-
     const ttlMs = ((ttl.hours * 60 * 60) + (ttl.minutes * 60) + ttl.seconds) * 1000
+    console.log({ttlMs})
     const cacheManager = this.cacheManager;
     const value = await cacheManager.get<T | null>(key)
     if (!!value) {
