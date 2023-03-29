@@ -50,6 +50,17 @@ export class MkgtruApiService {
     updateProxy();
   }
 
+  async init() {
+    await this.getAuditories();
+    await this.getChanges("kuchin");
+    await this.getChanges("lublino");
+    await this.getNews();
+    await this.getPracticeList();
+    await this.getTimeCalls();
+    await this.getTimetables("kuchin");
+    await this.getTimetables("lublino")
+  }
+
   /**
    * Creating new account in database
    * @date 3/14/2023 - 1:22:12 AM
