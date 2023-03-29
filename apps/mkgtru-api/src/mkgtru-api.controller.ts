@@ -62,10 +62,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("material")
   async getMaterial(@Query("location") location: string): Promise<string> {
-    async function materialAsync() {
-      return await this.mkgtruApiService.getMaterialContent(location)
-    }
-    return this.getResultFromCache(`article_${location}`, { hours: 72, minutes: 0, seconds: 0 }, materialAsync);
+    return await this.mkgtruApiService.getMaterialContent(location);
   }
 
   @ApiSecurity("ApiKeyAuth")
