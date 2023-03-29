@@ -52,22 +52,6 @@ export class MkgtruApiService {
     updateProxy();
   }
 
-  async init() {
-    if (!initStarted) {
-      initStarted = true;
-      console.log("initializing service")
-      await this.getAuditories();
-      await this.getChanges("kuchin");
-      await this.getChanges("lublino");
-      await this.getNews();
-      await this.getPracticeList();
-      await this.getTimeCalls();
-      await this.getTimetables("kuchin");
-      await this.getTimetables("lublino")
-      console.log("initializED! service")
-    }
-  }
-
   /**
    * Creating new account in database
    * @date 3/14/2023 - 1:22:12 AM
