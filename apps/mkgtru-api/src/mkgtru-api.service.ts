@@ -47,7 +47,14 @@ function updateProxy() {
 @Injectable()
 export class MkgtruApiService {
   constructor() {
-    updateProxy();
+    this.getAuditories();
+    this.getChanges("kuchin");
+    this.getChanges("lublino");
+    this.getNews();
+    this.getPracticeList();
+    this.getTimeCalls();
+    this.getTimetables("kuchin");
+    this.getTimetables("lublino")
   }
 
   /**
