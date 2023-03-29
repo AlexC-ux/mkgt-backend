@@ -195,6 +195,7 @@ export class MkgtruApiController {
       return result
     }
     function reCacheValue() {
+      console.log(`${key} recaching`)
       getterAsyncFunc.then(result => {
         cacheManager.set(key, result, ttlMs * 2)
         console.log(`${key} recached`)
