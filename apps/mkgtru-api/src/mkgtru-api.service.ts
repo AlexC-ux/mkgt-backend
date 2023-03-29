@@ -47,21 +47,7 @@ function updateProxy() {
 @Injectable()
 export class MkgtruApiService {
   constructor() {
-    this.getAuditories().then(() => {
-      this.getChanges("kuchin").then(() => {
-        this.getChanges("lublino").then(() => {
-          this.getNews().then(() => {
-            this.getPracticeList().then(() => {
-              this.getTimeCalls().then(() => {
-                this.getTimetables("kuchin").then(() => {
-                  this.getTimetables("lublino")
-                })
-              })
-            })
-          })
-        })
-      })
-    });
+    updateProxy();
   }
 
   /**
