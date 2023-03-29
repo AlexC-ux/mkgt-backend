@@ -49,6 +49,7 @@ function updateProxy() {
 @Injectable()
 export class MkgtruApiService {
   constructor() {
+    updateProxy();
   }
 
   /**
