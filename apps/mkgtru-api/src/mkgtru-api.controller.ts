@@ -183,7 +183,7 @@ export class MkgtruApiController {
     console.log({ ttlMs })
     const cacheManager = this.cacheManager;
     const value = await cacheManager.get<T | null | undefined>(key)
-    console.log({ cachedValue: value })
+    console.log({ cachedValue: value, checkResult:!!value })
     if (!!value) {
       console.log(`${key} collected from cache`)
       return value;
