@@ -8,6 +8,8 @@ export interface IPRoxy { ip: string, port: string, protocols: string[] }
 
 export interface IAgents { httpsAgent: any }
 
+require('events').EventEmitter.defaultMaxListeners = 110
+
 let proxyUpdateStarted = false
 
 export async function updateProxyAgents(callback: (cfg: AxiosRequestConfig) => void) {
