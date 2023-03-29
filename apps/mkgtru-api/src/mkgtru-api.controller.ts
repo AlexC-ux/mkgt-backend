@@ -186,7 +186,7 @@ export class MkgtruApiController {
     console.log({ cachedValue: value, checkResult: !!value })
     if (!!value) {
       console.log(`${key} collected from cache`)
-      Promise.resolve(value);
+      return value;
     } else {
       console.log(`${key} collected from site`)
       const result = await getterAsyncFunc;
@@ -195,7 +195,7 @@ export class MkgtruApiController {
         console.log(key + " recaching in process....")
         reCacheValue();
       }, Math.floor(ttlMs / 2))
-      Promise.resolve(value);
+      return value;
     }
 
 

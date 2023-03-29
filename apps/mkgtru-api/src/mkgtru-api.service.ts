@@ -225,6 +225,7 @@ export class MkgtruApiService {
  * @returns {Promise<HTMLElement[]>}
  */
 async function getElementsFromPage(uri: string, selector: string): Promise<HTMLElement[]> {
+  console.log({ uri, selector })
   try {
     const pageResponse = await axios.get(uri, axiosDefaultConfig);
     if (pageResponse.status != 200) {
