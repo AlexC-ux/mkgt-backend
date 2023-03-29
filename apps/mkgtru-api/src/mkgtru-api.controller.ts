@@ -133,6 +133,7 @@ export class MkgtruApiController {
     return this.mkgtruApiService.revokeToken(bearerToken.replace("Bearer ", ""));
   }
 
+
   /*
   @ApiOperation({ summary: "Creating new account" })
   @ApiBody({
@@ -177,13 +178,11 @@ export class MkgtruApiController {
   */
 
 
-
   async getResultFromCache<T>(key: string, ttl: { hours: number, minutes: number, seconds: number }, getterAsyncFunc: Promise<T>): Promise<T> {
-
     const ttlMs = ((ttl.hours * 60 * 60) + (ttl.minutes * 60) + ttl.seconds) * 1000
     console.log({ ttlMs })
     const cacheManager = this.cacheManager;
-    const value = await cacheManager.get<T | null>(key)
+    const value = await cacheManager.get<T | null | undefined>(key)
     console.log({ cachedValue: value })
     if (!!value) {
       console.log(`${key} collected from cache`)
@@ -192,11 +191,16 @@ export class MkgtruApiController {
       console.log(`${key} collected from site`)
       const result = await getterAsyncFunc;
       await cacheManager.set(key, result, ttlMs * 2)
-      setInterval(reCacheValue, Math.floor(ttlMs / 2))
+      setInterval(() => {
+        console.log(key + " recaching in process....")
+        reCacheValue();
+      }, Math.floor(ttlMs / 2))
       return result
     }
+
+
     function reCacheValue() {
-      console.log(`${key} recaching`)
+      console.log(`   ${key} recaching`)
       getterAsyncFunc.then(result => {
         cacheManager.set(key, result, ttlMs * 2)
         console.log(`${key} recached`)
