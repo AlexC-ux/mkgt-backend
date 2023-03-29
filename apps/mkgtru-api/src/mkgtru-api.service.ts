@@ -123,11 +123,22 @@ export class MkgtruApiService {
    * @date 3/14/2023 - 1:22:52 AM
    *
    * @async
-   * @param {?territories} [territory]
    * @returns {Promise<ITitledDocumentInfo>}
    */
-  async getChanges(territory?: territories): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>div>div.sppb-panel-body div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
+  async getChangesKuchin(): Promise<ITitledDocumentInfo> {
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>div>div.sppb-panel-body div:nth-child(1) a`);
+    return await getTitledFileInfoByATag(linkElement[0])
+  }
+
+  /**
+   * Getting changes info
+   * @date 3/14/2023 - 1:22:52 AM
+   *
+   * @async
+   * @returns {Promise<ITitledDocumentInfo>}
+   */
+  async getChangesLublino(): Promise<ITitledDocumentInfo> {
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>div>div.sppb-panel-body div:nth-child(2) a`);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -150,11 +161,27 @@ export class MkgtruApiService {
    * @date 3/14/2023 - 1:24:07 AM
    *
    * @async
-   * @param {?territories} [territory]
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
-  async getTimetables(territory?: territories): Promise<ITitledDocumentInfo[]> {
-    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(5)>div>div.sppb-panel-body>div:nth-child(${territory == 'kuchin' ? "1" : "2"}) a`);
+  async getTimetablesKuchin(): Promise<ITitledDocumentInfo[]> {
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(5)>div>div.sppb-panel-body>div:nth-child(1) a`);
+    const files = [];
+    for (const index in linkElements) {
+      const element = linkElements[index];
+      files.push(await getTitledFileInfoByATag(element))
+    }
+    return files
+  }
+
+  /**
+   * Getting timetables array
+   * @date 3/14/2023 - 1:24:07 AM
+   *
+   * @async
+   * @returns {Promise<ITitledDocumentInfo[]>}
+   */
+  async getTimetablesLublino(): Promise<ITitledDocumentInfo[]> {
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(5)>div>div.sppb-panel-body>div:nth-child(2) a`);
     const files = [];
     for (const index in linkElements) {
       const element = linkElements[index];

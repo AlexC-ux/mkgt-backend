@@ -76,10 +76,12 @@ export class MkgtruApiController {
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
   async getChanges(@Query("territory") territory: territories): Promise<ITitledDocumentInfo> {
-    async function changesAsync() {
-      return this.mkgtruApiService.getChanges(territory)
+    if (territory == "kuchin") {
+      return this.getResultFromCache(`changes_${territory || "def"}`, { hours: 0, minutes: 30, seconds: 0 }, this.mkgtruApiService.getChangesKuchin);
     }
-    return this.getResultFromCache(`changes_${territory || "def"}`, { hours: 0, minutes: 30, seconds: 0 }, changesAsync);
+    else {
+      return this.getResultFromCache(`changes_${territory || "def"}`, { hours: 0, minutes: 30, seconds: 0 }, this.mkgtruApiService.getChangesLublino);
+    }
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -100,10 +102,11 @@ export class MkgtruApiController {
   @Get("timetables")
   @UseGuards(RequireApiKeyGuard)
   async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
-    async function timetablesAsync() {
-      return await this.mkgtruApiService.getTimetables(territory)
+    if (territory == "kuchin") {
+      return this.getResultFromCache(`timetables_${territory || "def"}`, { hours: 72, minutes: 0, seconds: 0 }, this.mkgtruApiService.getTimetablesKuchin);
+    } else {
+      return this.getResultFromCache(`timetables_${territory || "def"}`, { hours: 72, minutes: 0, seconds: 0 }, this.mkgtruApiService.getTimetablesLublino);
     }
-    return this.getResultFromCache(`timetables_${territory || "def"}`, { hours: 72, minutes: 0, seconds: 0 }, timetablesAsync);
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -187,7 +190,7 @@ export class MkgtruApiController {
   */
 
 
-  async getResultFromCache<T>(key: string, ttl: { hours: number, minutes: number, seconds: number }, getterAsyncFunc: () => Promise<T>): Promise<T> {
+  async getResultFromCache<T>(key: string, ttl: { hours: number, minutes: number, seconds: number }, getterAsyncFunc: (...args: any) => Promise<T>): Promise<T> {
     const ttlMs = ((ttl.hours * 60 * 60) + (ttl.minutes * 60) + ttl.seconds) * 1000
     console.log({ ttlMs })
     const cacheManager = this.cacheManager;
