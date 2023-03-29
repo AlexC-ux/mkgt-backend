@@ -181,7 +181,7 @@ export class MkgtruApiController {
   async getResultFromCache<T>(key: string, ttl: { hours: number, minutes: number, seconds: number }, getterAsyncFunc: Promise<T>): Promise<T> {
 
     const ttlMs = ((ttl.hours * 60 * 60) + (ttl.minutes * 60) + ttl.seconds) * 1000
-    console.log({ttlMs})
+    console.log({ ttlMs })
     const cacheManager = this.cacheManager;
     const value = await cacheManager.get<T | null>(key)
     if (!!value) {
@@ -196,7 +196,6 @@ export class MkgtruApiController {
     }
     function reCacheValue() {
       getterAsyncFunc.then(result => {
-        cacheManager.del(key);
         cacheManager.set(key, result, ttlMs * 2)
         console.log(`${key} recached`)
       });
