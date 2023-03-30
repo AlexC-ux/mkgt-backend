@@ -223,7 +223,9 @@ async function onStart(context: Context & { startPayload?: string }) {
             _ROW_BREAK +
             `По умолчанию режим работы для студентов с Кучина пер. Если Вы учитесь в Люблино, то воспользуйтесь кнопкой 'Настройки профиля' ниже` +
             _ROW_BREAK +
-            `/help покажет список доступных команд`,
+            `/help покажет список доступных команд`+
+            _ROW_BREAK+
+            "/link покажет ссылку для приглашения друга",
             mainMenu
         ).catch(TgBot.catchPollingError);
     }
