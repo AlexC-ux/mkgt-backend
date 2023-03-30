@@ -138,8 +138,11 @@ const mainMenu = {
 }
 
 async function getLink(context: Context) {
-    const botInfo = await TgBot.botObject.telegram.getMe();
-    context.reply(`https://t.me/${botInfo.username}?start=${accessStartPayload.code}\n\nСсылка действует еще ${(Date.now()-accessStartPayload.time)/1000} секунд после чего обновится!`)
+    const user = await checkUser(context.from.id)
+    if (!!user && user.role != "user") {
+        const botInfo = await TgBot.botObject.telegram.getMe();
+        context.reply(`https://t.me/${botInfo.username}?start=${accessStartPayload.code}\n\nСсылка действует еще ${(Date.now() - accessStartPayload.time) / 1000} секунд после чего обновится!`)
+    }
 }
 
 async function getSpravki(ctx: Context) {
