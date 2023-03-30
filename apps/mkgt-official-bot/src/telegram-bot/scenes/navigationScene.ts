@@ -224,11 +224,14 @@ async function getCallsTable(context: Context) {
 }
 
 async function getHelpMessage(context: Context) {
-    let result = "Команды бота:";
-    TgBot.commands.map((commandElement, index) => {
-        result += `${_LINE_BREAK}*${index + 1}\\.* \`/${commandElement.command}\` \\- _${commandElement.description}_`
-    })
-    context.sendMessage(result, { parse_mode: "MarkdownV2" }).catch(TgBot.catchPollingError)
+    const user = await checkUser(context.from.id)
+    if (user.role != "user") {
+        let result = "Команды бота:";
+        TgBot.commands.map((commandElement, index) => {
+            result += `${_LINE_BREAK}*${index + 1}\\.* \`/${commandElement.command}\` \\- _${commandElement.description}_`
+        })
+        context.sendMessage(result, { parse_mode: "MarkdownV2" }).catch(TgBot.catchPollingError)
+    }
 }
 
 async function botMiddleware(context: Context, next: () => Promise<any>,) {
