@@ -1,6 +1,5 @@
 import { PrismaClient, territories, Users } from "@prisma/client";
 import { ITitledDocumentInfo } from "apps/mkgtru-api/src/types/ITitledDocumentInfo";
-import cuid from "cuid";
 import { Context } from "telegraf";
 import { Scenes } from "telegraf";
 import { TgBot } from "../telegram-bot";
@@ -10,6 +9,8 @@ import { EDUCATION_WIZARD_SCENE_ID } from "./spravkiScenes/educationPeriodSpravk
 import { VOENKOMAT_WIZARD_SCENE_ID } from "./spravkiScenes/voenkomatSpravkaScene";
 
 const prisma = new PrismaClient();
+
+var cuid = require('cuid');
 
 const _LINE_BREAK: string = "\n";
 const _ROW_BREAK: string = "\n\n";
