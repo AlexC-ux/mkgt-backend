@@ -156,7 +156,7 @@ async function getSpravki(ctx: Context) {
 
 async function onStart(context: Context & { startPayload?: string }) {
     const sender = context.from;
-    const user = await checkUser(sender.id);
+    let user = await checkUser(sender.id);
     if (user == null) {
         try {
             const tg = await prisma.telegramAccount.create({
@@ -174,14 +174,15 @@ async function onStart(context: Context & { startPayload?: string }) {
                     email: null,
                     telegramAccountId: tg.id
                 }
-            });
+            }).then(newUser => {
+                user = newUser;
+            })
         } catch (error) {
             console.log({ error, context })
         }
     }
 
     if (context.startPayload == accessStartPayload) {
-        const user = await checkUser(context.from.id);
         if (user.role == "user") {
             await prisma.users.update({
                 where: {
@@ -194,14 +195,16 @@ async function onStart(context: Context & { startPayload?: string }) {
         }
     }
 
-    await context.sendMessage("🦉").catch(TgBot.catchPollingError)
-    context.sendMessage(`${sender.first_name}, добро пожаловать!` +
-        _ROW_BREAK +
-        `По умолчанию режим работы для студентов с Кучина пер. Если Вы учитесь в Люблино, то воспользуйтесь кнопкой 'Настройки профиля' ниже` +
-        _ROW_BREAK +
-        `/help покажет список доступных команд`,
-        mainMenu
-    ).catch(TgBot.catchPollingError);
+    if (user.role != "user") {
+        await context.sendMessage("🦉").catch(TgBot.catchPollingError)
+        context.sendMessage(`${sender.first_name}, добро пожаловать!` +
+            _ROW_BREAK +
+            `По умолчанию режим работы для студентов с Кучина пер. Если Вы учитесь в Люблино, то воспользуйтесь кнопкой 'Настройки профиля' ниже` +
+            _ROW_BREAK +
+            `/help покажет список доступных команд`,
+            mainMenu
+        ).catch(TgBot.catchPollingError);
+    }
 }
 
 async function getCallsTable(context: Context) {
@@ -465,10 +468,13 @@ async function changeProfileTerrritory(context: Context, terr: territories) {
 }
 
 async function checkStatus(context: Context) {
-    const resp: "OK" | string | null = await TgBot.getAPIResponse("/status")
-    try {
-        context.sendMessage(resp || "MKGTRU-API IS BROKEN")
-    } catch (e) { }
+    const user = await checkUser(context.from.id)
+    if (user.role != "user") {
+        const resp: "OK" | string | null = await TgBot.getAPIResponse("/status")
+        try {
+            context.sendMessage(resp || "MKGTRU-API IS BROKEN")
+        } catch (e) { }
+    }
 }
 
 async function checkUser(tgId: number): Promise<Users> {
