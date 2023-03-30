@@ -363,18 +363,21 @@ async function onProfile(context: Context) {
 }
 
 async function getDevInfo(context: Context) {
-    context.editMessageText("Информация разработчикам." +
-        _ROW_BREAK +
-        "Документация к API: http://45.87.247.20:8080/api-doc",
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: "Получить ключ доступа", callback_data: 'getApiKey' }],
-                    [{ text: "Вернуться", callback_data: "showMainMenu" }]
-                ]
-            }
-        }).catch(TgBot.catchPollingError);
-    context.answerCbQuery().catch(TgBot.catchPollingError);
+    const user = await checkUser(context.from.id || context.callbackQuery.from.id)
+    if (user.role != "user") {
+        context.editMessageText("Информация разработчикам." +
+            _ROW_BREAK +
+            "Документация к API: http://45.87.247.20:8080/api-doc",
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: "Получить ключ доступа", callback_data: 'getApiKey' }],
+                        [{ text: "Вернуться", callback_data: "showMainMenu" }]
+                    ]
+                }
+            }).catch(TgBot.catchPollingError);
+        context.answerCbQuery().catch(TgBot.catchPollingError);
+    }
 }
 
 async function getApiKey(context: Context) {
