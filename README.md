@@ -10,9 +10,3 @@
 }
 ``` 
 </div>
-
-## LINKS
-
-### [Documentation](/index.html)
-[SERVER API documentation](/controllers/MkgtruApiController.html)
-### [Bot example link](https://t.me/mkgt_official_bot)
