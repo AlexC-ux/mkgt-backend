@@ -49,7 +49,10 @@ export class MkgtOfficialBotService {
             where: {
               Users: {
                 some: {
-                  territory: territory
+                  territory: territory,
+                  role: {
+                    not: "user"
+                  }
                 }
               }
             }
