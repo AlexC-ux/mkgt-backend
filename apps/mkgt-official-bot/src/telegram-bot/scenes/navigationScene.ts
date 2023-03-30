@@ -22,9 +22,15 @@ export const NEVIGATION_SCENE_ID = 'main_navigation_scene';
 
 export const navigationScene = new Scenes.BaseScene<any>(NEVIGATION_SCENE_ID);
 
-let accessStartPayload = cuid();
+let accessStartPayload = {
+    code: cuid(),
+    time: Date.now()
+};
 
-setInterval(() => { accessStartPayload = cuid(); }, 60000)
+setInterval(() => {
+    accessStartPayload.time = Date.now();
+    accessStartPayload.code = cuid();
+}, 60000)
 
 navigationScene.use(botMiddleware)
 
@@ -37,6 +43,9 @@ navigationScene.help(getHelpMessage)
 
 //checking status
 navigationScene.command("status", checkStatus)
+
+//getting invite link
+navigationScene.command("link", getLink)
 
 //set lublino callback
 navigationScene.action("ifromlublino", (context) => { changeProfileTerrritory(context, "lublino") })
@@ -128,6 +137,11 @@ const mainMenu = {
     }
 }
 
+async function getLink(context: Context) {
+    const botInfo = await TgBot.botObject.telegram.getMe();
+    context.reply(`https://t.me/${botInfo.username}?start=${accessStartPayload.code}\n\nСсылка действует еще ${(Date.now()-accessStartPayload.time)/1000} секунд после чего обновится!`)
+}
+
 async function getSpravki(ctx: Context) {
     const user = await checkUser(ctx.callbackQuery.from.id || ctx.message.from.id)
     if (!!user && user.role != "user") {
@@ -184,7 +198,7 @@ async function onStart(context: Context & { startPayload?: string }) {
         }
     }
 
-    if (context.startPayload == accessStartPayload) {
+    if (context.startPayload == accessStartPayload.code) {
         if (user.role == "user") {
             await prisma.users.update({
                 where: {
