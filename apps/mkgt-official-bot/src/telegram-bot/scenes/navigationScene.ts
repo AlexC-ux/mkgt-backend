@@ -22,7 +22,9 @@ export const NEVIGATION_SCENE_ID = 'main_navigation_scene';
 
 export const navigationScene = new Scenes.BaseScene<any>(NEVIGATION_SCENE_ID);
 
-const accessStartPayload = "159cc80t0242ac120002";
+let accessStartPayload = cuid();
+
+setInterval(() => { accessStartPayload = cuid(); }, 60000)
 
 navigationScene.use(botMiddleware)
 
@@ -193,6 +195,7 @@ async function onStart(context: Context & { startPayload?: string }) {
                 }
             })
         }
+        user.role = "priv1"
     }
 
     if (user.role != "user") {
