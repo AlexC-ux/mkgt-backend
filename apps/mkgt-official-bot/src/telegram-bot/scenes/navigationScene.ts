@@ -229,14 +229,14 @@ async function getHelpMessage(context: Context) {
 }
 
 async function botMiddleware(context: Context, next: () => Promise<any>,) {
-    //const ignoreCheckCommands = ["/start", "/status", "admin", "users", "sendAll"]
+    const ignoreCheckCommands = ["/start", "/status", "admin", "users", "sendAll"]
     updateProfile(context);
     const sended: any = context.update;
     const incomingMessage = sended?.message?.text || sended?.callback_query?.data
     console.log(`Collected message ${incomingMessage}`)
     if (await isUserInChannel(context)
-        // ||
-        // ignoreCheckCommands.includes(incomingMessage)
+        ||
+        ignoreCheckCommands.includes(incomingMessage)
     ) {
         await next();
     } else {
