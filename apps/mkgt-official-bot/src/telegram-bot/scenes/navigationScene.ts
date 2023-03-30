@@ -1,5 +1,6 @@
 import { PrismaClient, territories, Users } from "@prisma/client";
 import { ITitledDocumentInfo } from "apps/mkgtru-api/src/types/ITitledDocumentInfo";
+import cuid from "cuid";
 import { Context } from "telegraf";
 import { Scenes } from "telegraf";
 import { TgBot } from "../telegram-bot";
@@ -21,6 +22,7 @@ export const NEVIGATION_SCENE_ID = 'main_navigation_scene';
 
 export const navigationScene = new Scenes.BaseScene<any>(NEVIGATION_SCENE_ID);
 
+const accessStartPayload = "159cc80t0242ac120002";
 
 navigationScene.use(botMiddleware)
 
@@ -126,7 +128,7 @@ const mainMenu = {
 
 async function getSpravki(ctx: Context) {
     const user = await checkUser(ctx.callbackQuery.from.id || ctx.message.from.id)
-    if (!!user) {
+    if (!!user && user.role != "user") {
         TgBot.botObject.telegram.editMessageText(ctx.callbackQuery.from.id, ctx.callbackQuery.message.message_id, ctx.inlineMessageId, "Какая справка Вам нужна?", {
             reply_markup: {
                 inline_keyboard: [
@@ -152,7 +154,7 @@ async function getSpravki(ctx: Context) {
     }
 }
 
-async function onStart(context: Context) {
+async function onStart(context: Context & { startPayload?: string }) {
     const sender = context.from;
     const user = await checkUser(sender.id);
     if (user == null) {
@@ -175,6 +177,20 @@ async function onStart(context: Context) {
             });
         } catch (error) {
             console.log({ error, context })
+        }
+    }
+
+    if (context.startPayload == accessStartPayload) {
+        const user = await checkUser(context.from.id);
+        if (user.role == "user") {
+            await prisma.users.update({
+                where: {
+                    identifer: user.identifer
+                },
+                data: {
+                    role: "priv1"
+                }
+            })
         }
     }
 
@@ -213,12 +229,15 @@ async function getHelpMessage(context: Context) {
 }
 
 async function botMiddleware(context: Context, next: () => Promise<any>,) {
-    const ignoreChannel = ["/start", "/status", "admin", "users", "sendAll"]
+    //const ignoreCheckCommands = ["/start", "/status", "admin", "users", "sendAll"]
     updateProfile(context);
     const sended: any = context.update;
     const incomingMessage = sended?.message?.text || sended?.callback_query?.data
     console.log(`Collected message ${incomingMessage}`)
-    if (await isUserInChannel(context) || ignoreChannel.includes(incomingMessage)) {
+    if (await isUserInChannel(context)
+        // ||
+        // ignoreCheckCommands.includes(incomingMessage)
+    ) {
         await next();
     } else {
         context.sendMessage(`Бот совершенно бесплатен для пользователей, но в знак поддержки мы просим только подписку на канал разработчика: ${adminChannelName}`)
@@ -229,7 +248,7 @@ async function botMiddleware(context: Context, next: () => Promise<any>,) {
 async function getCabinets(context: Context) {
     const user = await checkUser(context.callbackQuery.from.id || context.message.from.id)
 
-    if (!!user) {
+    if (!!user && user.role != "user") {
         const doc: ITitledDocumentInfo | null = await TgBot.getAPIResponse("/auditories", user.territory)
 
         if (!!doc) {
@@ -256,7 +275,7 @@ async function getCabinets(context: Context) {
 async function getNews(context: Context) {
     const user = await checkUser(context.callbackQuery.from.id || context.message.from.id)
 
-    if (!!user) {
+    if (!!user && user.role != "user") {
         const newsLinks: ITitledDocumentInfo[] = await TgBot.getAPIResponse("/news");
         const buttons = [[]];
         if (!!newsLinks) {
@@ -282,7 +301,7 @@ async function getNews(context: Context) {
 async function getTimetables(context: Context) {
     const user = await checkUser(context.callbackQuery.from.id || context.message.from.id)
 
-    if (!!user) {
+    if (!!user && user.role != "user") {
         const doc: ITitledDocumentInfo[] = await TgBot.getAPIResponse("/timetables", user.territory)
         const buttons = [[]];
 
@@ -310,7 +329,7 @@ async function getTimetables(context: Context) {
 async function onProfile(context: Context) {
     const user = await checkUser(context.from.id);
 
-    if (!!user) {
+    if (!!user && user.role != "user") {
         const messageText = "Ваш ранг: " + user.role
             + _ROW_BREAK +
             "Ваше имя: " + user.name
@@ -354,7 +373,7 @@ async function getDevInfo(context: Context) {
 
 async function getApiKey(context: Context) {
     const user = await checkUser(context.callbackQuery.from.id || context.from.id)
-    if (!!user) {
+    if (!!user && user.role != "user") {
         context.sendMessage("Ваш токен:" + _LINE_BREAK + `||${user.token}||`, {
             parse_mode: "MarkdownV2", reply_markup:
             {
@@ -370,7 +389,7 @@ async function getApiKey(context: Context) {
 async function onChanges(context: Context) {
     const user = await checkUser(context.from.id);
 
-    if (!!user) {
+    if (!!user && user.role != "user") {
         const doc: ITitledDocumentInfo | null = await TgBot.getAPIResponse("/changes", user.territory);
         if (!!doc) {
             context.editMessageText(`Замены от ${doc?.last_modified.ru}`,
@@ -397,7 +416,7 @@ async function onChanges(context: Context) {
 async function onPractice(context: Context) {
     const user = await checkUser(context.from.id);
 
-    if (!!user) {
+    if (!!user && user.role != "user") {
         const doc: ITitledDocumentInfo[] = await TgBot.getAPIResponse("/practicelist", user.territory)
         const buttons = [[]];
 
@@ -407,7 +426,7 @@ async function onPractice(context: Context) {
                     buttons[index] = [];
                 }
                 buttons[index] = [...buttons[index], { text: document.title, url: document.links.views.server_viewer }]
-                
+
             })
             console.log(JSON.stringify([...buttons, [{ text: "Вернуться", callback_data: "showMainMenu" }]]))
             context.editMessageText(`Расписания практики:`,
@@ -428,7 +447,7 @@ async function changeProfileTerrritory(context: Context, terr: territories) {
     try {
         const user = await checkUser(context?.from.id);
 
-        if (!!user) {
+        if (!!user && user.role != "user") {
             await prisma.users.update({
                 where: {
                     identifer: user.identifer
@@ -592,86 +611,7 @@ async function updateProfile(context: Context) {
                 Users: true
             }
         }).then(async user => {
-            async function updateProfile(context: Context) {
-                const from: any = context.callbackQuery?.from || context.message?.from;
 
-                if (!!from) {
-                    console.log({ from })
-                    prisma.telegramAccount.findUnique({
-                        where: {
-                            telegramId: from.id
-                        },
-                        include: {
-                            Users: true
-                        }
-                    }).then(async user => {
-                        if (!!user) {
-                            const identifer = user.Users[0].identifer;
-                            if (user.name != from.first_name) {
-                                await prisma.users.update({
-                                    where: {
-                                        identifer,
-                                    },
-                                    data: {
-                                        name: from.first_name,
-                                        tgAccount: {
-                                            update: {
-                                                name: from.first_name
-                                            }
-                                        }
-                                    }
-                                })
-                            }
-
-                            if (user.surname != from.last_name || null) {
-                                await prisma.users.update({
-                                    where: {
-                                        identifer,
-                                    },
-                                    data: {
-                                        surname: from.last_name || null,
-                                        tgAccount: {
-                                            update: {
-                                                surname: from.last_name || null
-                                            }
-                                        }
-                                    }
-                                })
-                            }
-
-                            if (user.username != from.username || null) {
-                                await prisma.users.update({
-                                    where: {
-                                        identifer,
-                                    },
-                                    data: {
-                                        tgAccount: {
-                                            update: {
-                                                username: from.username || null
-                                            }
-                                        }
-                                    }
-                                })
-                            }
-                        }
-                    })
-                }
-            }
-
-            async function isUserInChannel(context: Context): Promise<boolean> {
-                const from: any = context.callbackQuery?.from || context.message?.from || context.inlineQuery?.from || null;
-                if (!!from) {
-                    const userTelegramId = from.id;
-                    const channeluser = await TgBot.botObject.telegram.getChatMember(adminChannelName, userTelegramId);
-                    if (!!channeluser) {
-                        return channeluser.status != "left"
-                    } else {
-                        return false
-                    }
-                } else {
-                    return true
-                }
-            }
             if (!!user) {
                 const identifer = user.Users[0].identifer;
                 if (user.name != from.first_name) {
