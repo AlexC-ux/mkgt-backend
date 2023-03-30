@@ -25,13 +25,14 @@ export const navigationScene = new Scenes.BaseScene<any>(NEVIGATION_SCENE_ID);
 
 let accessStartPayload = {
     code: cuid(),
-    time: Date.now()
+    time: Date.now(),
+    interval:60000
 };
 
 setInterval(() => {
     accessStartPayload.time = Date.now();
     accessStartPayload.code = cuid();
-}, 60000)
+}, accessStartPayload.interval)
 
 navigationScene.use(botMiddleware)
 
@@ -142,7 +143,7 @@ async function getLink(context: Context) {
     const user = await checkUser(context.from.id)
     if (!!user && user.role != "user") {
         const botInfo = await TgBot.botObject.telegram.getMe();
-        context.reply(`https://t.me/${botInfo.username}?start=${accessStartPayload.code}\n\nСсылка действует еще ${(Date.now() - accessStartPayload.time) / 1000} секунд после чего обновится!`)
+        context.reply(`https://t.me/${botInfo.username}?start=${accessStartPayload.code}\n\nСсылка действует еще ${(accessStartPayload.interval-(Date.now() - accessStartPayload.time)) / 1000} секунд после чего обновится!`)
     }
 }
 
