@@ -41,6 +41,7 @@ navigationScene.start(onStart)
 navigationScene.enter(showMainMenu)
 navigationScene.command("menu", sendMainMenu)
 navigationScene.action("menu", showMainMenu)
+navigationScene.action("sendmenu", sendMainMenu)
 
 //set /help answer
 navigationScene.help(getHelpMessage)
@@ -239,7 +240,7 @@ async function botMiddleware(context: Context, next: () => Promise<any>,) {
     const user = await checkUser(context.from.id || context.callbackQuery.from.id);
     if (!user) {
         onStart(context)
-    } else if (!user.politicAccepted&&incomingMessage!="acceptRules") {
+    } else if (!user.politicAccepted && incomingMessage != "acceptRules") {
         onStart(context)
     } else if (await isUserInChannel(context)) {
         await next();
@@ -247,7 +248,7 @@ async function botMiddleware(context: Context, next: () => Promise<any>,) {
     else {
         context.sendMessage(`Бот совершенно бесплатен для пользователей, но в знак поддержки мы просим только подписку на канал разработчика: ${adminChannelName}`, {
             reply_markup: {
-                inline_keyboard: [[{ text: "Я подписался", callback_data: "menu" }]]
+                inline_keyboard: [[{ text: "Я подписался", callback_data: "sendmenu" }]]
             }
         })
     }
@@ -521,7 +522,7 @@ function showMainMenu(context: Context) {
 }
 
 function sendMainMenu(context: Context) {
-    context.reply("🦉", mainMenu).catch(TgBot.catchPollingError);
+    context.reply("🦉").catch(TgBot.catchPollingError);
     context.reply("Главное меню", mainMenu).catch(TgBot.catchPollingError);
 }
 
