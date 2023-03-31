@@ -26,7 +26,7 @@ export const navigationScene = new Scenes.BaseScene<any>(NEVIGATION_SCENE_ID);
 let accessStartPayload = {
     code: cuid(),
     time: Date.now(),
-    interval:60000
+    interval: 60000
 };
 
 setInterval(() => {
@@ -39,6 +39,8 @@ navigationScene.use(botMiddleware)
 //start message - registration
 navigationScene.start(onStart)
 navigationScene.enter(showMainMenu)
+navigationScene.command("menu", sendMainMenu)
+navigationScene.action("menu", showMainMenu)
 
 //set /help answer
 navigationScene.help(getHelpMessage)
@@ -46,14 +48,14 @@ navigationScene.help(getHelpMessage)
 //checking status
 navigationScene.command("status", checkStatus)
 
-//getting invite link
-navigationScene.command("link", getLink)
-
 //set lublino callback
 navigationScene.action("ifromlublino", (context) => { changeProfileTerrritory(context, "lublino") })
 
 //set kuchin callback
 navigationScene.action("ifromkuchin", (context) => { changeProfileTerrritory(context, "kuchin") })
+
+//accepting politics
+navigationScene.action("acceptRules", acceptRules)
 
 //getting api key
 navigationScene.action("getApiKey", getApiKey);
@@ -139,17 +141,9 @@ const mainMenu = {
     }
 }
 
-async function getLink(context: Context) {
-    const user = await checkUser(context.from.id)
-    if (!!user && user.role != "user") {
-        const botInfo = await TgBot.botObject.telegram.getMe();
-        context.reply(`https://t.me/${botInfo.username}?start=${accessStartPayload.code}\n\nСсылка действует еще ${(accessStartPayload.interval-(Date.now() - accessStartPayload.time)) / 1000} секунд после чего обновится!`)
-    }
-}
-
 async function getSpravki(ctx: Context) {
     const user = await checkUser(ctx.callbackQuery.from.id || ctx.message.from.id)
-    if (!!user && user.role != "user") {
+    if (!!user) {
         TgBot.botObject.telegram.editMessageText(ctx.callbackQuery.from.id, ctx.callbackQuery.message.message_id, ctx.inlineMessageId, "Какая справка Вам нужна?", {
             reply_markup: {
                 inline_keyboard: [
@@ -203,32 +197,14 @@ async function onStart(context: Context & { startPayload?: string }) {
         }
     }
 
-    if (context.startPayload == accessStartPayload.code) {
-        if (user.role == "user") {
-            await prisma.users.update({
-                where: {
-                    identifer: user.identifer
-                },
-                data: {
-                    role: "priv1"
-                }
-            })
+    context.sendMessage("Для продолжения использования бота вы должны подтверить, что являетесь студентом или сотрудником Московского колледжа транспорта", {
+        reply_markup: {
+            inline_keyboard: [
+                [{ text: "Подтверждаю ✅", callback_data: "acceptRules" }]
+            ]
         }
-        user.role = "priv1"
-    }
+    }).catch(TgBot.catchPollingError);
 
-    if (user.role != "user") {
-        await context.sendMessage("🦉").catch(TgBot.catchPollingError)
-        context.sendMessage(`${sender.first_name}, добро пожаловать!` +
-            _ROW_BREAK +
-            `По умолчанию режим работы для студентов с Кучина пер. Если Вы учитесь в Люблино, то воспользуйтесь кнопкой 'Настройки профиля' ниже` +
-            _ROW_BREAK +
-            `/help покажет список доступных команд`+
-            _ROW_BREAK+
-            "/link покажет ссылку для приглашения друга",
-            mainMenu
-        ).catch(TgBot.catchPollingError);
-    }
 }
 
 async function getCallsTable(context: Context) {
@@ -248,37 +224,56 @@ async function getCallsTable(context: Context) {
 }
 
 async function getHelpMessage(context: Context) {
-    const user = await checkUser(context.from.id)
-    if (user.role != "user") {
-        let result = "Команды бота:";
-        TgBot.commands.map((commandElement, index) => {
-            result += `${_LINE_BREAK}*${index + 1}\\.* \`/${commandElement.command}\` \\- _${commandElement.description}_`
-        })
-        context.sendMessage(result, { parse_mode: "MarkdownV2" }).catch(TgBot.catchPollingError)
-    }
+    let result = "Команды бота:";
+    TgBot.commands.map((commandElement, index) => {
+        result += `${_LINE_BREAK}*${index + 1}\\.* \`/${commandElement.command}\` \\- _${commandElement.description}_`
+    })
+    context.sendMessage(result, { parse_mode: "MarkdownV2" }).catch(TgBot.catchPollingError)
 }
 
 async function botMiddleware(context: Context, next: () => Promise<any>,) {
-    const ignoreCheckCommands = ["/start", "/status", "admin", "users", "sendAll"]
     updateProfile(context);
     const sended: any = context.update;
     const incomingMessage = sended?.message?.text || sended?.callback_query?.data
     console.log(`Collected message ${incomingMessage}`)
-    if (await isUserInChannel(context)
-        ||
-        ignoreCheckCommands.includes(incomingMessage)
-    ) {
+    const user = await checkUser(context.from.id || context.callbackQuery.from.id);
+    if (!user) {
+        onStart(context)
+    } else if (!user.politicAccepted&&incomingMessage!="acceptRules") {
+        onStart(context)
+    } else if (await isUserInChannel(context)) {
         await next();
-    } else {
-        context.sendMessage(`Бот совершенно бесплатен для пользователей, но в знак поддержки мы просим только подписку на канал разработчика: ${adminChannelName}`)
+    }
+    else {
+        context.sendMessage(`Бот совершенно бесплатен для пользователей, но в знак поддержки мы просим только подписку на канал разработчика: ${adminChannelName}`, {
+            reply_markup: {
+                inline_keyboard: [[{ text: "Я подписался", callback_data: "menu" }]]
+            }
+        })
     }
 }
 
+async function acceptRules(context: Context) {
+    const user = await checkUser(context.from.id || context.callbackQuery.from.id);
+    if (!!user) {
+        await prisma.users.update({
+            where: {
+                identifer: user.identifer
+            },
+            data: {
+                politicAccepted: true,
+            }
+        });
+
+        await context.reply("Приятного использования бота! Для вызова меню Вы всегда можете использовать команду /menu").catch(TgBot.catchPollingError);
+        await showMainMenu(context);
+    }
+}
 
 async function getCabinets(context: Context) {
-    const user = await checkUser(context.callbackQuery.from.id || context.message.from.id)
+    const user = await checkUser(context.callbackQuery.from.id || context.from.id)
 
-    if (!!user && user.role != "user") {
+    if (!!user) {
         const doc: ITitledDocumentInfo | null = await TgBot.getAPIResponse("/auditories", user.territory)
 
         if (!!doc) {
@@ -303,9 +298,9 @@ async function getCabinets(context: Context) {
 }
 
 async function getNews(context: Context) {
-    const user = await checkUser(context.callbackQuery.from.id || context.message.from.id)
+    const user = await checkUser(context.callbackQuery.from.id || context.from.id)
 
-    if (!!user && user.role != "user") {
+    if (!!user) {
         const newsLinks: ITitledDocumentInfo[] = await TgBot.getAPIResponse("/news");
         const buttons = [[]];
         if (!!newsLinks) {
@@ -329,9 +324,9 @@ async function getNews(context: Context) {
 }
 
 async function getTimetables(context: Context) {
-    const user = await checkUser(context.callbackQuery.from.id || context.message.from.id)
+    const user = await checkUser(context.callbackQuery.from.id || context.from.id)
 
-    if (!!user && user.role != "user") {
+    if (!!user) {
         const doc: ITitledDocumentInfo[] = await TgBot.getAPIResponse("/timetables", user.territory)
         const buttons = [[]];
 
@@ -357,10 +352,10 @@ async function getTimetables(context: Context) {
 }
 
 async function onProfile(context: Context) {
-    const user = await checkUser(context.from.id);
+    const user = await checkUser(context.from.id || context.callbackQuery.from.id);
 
-    if (!!user && user.role != "user") {
-        const messageText = "Ваш ранг: " + user.role
+    if (!!user) {
+        const messageText = "Ваш статус: " + user.role
             + _ROW_BREAK +
             "Ваше имя: " + user.name
             + _ROW_BREAK +
@@ -388,25 +383,25 @@ async function onProfile(context: Context) {
 
 async function getDevInfo(context: Context) {
     const user = await checkUser(context.from.id || context.callbackQuery.from.id)
-    if (user.role != "user") {
-        context.editMessageText("Информация разработчикам." +
-            _ROW_BREAK +
-            "Документация к API: http://45.87.247.20:8080/api-doc",
-            {
-                reply_markup: {
-                    inline_keyboard: [
-                        [{ text: "Получить ключ доступа", callback_data: 'getApiKey' }],
-                        [{ text: "Вернуться", callback_data: "showMainMenu" }]
-                    ]
-                }
-            }).catch(TgBot.catchPollingError);
-        context.answerCbQuery().catch(TgBot.catchPollingError);
-    }
+
+    context.editMessageText("Информация разработчикам." +
+        _ROW_BREAK +
+        "Документация к API: http://45.87.247.20:8080/api-doc",
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: "Получить ключ доступа", callback_data: 'getApiKey' }],
+                    [{ text: "Вернуться", callback_data: "showMainMenu" }]
+                ]
+            }
+        }).catch(TgBot.catchPollingError);
+    context.answerCbQuery().catch(TgBot.catchPollingError);
+
 }
 
 async function getApiKey(context: Context) {
     const user = await checkUser(context.callbackQuery.from.id || context.from.id)
-    if (!!user && user.role != "user") {
+    if (!!user) {
         context.sendMessage("Ваш токен:" + _LINE_BREAK + `||${user.token}||`, {
             parse_mode: "MarkdownV2", reply_markup:
             {
@@ -422,7 +417,7 @@ async function getApiKey(context: Context) {
 async function onChanges(context: Context) {
     const user = await checkUser(context.from.id);
 
-    if (!!user && user.role != "user") {
+    if (!!user) {
         const doc: ITitledDocumentInfo | null = await TgBot.getAPIResponse("/changes", user.territory);
         if (!!doc) {
             context.editMessageText(`Замены от ${doc?.last_modified.ru}`,
@@ -449,7 +444,7 @@ async function onChanges(context: Context) {
 async function onPractice(context: Context) {
     const user = await checkUser(context.from.id);
 
-    if (!!user && user.role != "user") {
+    if (!!user) {
         const doc: ITitledDocumentInfo[] = await TgBot.getAPIResponse("/practicelist", user.territory)
         const buttons = [[]];
 
@@ -480,7 +475,7 @@ async function changeProfileTerrritory(context: Context, terr: territories) {
     try {
         const user = await checkUser(context?.from.id);
 
-        if (!!user && user.role != "user") {
+        if (!!user) {
             await prisma.users.update({
                 where: {
                     identifer: user.identifer
@@ -499,15 +494,15 @@ async function changeProfileTerrritory(context: Context, terr: territories) {
 
 async function checkStatus(context: Context) {
     const user = await checkUser(context.from.id)
-    if (user.role != "user") {
-        const resp: "OK" | string | null = await TgBot.getAPIResponse("/status")
-        try {
-            context.sendMessage(resp || "MKGTRU-API IS BROKEN")
-        } catch (e) { }
-    }
+
+    const resp: "OK" | string | null = await TgBot.getAPIResponse("/status")
+    try {
+        context.sendMessage(resp || "MKGTRU-API IS BROKEN")
+    } catch (e) { }
+
 }
 
-async function checkUser(tgId: number): Promise<Users> {
+async function checkUser(tgId: number): Promise<Users | null> {
     const user = await prisma.users.findFirst({
         include: {
             tgAccount: true,
@@ -523,6 +518,11 @@ async function checkUser(tgId: number): Promise<Users> {
 
 function showMainMenu(context: Context) {
     TgBot.botObject.telegram.editMessageText(context.callbackQuery.from.id, context.callbackQuery.message.message_id, context.inlineMessageId, "Главное меню", mainMenu).catch(TgBot.catchPollingError);
+}
+
+function sendMainMenu(context: Context) {
+    context.reply("🦉", mainMenu).catch(TgBot.catchPollingError);
+    context.reply("Главное меню", mainMenu).catch(TgBot.catchPollingError);
 }
 
 function deleteOnCallback(context: Context) {

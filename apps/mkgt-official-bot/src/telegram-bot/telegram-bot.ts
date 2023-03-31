@@ -64,9 +64,10 @@ export class TgBot {
     };
 
     static commands: IBotCommand[] = [
-        { 'command': "start", "description": "показать главное меню" },
+        { 'command': "menu", "description": "показать меню" },
         { 'command': "help", "description": "показать команды" },
         { 'command': "status", "description": "получение состояния сервера" },
+        { 'command': "start", "description": "показать главное меню" },
     ];
 
     static adminCommands: IBotCommand[] = [

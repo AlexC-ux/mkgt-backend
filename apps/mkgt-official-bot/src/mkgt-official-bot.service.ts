@@ -50,8 +50,10 @@ export class MkgtOfficialBotService {
               Users: {
                 some: {
                   territory: territory,
-                  role: {
-                    not: "user"
+                  tgAccount: {
+                    telegramId: {
+                      not: null
+                    }
                   }
                 }
               }

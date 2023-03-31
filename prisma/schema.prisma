@@ -19,6 +19,7 @@ model Users {
   territory         territories      @default(kuchin)
   telegramAccountId String?
   tgAccount         TelegramAccount? @relation(fields: [telegramAccountId], references: [id], onDelete: Cascade)
+  politicAccepted   Boolean          @default(false)
 }
 
 model TelegramAccount {
