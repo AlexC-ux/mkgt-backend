@@ -126,7 +126,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChangesKuchin(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#column-id-D-4V3KhgS7ujL-iA1GkFD > div a`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#sppb-addon-yS5Xb34b1Yj0VrD7GQvS_ > div > div > div > div:nth-child(2) a`);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -138,7 +138,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChangesLublino(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#column-id-D-4V3KhgS7ujL-iA1GkFD > div a`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#sppb-addon-yS5Xb34b1Yj0VrD7GQvS_ > div > div > div > div:nth-child(2) a`);
     return await getTitledFileInfoByATag(linkElement[1])
   }
 
@@ -151,7 +151,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#sppb-ac-content-qmCyKTKRED_Z7pbtHoz8v-key-0 > div a");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#sppb-addon-yS5Xb34b1Yj0VrD7GQvS_ > div > div > div > div:nth-child(1) a");
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
