@@ -126,7 +126,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChangesKuchin(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>div>div.sppb-panel-body div:nth-child(1) a`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#btn-1679752997245`);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -138,7 +138,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChangesLublino(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(2)>div>div.sppb-panel-body div:nth-child(1) a`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#btn-1679752997246`);
     return await getTitledFileInfoByATag(linkElement[1])
   }
 
@@ -151,7 +151,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(1)>div>div.sppb-panel-body div:nth-child(1) a");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#btn-1679752997247");
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -164,7 +164,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
   async getTimetablesKuchin(): Promise<ITitledDocumentInfo[]> {
-    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(5)>div>div.sppb-panel-body>div:nth-child(1) a`);
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#sppb-addon-1632589047342 > div > div > p a`);
     const files = [];
     for (const index in linkElements) {
       const element = linkElements[index];
@@ -191,7 +191,7 @@ export class MkgtruApiService {
   }
 
   async getNews(): Promise<ITitledDocumentInfo[]> {
-    const elements = await getElementsFromPage("https://mkgt.ru/index.php?option=com_minitekwall&task=masonry.getContent&widget_id=3&page=1&tag_operator=OR&date_format=Y-m&grid=masonry", 'h3 a');
+    const elements = await getElementsFromPage("https://mkgt.ru/index.php?option=com_minitekwall&task=masonry.getContent&widget_id=3&page=1&tag_operator=OR&date_format=Y-m&grid=masonry", '#sppb-addon-1632589047343 > div > div > p a');
     let news: ITitledDocumentInfo[] = [];
     for (let index = 0; index < 6; index++) {
       news[index] = await getTitledFileInfoByATag(elements[index]);
@@ -216,7 +216,7 @@ export class MkgtruApiService {
    * @returns {unknown}
    */
   async getTimeCalls() {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(6) div.sppb-panel-body a");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#sppb-addon-1643455125008 > div > div > p > strong > a");
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -229,7 +229,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
   async getPracticeList(): Promise<ITitledDocumentInfo[]> {
-    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "div:nth-child(3) div.sppb-panel-body a");
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#section-id-9NnPSlgeRtB6GzwaBIM9V a");
     const files = [];
     for (const index in linkElements) {
       if (Object.prototype.hasOwnProperty.call(linkElements, index)) {
