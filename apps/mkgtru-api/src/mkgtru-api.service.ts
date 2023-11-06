@@ -328,7 +328,7 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
               'file_hash': `${createHash("sha1").update(docText).digest("hex")}`,
               'views': {
                 'google_docs': `https://docs.google.com/gview?url=${url}&embed=true`,
-                'server_viewer': `http://paytoplay.space/docs-viewer/?file=${url}`,
+                'server_viewer': `${process.env.SERVER_ACCESS_URL}/docs-viewer/?file=${url}`,
               },
             },
             'data_type': dataType,

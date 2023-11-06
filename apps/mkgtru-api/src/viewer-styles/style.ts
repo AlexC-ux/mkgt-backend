@@ -141,7 +141,7 @@ function clearPage(){
     })
     document.querySelectorAll("a:has(img[data-src])").forEach((element)=>{
         console.log(element)
-        element.setAttribute('href',"http://paytoplay.space/docs-viewer/?file="+element.getAttribute("href"));
+        element.setAttribute('href',"${process.env.SERVER_ACCESS_URL}/docs-viewer/?file="+element.getAttribute("href"));
     })
 
     document.querySelector("div[style='display:none!important;']").style=''
