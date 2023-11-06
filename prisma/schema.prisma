@@ -24,7 +24,7 @@ model Users {
 
 model TelegramAccount {
   id         String  @id @unique @default(cuid())
-  name       String
+  name       String?
   surname    String?
   telegramId BigInt  @unique
   username   String?
