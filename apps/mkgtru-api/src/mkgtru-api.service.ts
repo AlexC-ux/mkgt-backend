@@ -181,7 +181,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
   async getTimetablesLublino(): Promise<ITitledDocumentInfo[]> {
-    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `div:nth-child(5)>div>div.sppb-panel-body>div:nth-child(2) a`);
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#sppb-addon-1632589047343 > div > div > p a`);
     const files = [];
     for (const index in linkElements) {
       const element = linkElements[index];
@@ -191,7 +191,7 @@ export class MkgtruApiService {
   }
 
   async getNews(): Promise<ITitledDocumentInfo[]> {
-    const elements = await getElementsFromPage("https://mkgt.ru/index.php?option=com_minitekwall&task=masonry.getContent&widget_id=3&page=1&tag_operator=OR&date_format=Y-m&grid=masonry", '#sppb-addon-1632589047343 > div > div > p a');
+    const elements = await getElementsFromPage("https://mkgt.ru/index.php?option=com_minitekwall&task=masonry.getContent&widget_id=3&page=1&tag_operator=OR&date_format=Y-m&grid=masonry", 'h3 a');
     let news: ITitledDocumentInfo[] = [];
     for (let index = 0; index < 6; index++) {
       news[index] = await getTitledFileInfoByATag(elements[index]);
