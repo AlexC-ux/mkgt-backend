@@ -126,7 +126,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChangesKuchin(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#sppb-addon-yS5Xb34b1Yj0VrD7GQvS_ > div > div > div > div:nth-child(2) a`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `a[href='https://mkgt.ru/a/mkt-zameny.php']`);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -138,7 +138,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChangesLublino(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#sppb-addon-yS5Xb34b1Yj0VrD7GQvS_ > div > div > div > div:nth-child(2) a`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `a[href='https://mkgt.ru/a/mkt-zameny-l.php']`);
     return await getTitledFileInfoByATag(linkElement[1])
   }
 
