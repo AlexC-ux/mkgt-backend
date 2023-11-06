@@ -126,7 +126,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChangesKuchin(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#btn-1679752997245`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#column-id-D-4V3KhgS7ujL-iA1GkFD > div a`);
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -138,7 +138,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getChangesLublino(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#btn-1679752997246`);
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#column-id-D-4V3KhgS7ujL-iA1GkFD > div a`);
     return await getTitledFileInfoByATag(linkElement[1])
   }
 
@@ -151,7 +151,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#btn-1679752997247");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#sppb-ac-content-qmCyKTKRED_Z7pbtHoz8v-key-0 > div a");
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
@@ -164,7 +164,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
   async getTimetablesKuchin(): Promise<ITitledDocumentInfo[]> {
-    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#sppb-addon-1632589047342 > div > div > p a`);
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#sppb-addon-1632589047342 > div a`);
     const files = [];
     for (const index in linkElements) {
       const element = linkElements[index];
@@ -181,7 +181,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
   async getTimetablesLublino(): Promise<ITitledDocumentInfo[]> {
-    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#sppb-addon-1632589047343 > div > div > p a`);
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `#sppb-addon-1632589047343 > div a`);
     const files = [];
     for (const index in linkElements) {
       const element = linkElements[index];
