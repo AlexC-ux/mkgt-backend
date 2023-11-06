@@ -6,7 +6,6 @@ import { MkgtOfficialBotModule } from 'apps/mkgt-official-bot/src/mkgt-official-
 
 async function bootstrap() {
   const app = await NestFactory.create(MkgtruApiModule);
-  const bot = await NestFactory.create(MkgtOfficialBotModule);
 
   const config = new DocumentBuilder()
     .setTitle('MKGTRU-API DOCUMENTATION')
@@ -24,6 +23,5 @@ async function bootstrap() {
   SwaggerModule.setup('api-doc', app, document);
 
   app.listen(8080);
-  bot.listen(8081);
 }
 bootstrap();
