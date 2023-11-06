@@ -151,7 +151,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo>}
    */
   async getAuditories(): Promise<ITitledDocumentInfo> {
-    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#sppb-addon-yS5Xb34b1Yj0VrD7GQvS_ > div > div > div > div:nth-child(1) a");
+    const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#sppb-addon-1679752997247 > div a");
     return await getTitledFileInfoByATag(linkElement[0])
   }
 
