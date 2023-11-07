@@ -49,12 +49,12 @@ export class MkgtruApiController {
       started = true;
       this.getAuditories();
       this.getCallstable();
-      this.getChanges("kuchin");
-      this.getChanges("lublino");
+      this.getChanges({territory:"kuchin"});
+      this.getChanges({territory:"lublino"});
       this.getNews();
       this.gettPracticeList();
-      this.getTimetables("kuchin");
-      this.getTimetables("lublino");
+      this.getTimetables({territory:"kuchin"});
+      this.getTimetables({territory:"lublino"});
     }
     return await this.mkgtruApiService.getStatus();
   }
@@ -73,8 +73,8 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success" })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("material")
-  async getMaterial(@Query("location") location: string): Promise<string> {
-    return await this.mkgtruApiService.getMaterialContent(location);
+  async getMaterial(@Query() query:{location: string}): Promise<string> {
+    return await this.mkgtruApiService.getMaterialContent(query.location);
   }
 
   @ApiSecurity("ApiKeyAuth")
@@ -84,13 +84,13 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @UseGuards(RequireApiKeyGuard)
   @Get("changes")
-  async getChanges(@Query("territory") territory?: territories): Promise<ITitledDocumentInfo> {
-    console.log({territory})
-    if (territory == "kuchin") {
-      return this.getResultFromCache(`changes_${territory || "def"}`, { hours: 0, minutes: 30, seconds: 0 }, this.mkgtruApiService.getChangesKuchin);
+  async getChanges(@Query() query:{territory: territories}): Promise<ITitledDocumentInfo> {
+    console.log({query})
+    if (query?.territory == "kuchin") {
+      return this.getResultFromCache(`changes_${query?.territory || "def"}`, { hours: 0, minutes: 30, seconds: 0 }, this.mkgtruApiService.getChangesKuchin);
     }
     else {
-      return this.getResultFromCache(`changes_${territory || "def"}`, { hours: 0, minutes: 30, seconds: 0 }, this.mkgtruApiService.getChangesLublino);
+      return this.getResultFromCache(`changes_${query?.territory || "def"}`, { hours: 0, minutes: 30, seconds: 0 }, this.mkgtruApiService.getChangesLublino);
     }
   }
 
@@ -111,11 +111,11 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @Get("timetables")
   @UseGuards(RequireApiKeyGuard)
-  async getTimetables(@Query("territory") territory: territories): Promise<ITitledDocumentInfo[]> {
-    if (territory == "kuchin") {
-      return this.getResultFromCache(`timetables_${territory || "def"}`, { hours: 72, minutes: 0, seconds: 0 }, this.mkgtruApiService.getTimetablesKuchin);
+  async getTimetables(@Query() query:{territory: territories}): Promise<ITitledDocumentInfo[]> {
+    if (query.territory == "kuchin") {
+      return this.getResultFromCache(`timetables_${query.territory || "def"}`, { hours: 72, minutes: 0, seconds: 0 }, this.mkgtruApiService.getTimetablesKuchin);
     } else {
-      return this.getResultFromCache(`timetables_${territory || "def"}`, { hours: 72, minutes: 0, seconds: 0 }, this.mkgtruApiService.getTimetablesLublino);
+      return this.getResultFromCache(`timetables_${query.territory || "def"}`, { hours: 72, minutes: 0, seconds: 0 }, this.mkgtruApiService.getTimetablesLublino);
     }
   }
 
