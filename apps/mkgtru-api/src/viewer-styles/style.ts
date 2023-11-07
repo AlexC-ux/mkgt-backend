@@ -116,7 +116,7 @@ div.jo-whatsappcontactbutton{
 
 `
 
-export const materialViewerBody = `
+export const materialViewerBody = (host:string)=>`
 <script>
 const remover = setInterval(()=>{
     switch (document.readyState) {
@@ -141,7 +141,7 @@ function clearPage(){
     })
     document.querySelectorAll("a:has(img[data-src])").forEach((element)=>{
         console.log(element)
-        element.setAttribute('href',"${process.env.SERVER_ACCESS_URL}/docs-viewer/?file="+element.getAttribute("href"));
+        element.setAttribute('href',"${host}/docs-viewer/?file="+element.getAttribute("href"));
     })
 
     document.querySelector("div[style='display:none!important;']").style=''

@@ -204,7 +204,7 @@ export class MkgtruApiService {
     const htmlContent = await axios.get(url, { ...axiosDefaultConfig, responseType: "document" })
     const document = parse(htmlContent.data);
     document.querySelector("head").innerHTML = `${materialViewerHeader}`
-    document.querySelector("body").innerHTML = `${materialViewerBody}${document.querySelector("body").innerHTML}`
+    document.querySelector("body").innerHTML = `${materialViewerBody(process.env.SERVER_ACCESS_URL)}${document.querySelector("body").innerHTML}`
     return document.innerHTML;
   }
 
