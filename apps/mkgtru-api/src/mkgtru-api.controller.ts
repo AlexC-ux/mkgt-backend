@@ -72,7 +72,7 @@ export class MkgtruApiController {
   @ApiOperation({ summary: "Getting news" })
   @ApiResponse({ status: HttpStatus.OK, description: "Success" })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
-  @Get("material")
+  @Get("material?")
   async getMaterial(@Query() query:{location: string}): Promise<string> {
     return await this.mkgtruApiService.getMaterialContent(query.location);
   }
@@ -83,7 +83,7 @@ export class MkgtruApiController {
   @ApiResponse({ status: HttpStatus.OK, description: "Success" })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
   @UseGuards(RequireApiKeyGuard)
-  @Get("changes")
+  @Get("changes?")
   async getChanges(@Query() query:{territory: territories}): Promise<ITitledDocumentInfo> {
     console.log({query})
     if (query?.territory == "kuchin") {
@@ -109,7 +109,7 @@ export class MkgtruApiController {
   @ApiQuery({ name: "territory", required: false, description: "Tiemetable updates territory", enumName: "territories", enum: ["kuchin", "lublino"] })
   @ApiResponse({ status: HttpStatus.OK, description: "Success", })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Wrong api key" })
-  @Get("timetables")
+  @Get("timetables?")
   @UseGuards(RequireApiKeyGuard)
   async getTimetables(@Query() query:{territory: territories}): Promise<ITitledDocumentInfo[]> {
     if (query.territory == "kuchin") {
