@@ -521,6 +521,7 @@ async function checkUser(tgId: number): Promise<Users | null> {
             }
         }
     })
+    console.log({user})
     return user;
 }
 
