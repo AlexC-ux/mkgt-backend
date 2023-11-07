@@ -316,7 +316,7 @@ async function getNews(context: Context) {
                 if (!buttons[index]) {
                     buttons[index] = [];
                 }
-                buttons[index] = [...buttons[index], { text: document.title, url: `${process.env.SERVER_ACCESS_URL}:8080/mkgtru-api/material?location=${document.links.file.replace("https://mkgt.ru/index.php/component/content/article/", "")}` }]
+                buttons[index] = [...buttons[index], { text: document.title, url: `${process.env.SERVER_ACCESS_URL}/mkgtru-api/material?location=${document.links.file.replace("https://mkgt.ru/index.php/component/content/article/", "")}` }]
             })
             context.editMessageText(`Последние новости:`,
                 {
