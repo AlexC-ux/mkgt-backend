@@ -139,7 +139,7 @@ export class MkgtruApiService {
    */
   async getChangesLublino(): Promise<ITitledDocumentInfo> {
     const linkElement = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, `a[href='https://mkgt.ru/a/mkt-zameny-l.php']`);
-    return await getTitledFileInfoByATag(linkElement[1])
+    return await getTitledFileInfoByATag(linkElement[0])
   }
 
 
