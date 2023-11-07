@@ -229,7 +229,7 @@ export class MkgtruApiService {
    * @returns {Promise<ITitledDocumentInfo[]>}
    */
   async getPracticeList(): Promise<ITitledDocumentInfo[]> {
-    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#section-id-9NnPSlgeRtB6GzwaBIM9V a");
+    const linkElements = await getElementsFromPage(`https://${process.env.SITE_DOMAIN}/index.php/nauka/raspisania-i-izmenenia-v-raspisaniah`, "#sppb-addon-1632589047342 > div a");
     const files = [];
     for (const index in linkElements) {
       if (Object.prototype.hasOwnProperty.call(linkElements, index)) {
