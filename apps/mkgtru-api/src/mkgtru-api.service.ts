@@ -271,8 +271,10 @@ async function getElementsFromPage(uri: string, selector: string): Promise<HTMLE
     }
   } catch (error) {
     console.error(`Not found elements: ${uri} selector:'${selector}'\n\n${error}`)
-    await updateProxyAgents(() => { });
-    return getElementsFromPage(uri, selector)
+    if (!(error instanceof HttpException)) {
+      await updateProxyAgents(() => { });
+      return getElementsFromPage(uri, selector)
+    }
   }
 }
 
@@ -336,9 +338,12 @@ async function getTitledFileInfoByATag(node: HTMLElement): Promise<ITitledDocume
         )
       }
     } catch (error) {
-      await updateProxyAgents(() => { });
       console.error(`cannot getDoc by a tag: ${node}\n\n${error}`)
-      return await getTitledFileInfoByATag(node)
+
+      if (!(error instanceof HttpException)) {
+        await updateProxyAgents(() => { });
+        return await getTitledFileInfoByATag(node)
+      }
     }
   } else {
   }
