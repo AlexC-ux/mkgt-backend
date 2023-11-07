@@ -209,7 +209,14 @@ async function onStart(context: Context & { startPayload?: string }) {
 }
 
 async function getCallsTable(context: Context) {
-    const callstableInfo: ITitledDocumentInfo = await TgBot.getAPIResponse("/callstable");
+    const user = await prisma.users.findFirst({
+        where: {
+            tgAccount:{
+                telegramId: context?.message?.from?.id ?? context?.callbackQuery?.from?.id ?? context?.message?.chat?.id
+            }
+        }
+    })
+    const callstableInfo: ITitledDocumentInfo = await TgBot.getAPIResponse("/callstable",user.territory);
     if (callstableInfo && callstableInfo?.last_modified?.ru) {
         context.editMessageText(`Расписание звонков от ${callstableInfo.last_modified.ru}`, {
             reply_markup: {
