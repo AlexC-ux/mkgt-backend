@@ -212,7 +212,7 @@ export class MkgtruApiController {
       console.log(`${key} collected from site`)
       const result = await getterAsyncFunc();
       if (result) {
-        await cacheManager.set(key, `${result}`, ttlMs * 2)
+        await cacheManager.set(key, `${JSON.stringify(result)??result}`, ttlMs * 2)
         setInterval(() => {
           console.log(key + " recaching in process....")
           reCacheValue();
