@@ -86,7 +86,7 @@ export class MkgtruApiController {
   @Get("changes")
   async getChanges(@Query("territory") territory?: territories, @Req() req?:Request): Promise<ITitledDocumentInfo> {
     console.log({territory})
-    console.log({req:{...req.query,...req.params}})
+    console.log({req})
     if (territory == "kuchin") {
       return this.getResultFromCache(`changes_${territory || "def"}`, { hours: 0, minutes: 30, seconds: 0 }, this.mkgtruApiService.getChangesKuchin);
     }
